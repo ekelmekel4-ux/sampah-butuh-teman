@@ -1,0 +1,6 @@
+{
+  "name": "Sampah Butuh Teman",
+  "description": "Platform kampus penyalur limbah kertas terintegrasi dari unit kampus ke mitra industri daur ulang melalui drop point terpusat bertong nomor.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
