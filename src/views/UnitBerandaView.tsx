@@ -82,13 +82,13 @@ export const UnitBerandaView: React.FC = () => {
         <div className="absolute -left-6 -top-6 w-28 h-28 rounded-full bg-white/5 blur-xl pointer-events-none" />
 
         <div className="relative z-10 space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-start justify-between gap-2 flex-wrap">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold">
               <span className="material-symbols-outlined text-[15px]">eco</span>
               <span>Sirkularitas Limbah Kertas</span>
             </div>
-            <div className="text-[11px] font-medium text-white/80 bg-white/10 px-2.5 py-1 rounded-full backdrop-blur-xs">
-              Terisi: {primaryTong.berat_kg} Kg (Min. Jemput: 10 Kg)
+            <div className="text-[11px] font-medium text-white/80 bg-white/10 px-2.5 py-1 rounded-full backdrop-blur-xs shrink-0">
+              Terisi: {primaryTong.berat_kg} Kg
             </div>
           </div>
 

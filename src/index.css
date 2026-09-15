@@ -7,6 +7,17 @@
     color: #1c1c16;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  p, span, div {
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 }
 

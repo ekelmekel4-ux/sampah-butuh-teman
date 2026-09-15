@@ -222,9 +222,9 @@ export const PerusahaanJadwalView: React.FC = () => {
               Data Armada (isi sesuai kendaraan Anda)
             </div>
             <div className="text-[#57635A] space-y-0.5">
-              <p>• Pastikan armada sudah terdaftar di sistem logistik perusahaan</p>
-              <p>• Hubungi petugas jaga: Bpk. Suwardi (0812-3344-5566)</p>
-              <p>• Timbangan digital tersedia di samping tiap tong untuk kalibrasi berat</p>
+              <p className="leading-snug">• Pastikan armada sudah terdaftar di sistem logistik perusahaan</p>
+              <p className="leading-snug">• Hubungi petugas jaga: Bpk. Suwardi (0812-3344-5566)</p>
+              <p className="leading-snug">• Timbangan digital tersedia di samping tiap tong untuk kalibrasi berat</p>
             </div>
           </div>
 

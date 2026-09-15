@@ -206,19 +206,19 @@ export const AdminDashboardView: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-[#176B4D] text-xl">analytics</span>
-                <h3 className="text-base font-black text-[#1C1C16]">
-                  Analisis & Intelijen Sirkular Kampus
+                <h3 className="text-sm font-black text-[#1C1C16]">
+                  Analisis & Intelijen Sirkular
                 </h3>
               </div>
-              <p className="text-xs text-[#57635A] mt-0.5">
+              <p className="text-xs text-[#57635A] mt-0.5 leading-relaxed">
                 Laporan analitik penyerapan limbah kertas, dinamika penyalur, dan metrik dampak lingkungan
               </p>
             </div>
 
             {/* Timeframe Selector */}
-            <div className="flex items-center gap-1.5 bg-[#F7F3EA] p-1 rounded-xl text-xs shrink-0 self-start sm:self-auto">
+            <div className="flex items-center gap-1 bg-[#F7F3EA] p-1 rounded-xl text-xs shrink-0 self-start sm:self-auto w-full sm:w-auto">
               {[
-                { key: 'semester', label: 'Semester Genap' },
+                { key: 'semester', label: 'Semester' },
                 { key: 'bulan', label: 'Bulan Ini' },
                 { key: '30hari', label: '30 Hari' }
               ].map(t => (
@@ -226,7 +226,7 @@ export const AdminDashboardView: React.FC = () => {
                   key={t.key}
                   type="button"
                   onClick={() => setTimeframe(t.key as any)}
-                  className={`px-3 py-1.5 rounded-lg font-bold transition-all text-[11px] cursor-pointer ${
+                  className={`flex-1 sm:flex-none px-2 py-1.5 rounded-lg font-bold transition-all text-[11px] cursor-pointer ${
                     timeframe === t.key
                       ? 'bg-white text-[#176B4D] shadow-xs'
                       : 'text-[#57635A] hover:text-[#1C1C16]'
@@ -480,7 +480,7 @@ export const AdminDashboardView: React.FC = () => {
                     <div className="w-10 h-10 mx-auto rounded-xl bg-slate-200 text-slate-700 flex items-center justify-center font-black text-xs shadow-xs border border-slate-300">
                       {allRankedUnits[1].inisial}
                     </div>
-                    <div className="text-[10px] font-bold text-gray-800 truncate max-w-[80px]">
+                    <div className="text-[10px] font-bold text-gray-800 truncate w-full">
                       {allRankedUnits[1].nama_unit.replace(/^(Fakultas|Biro|Lembaga|Perpustakaan)\s+/i, '')}
                     </div>
                     <span className="text-[10px] font-black text-[#176B4D] block">
@@ -504,7 +504,7 @@ export const AdminDashboardView: React.FC = () => {
                     <div className="w-12 h-12 mx-auto rounded-xl bg-amber-400 text-amber-950 flex items-center justify-center font-black text-sm shadow-md border-2 border-amber-300 ring-2 ring-amber-200">
                       {allRankedUnits[0].inisial}
                     </div>
-                    <div className="text-[11px] font-black text-[#1C1C16] truncate max-w-[90px]">
+                    <div className="text-[11px] font-black text-[#1C1C16] truncate w-full">
                       {allRankedUnits[0].nama_unit.replace(/^(Fakultas|Biro|Lembaga|Perpustakaan)\s+/i, '')}
                     </div>
                     <span className="text-xs font-black text-amber-900 bg-amber-100 px-1.5 py-0.2 rounded-md inline-block">
@@ -526,7 +526,7 @@ export const AdminDashboardView: React.FC = () => {
                     <div className="w-10 h-10 mx-auto rounded-xl bg-amber-700/20 text-amber-800 flex items-center justify-center font-black text-xs shadow-xs border border-amber-600/30">
                       {allRankedUnits[2].inisial}
                     </div>
-                    <div className="text-[10px] font-bold text-gray-800 truncate max-w-[80px]">
+                    <div className="text-[10px] font-bold text-gray-800 truncate w-full">
                       {allRankedUnits[2].nama_unit.replace(/^(Fakultas|Biro|Lembaga|Perpustakaan)\s+/i, '')}
                     </div>
                     <span className="text-[10px] font-black text-[#176B4D] block">

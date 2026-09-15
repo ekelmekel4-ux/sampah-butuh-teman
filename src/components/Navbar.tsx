@@ -45,19 +45,19 @@ export const Navbar: React.FC = () => {
           {/* Brand Logo & Name */}
           <button
             onClick={handleHomeClick}
-            className="flex items-center gap-2.5 min-w-0 text-left group"
+            className="flex items-center gap-2 min-w-0 flex-1 text-left group overflow-hidden"
           >
             <img
               src={APP_BRAND.logoUrl}
               alt="Sampah Butuh Teman Logo"
-              className="h-9 w-9 object-contain shrink-0 drop-shadow-xs group-hover:scale-105 transition-transform"
+              className="h-8 w-8 object-contain shrink-0 drop-shadow-xs group-hover:scale-105 transition-transform"
             />
             <div className="flex flex-col min-w-0 justify-center">
-              <span className="text-[17px] font-bold text-[#176B4D] tracking-tight truncate leading-tight">
+              <span className="text-[15px] font-bold text-[#176B4D] tracking-tight truncate leading-tight">
                 Sampah Butuh Teman
               </span>
-              <span className="text-[10px] font-semibold text-[#8B6045] tracking-wider uppercase truncate leading-none mt-0.5">
-                Drop Point Serbaguna Kampus
+              <span className="text-[9px] font-semibold text-[#8B6045] tracking-wider uppercase truncate leading-none mt-0.5 hidden xs:block sm:block">
+                Drop Point Kampus
               </span>
             </div>
           </button>

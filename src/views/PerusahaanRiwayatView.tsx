@@ -351,9 +351,9 @@ export const PerusahaanRiwayatView: React.FC = () => {
 
             <div className="text-xs text-[#57635A] space-y-1">
               <div className="font-bold text-[#1C1C16]">Petunjuk Akses Armada:</div>
-              <p>1. Masuk lewat Gerbang Barat Jl. Lingkar Kampus.</p>
-              <p>2. Ikuti marka hijau menuju Gedung Serbaguna Sayap Barat.</p>
-              <p>3. Parkir di depan Ramp Muat Tong FTD-01.</p>
+              <p className="leading-snug">1. Masuk lewat Gerbang Barat Jl. Lingkar Kampus.</p>
+              <p className="leading-snug">2. Ikuti marka hijau menuju Gedung Serbaguna Sayap Barat.</p>
+              <p className="leading-snug">3. Parkir di depan Ramp Muat Tong FTD-01.</p>
             </div>
 
             <button

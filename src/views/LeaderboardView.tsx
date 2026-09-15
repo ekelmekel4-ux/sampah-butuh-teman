@@ -171,7 +171,7 @@ export const LeaderboardView: React.FC = () => {
                 </span>
               </div>
               <div className="w-full rounded-t-xl bg-[#F7F3EA] border border-[#E6E2D9] p-2 text-center flex flex-col items-center">
-                <span className="text-xs font-bold text-[#1C1C16] truncate max-w-[80px]">
+                <span className="text-xs font-bold text-[#1C1C16] truncate w-full block">
                   {secondPlace.inisial}
                 </span>
                 <span className="text-[11px] font-bold text-[#005138]">
@@ -200,7 +200,7 @@ export const LeaderboardView: React.FC = () => {
                 </span>
               </div>
               <div className="w-full rounded-t-xl bg-[#A4F3CC]/20 border-2 border-[#005138] p-2 text-center flex flex-col items-center shadow-sm">
-                <span className="text-xs font-extrabold text-[#005138] truncate max-w-[90px]">
+                <span className="text-xs font-extrabold text-[#005138] truncate w-full block">
                   {firstPlace.inisial}
                 </span>
                 <span className="text-xs font-extrabold text-[#005138]">
@@ -229,7 +229,7 @@ export const LeaderboardView: React.FC = () => {
                 </span>
               </div>
               <div className="w-full rounded-t-xl bg-[#F7F3EA] border border-[#E6E2D9] p-2 text-center flex flex-col items-center">
-                <span className="text-xs font-bold text-[#1C1C16] truncate max-w-[80px]">
+                <span className="text-xs font-bold text-[#1C1C16] truncate w-full block">
                   {thirdPlace.inisial}
                 </span>
                 <span className="text-[11px] font-bold text-[#8B6045]">
