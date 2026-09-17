@@ -447,7 +447,7 @@ export const AdminDashboardView: React.FC = () => {
             </div>
 
             {/* Period Switcher (PRD Section 5.1) */}
-            <div className="flex items-center gap-1 bg-[#F7F3EA] p-1 rounded-xl text-xs self-start sm:self-auto shrink-0">
+            <div className="flex items-center gap-1 bg-[#F7F3EA] p-1 rounded-xl text-xs self-start sm:self-auto shrink-0 flex-wrap">
               {[
                 { key: 'mingguan', label: 'Mingguan' },
                 { key: 'bulanan', label: 'Bulanan' },
@@ -474,8 +474,8 @@ export const AdminDashboardView: React.FC = () => {
             <div className="flex items-end justify-center gap-2 sm:gap-4 max-w-sm mx-auto">
               {/* JUARA 2 (Silver) */}
               {allRankedUnits[1] && (
-                <div className="flex-1 flex flex-col items-center">
-                  <div className="text-center space-y-1 mb-1.5">
+                <div className="flex-1 flex flex-col items-center min-w-0">
+                  <div className="text-center space-y-1 mb-1.5 w-full px-1">
                     <span className="text-lg">🥈</span>
                     <div className="w-10 h-10 mx-auto rounded-xl bg-slate-200 text-slate-700 flex items-center justify-center font-black text-xs shadow-xs border border-slate-300">
                       {allRankedUnits[1].inisial}
@@ -495,8 +495,8 @@ export const AdminDashboardView: React.FC = () => {
 
               {/* JUARA 1 (Gold) */}
               {allRankedUnits[0] && (
-                <div className="flex-1 flex flex-col items-center -mt-4">
-                  <div className="text-center space-y-1 mb-1.5">
+                <div className="flex-1 flex flex-col items-center -mt-4 min-w-0">
+                  <div className="text-center space-y-1 mb-1.5 w-full px-1">
                     <div className="inline-block relative">
                       <span className="text-2xl animate-bounce block">👑</span>
                       <span className="text-lg">🥇</span>
@@ -520,8 +520,8 @@ export const AdminDashboardView: React.FC = () => {
 
               {/* JUARA 3 (Bronze) */}
               {allRankedUnits[2] && (
-                <div className="flex-1 flex flex-col items-center">
-                  <div className="text-center space-y-1 mb-1.5">
+                <div className="flex-1 flex flex-col items-center min-w-0">
+                  <div className="text-center space-y-1 mb-1.5 w-full px-1">
                     <span className="text-lg">🥉</span>
                     <div className="w-10 h-10 mx-auto rounded-xl bg-amber-700/20 text-amber-800 flex items-center justify-center font-black text-xs shadow-xs border border-amber-600/30">
                       {allRankedUnits[2].inisial}
@@ -543,8 +543,8 @@ export const AdminDashboardView: React.FC = () => {
 
           {/* LIST DETAIL PERINGKAT LENGKAP (#1 s/d #8) */}
           <div className="space-y-2.5 pt-2">
-            <div className="flex items-center justify-between pb-1 border-b border-gray-100">
-              <div className="flex items-center gap-1.5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-1 border-b border-gray-100 gap-2">
+              <div className="flex items-center gap-1.5 min-w-0">
                 <span className="material-symbols-outlined text-[#176B4D] text-sm">format_list_numbered</span>
                 <h5 className="text-xs font-black text-[#1C1C16]">
                   Daftar Peringkat Lengkap & Rincian Detail ({filteredRankedUnits.length} Unit)
@@ -552,12 +552,12 @@ export const AdminDashboardView: React.FC = () => {
               </div>
 
               {/* Filter Fakultas / Biro */}
-              <div className="flex items-center gap-1 bg-[#F1EEE5] p-0.5 rounded-lg text-[10px]">
+              <div className="flex items-center gap-1 bg-[#F1EEE5] p-0.5 rounded-lg text-[10px] flex-wrap">
                 {(['semua', 'fakultas', 'biro'] as const).map(f => (
                   <button
                     key={f}
                     onClick={() => setLeaderboardFilter(f)}
-                    className={`px-2 py-0.5 rounded-md font-bold transition-all capitalize cursor-pointer ${
+                    className={`px-2 py-0.5 rounded-md font-bold transition-all capitalize cursor-pointer whitespace-nowrap ${
                       leaderboardFilter === f ? 'bg-white text-[#176B4D] shadow-xs' : 'text-[#57635A]'
                     }`}
                   >
