@@ -114,8 +114,8 @@ export const UnitBerandaView: React.FC = () => {
 
       {/* 3. Status Tong Unit (Quick Live Status) */}
       <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#176B4D]/10 space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0">
             <div className="w-8 h-8 rounded-xl bg-[#8B6045]/10 text-[#8B6045] flex items-center justify-center">
               <span className="material-symbols-outlined text-[18px]">inventory_2</span>
             </div>
@@ -147,7 +147,7 @@ export const UnitBerandaView: React.FC = () => {
 
         {/* Meter bar & Kuota Minimum Guard */}
         <div className="space-y-1.5 pt-1">
-          <div className="flex justify-between items-center text-xs">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs gap-1">
             <span className="text-[#57635A]">Akumulasi Berat di Tong Fisik</span>
             <strong className="text-[#176B4D]">
               {primaryTong.berat_kg} / {primaryTong.kapasitas_max_kg} Kg ({tongPercent}%)
@@ -168,7 +168,7 @@ export const UnitBerandaView: React.FC = () => {
         </div>
 
         {/* Quota requirement notice */}
-        <div className="p-2.5 rounded-xl bg-[#F5F1E8] border border-[#176B4D]/10 flex items-center justify-between text-[11px]">
+        <div className="p-2.5 rounded-xl bg-[#F5F1E8] border border-[#176B4D]/10 flex flex-col sm:flex-row items-start sm:items-center justify-between text-[11px] gap-2">
           <div className="flex items-center gap-1.5 text-[#57635A]">
             <span className="material-symbols-outlined text-[15px] text-[#176B4D]">
               rule
@@ -324,8 +324,8 @@ export const UnitBerandaView: React.FC = () => {
 
       {/* 5. Riwayat Penyetoran Kertas Terakhir */}
       <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#176B4D]/10 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-[#1C1C16] flex items-center gap-1.5">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <h3 className="text-sm font-bold text-[#1C1C16] flex items-center gap-1.5 min-w-0">
             <span className="material-symbols-outlined text-[#8B6045] text-[18px]">
               history
             </span>
@@ -341,7 +341,7 @@ export const UnitBerandaView: React.FC = () => {
             {recentListings.map(listing => (
               <div
                 key={listing.id}
-                className="p-3 rounded-2xl border border-gray-100 bg-gray-50/50 hover:bg-gray-50 transition-colors flex items-center justify-between gap-3"
+                className="p-3 rounded-2xl border border-gray-100 bg-gray-50/50 hover:bg-gray-50 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-200 shrink-0 border border-gray-100">

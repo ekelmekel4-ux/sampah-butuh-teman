@@ -59,8 +59,8 @@ export const PerusahaanMatchingView: React.FC = () => {
 
       {/* Top Banner: Company Demand State */}
       <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <div className="w-11 h-11 rounded-xl bg-[#8B6045] text-white flex items-center justify-center shrink-0 shadow-sm">
               <span className="material-symbols-outlined text-2xl">factory</span>
             </div>
@@ -87,11 +87,11 @@ export const PerusahaanMatchingView: React.FC = () => {
         </div>
 
         <div className="p-3 bg-[#F7F3EA] rounded-xl text-xs space-y-1">
-          <div className="flex justify-between items-center text-[#57635A]">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-[#57635A] gap-1">
             <span>Permintaan Aktif:</span>
             <strong className="text-[#1C1C16]">Min 100 kg/minggu (HVS/Arsip & Kardus)</strong>
           </div>
-          <div className="flex justify-between items-center text-[#57635A]">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-[#57635A] gap-1">
             <span>Kriteria QC:</span>
             <strong className="text-[#005138]">Kadar Air ≤12%, Terikat Rapi & Bebas Residu</strong>
           </div>
@@ -133,8 +133,8 @@ export const PerusahaanMatchingView: React.FC = () => {
         <>
           {/* System Smart Match Recommendations */}
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
                 <span className="material-symbols-outlined text-[#176B4D] text-lg">auto_awesome</span>
                 <h3 className="text-sm font-bold text-[#1C1C16]">Pencocokan Otomatis Sistem</h3>
               </div>
@@ -155,7 +155,7 @@ export const PerusahaanMatchingView: React.FC = () => {
                 <div key={match.id} className={`p-3.5 rounded-xl border space-y-2.5 ${
                   idx === 0 ? 'bg-[#F7F3EA] border-[#176B4D]/20' : 'bg-[#F7F3EA] border-gray-200'
                 }`}>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                     <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${
                       match.skor_kecocokan >= 95 ? 'bg-[#9CF2B5] text-[#157140]' : 'bg-[#A4F3CC] text-[#002114]'
                     }`}>
@@ -219,7 +219,7 @@ export const PerusahaanMatchingView: React.FC = () => {
           {/* Confirmed Pickup Schedule Card */}
           {primaryMatch && (
             <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-3.5">
-              <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-gray-100 pb-2 gap-2">
                 <div>
                   <span className="text-[10px] font-bold text-[#8B6045] uppercase tracking-wider block">
                     Jadwal Penjemputan Terkonfirmasi
@@ -237,7 +237,7 @@ export const PerusahaanMatchingView: React.FC = () => {
 
               {/* Date, Time, Driver */}
               <div className="p-3 bg-[#F7F3EA] rounded-xl space-y-2 text-xs">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
                   <span className="text-[#57635A] flex items-center gap-1.5">
                     <span className="material-symbols-outlined text-base text-[#176B4D]">calendar_today</span>
                     Tanggal & Jam:
@@ -246,7 +246,7 @@ export const PerusahaanMatchingView: React.FC = () => {
                     {primaryMatch.tanggal_jemput || 'Kamis, 24 Oktober 2024'} • {primaryMatch.jam_jemput || '14:30 WIB'}
                   </strong>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
                   <span className="text-[#57635A] flex items-center gap-1.5">
                     <span className="material-symbols-outlined text-base text-[#8B6045]">local_shipping</span>
                     Armada & Pengemudi:
@@ -355,7 +355,7 @@ export const PerusahaanMatchingView: React.FC = () => {
           </div>
 
           {/* Count */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <span className="text-xs text-[#57635A]">
               Menampilkan <strong className="text-[#1C1C16]">{filteredListings.length}</strong> listing tersedia
             </span>
@@ -407,7 +407,7 @@ export const PerusahaanMatchingView: React.FC = () => {
 
                     {/* Content */}
                     <div className="p-3.5 space-y-2.5">
-                      <div className="flex items-start justify-between gap-2">
+                      <div className="flex flex-col sm:flex-row items-start justify-between gap-2">
                         <div>
                           <h3 className="text-xs font-bold text-[#1C1C16]">{listing.unit_nama}</h3>
                           <p className="text-[11px] text-[#57635A] mt-0.5">{listing.tanggal_post}</p>

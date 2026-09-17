@@ -33,8 +33,8 @@ export const UnitStatusView: React.FC = () => {
     <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
       {/* Header Info */}
       <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-3">
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="min-w-0">
             <span className="text-[10px] font-bold text-[#8B6045] uppercase tracking-wider block">
               STATUS FISIK TONG
             </span>
@@ -59,7 +59,7 @@ export const UnitStatusView: React.FC = () => {
           )}
         </div>
 
-        <div className="p-3 bg-[#F7F3EA] rounded-xl flex items-center justify-between">
+        <div className="p-3 bg-[#F7F3EA] rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <div>
             <span className="text-xs text-[#57635A] block">Lokasi Tong Fisik</span>
             <strong className="text-xs text-[#1C1C16]">
@@ -73,7 +73,7 @@ export const UnitStatusView: React.FC = () => {
 
         {/* Capacity Meter */}
         <div className="space-y-1.5 pt-1">
-          <div className="flex justify-between items-center text-xs">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs gap-1">
             <span className="text-[#57635A]">Akumulasi Berat Kertas di Tong</span>
             <strong className="text-[#005138]">
               {assignedTong.berat_kg} / {assignedTong.kapasitas_max_kg} Kg ({percentage}%)
@@ -90,8 +90,8 @@ export const UnitStatusView: React.FC = () => {
         </div>
 
         {/* Quota Minimum Guard */}
-        <div className="p-3 bg-[#FAF7F0] rounded-xl border border-[#8B6045]/20 flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2">
+        <div className="p-3 bg-[#FAF7F0] rounded-xl border border-[#8B6045]/20 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs gap-2">
+          <div className="flex items-start sm:items-center gap-2">
             <span className="material-symbols-outlined text-[#8B6045] text-[18px]">
               verified
             </span>
