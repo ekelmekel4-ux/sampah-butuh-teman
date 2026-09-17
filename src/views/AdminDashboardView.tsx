@@ -102,16 +102,16 @@ export const AdminDashboardView: React.FC = () => {
     <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
       {/* Capaian Kampus Hijau Header */}
       <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <span className="text-[10px] font-bold text-[#176B4D] uppercase tracking-wider block">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-[#176B4D] uppercase tracking-wider block truncate">
               PANEL SENTRAL KAMPUS
             </span>
-            <h2 className="text-base font-bold text-[#1C1C16]">
+            <h2 className="text-base font-bold text-[#1C1C16] truncate">
               Capaian Sirkular Kampus Hijau
             </h2>
           </div>
-          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#9CF2B5] text-[#157140] flex items-center gap-1">
+          <span className="text-[10px] shrink-0 font-bold px-2.5 py-0.5 rounded-full bg-[#9CF2B5] text-[#157140] flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-[#157140] animate-pulse"></span>
             Drop Point Normal
           </span>
@@ -297,19 +297,19 @@ export const AdminDashboardView: React.FC = () => {
 
         {/* 2. Tren Penyaluran Kertas Kampus (Interactive Visual Bar Chart) */}
         <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#176B4D]/10 space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="text-sm font-bold text-[#1C1C16]">Tren Penyerapan Sampah Kertas (Kg per Bulan)</h4>
-              <p className="text-xs text-[#57635A]">Progres akumulasi penimbangan di timbangan digital Gedung Serbaguna</p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <div className="min-w-0">
+              <h4 className="text-sm font-bold text-[#1C1C16] truncate">Tren Penyerapan Sampah Kertas (Kg per Bulan)</h4>
+              <p className="text-xs text-[#57635A] truncate">Progres akumulasi penimbangan di timbangan digital Gedung Serbaguna</p>
             </div>
-            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-[#176B4D] border border-emerald-200">
+            <span className="text-[11px] shrink-0 font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-[#176B4D] border border-emerald-200">
               Target: 2.500 Kg
             </span>
           </div>
 
           {/* Visual Bar Chart */}
-          <div className="pt-4 pb-2">
-            <div className="h-44 flex items-end justify-between gap-3 sm:gap-6 px-2 border-b border-gray-200">
+          <div className="pt-4 pb-2 w-full overflow-x-auto">
+            <div className="h-44 flex items-end justify-between gap-1.5 sm:gap-6 px-1 sm:px-2 border-b border-gray-200 min-w-[320px]">
               {[
                 { bln: 'Jan', kg: 120, pct: 38, active: false },
                 { bln: 'Feb', kg: 185, pct: 58, active: false },
@@ -357,12 +357,12 @@ export const AdminDashboardView: React.FC = () => {
 
         {/* 3. Komposisi Kategori Sampah Kertas */}
         <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#176B4D]/10 space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="text-sm font-bold text-[#1C1C16]">Komposisi Kategori Sampah Kertas</h4>
-              <p className="text-xs text-[#57635A]">Distribusi jenis material kertas yang diserap kampus</p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <div className="min-w-0">
+              <h4 className="text-sm font-bold text-[#1C1C16] truncate">Komposisi Kategori Sampah Kertas</h4>
+              <p className="text-xs text-[#57635A] truncate">Distribusi jenis material kertas yang diserap kampus</p>
             </div>
-            <span className="text-xs font-black text-[#176B4D]">Total 1.085 Kg</span>
+            <span className="text-xs shrink-0 font-black text-[#176B4D]">Total 1.085 Kg</span>
           </div>
 
           {/* Multi-segment progress bar */}
