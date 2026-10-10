@@ -3,8 +3,10 @@ import { useApp } from '../context/AppContext';
 import { APP_BRAND } from '../data/initialData';
 
 export const UnitBerandaView: React.FC = () => {
-  const { currentUser, units, tongList, listings, emptyTong, requestSecondTong, submitLaporan, setActiveRoute } = useApp();
+  const { currentUser, units, tongList, listings, emptyTong, requestSecondTong, submitLaporan, setActiveRoute, saldoSekarang } = useApp();
   const [reportSuccess, setReportSuccess] = React.useState<boolean>(false);
+  const [showHowToModal, setShowHowToModal] = React.useState<boolean>(false);
+  const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
 
   // Find active unit for the current user
   const currentUnit =
@@ -18,12 +20,11 @@ export const UnitBerandaView: React.FC = () => {
 
   // Unit specific listings
   const unitListings = listings.filter(l => l.unit_id === currentUnit.id);
-  const recentListings = unitListings.slice(0, 4);
 
   // Unit stats calculations
   const totalUnitKg = currentUnit.total_kg_tersalurkan || 0;
   const totalUnitPoints = currentUnit.eco_points || 0;
-  const estimasiDana = totalUnitKg * 1500;
+  const estimasiUnitRupiah = saldoSekarang;
   const pohonSelamat = Math.round((totalUnitKg / 1000) * 17 * 10) / 10;
   const airTerhemat = Math.round(totalUnitKg * 26);
 
@@ -34,424 +35,365 @@ export const UnitBerandaView: React.FC = () => {
   );
 
   return (
-    <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
-      {/* 1. Header Greeting & Unit Badge */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#176B4D]/10">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-12 h-12 rounded-2xl bg-[#176B4D] text-white flex items-center justify-center shrink-0 shadow-sm font-bold text-lg">
-              {currentUnit.inisial || 'UNT'}
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#176B4D]/10 text-[#176B4D]">
-                  Penyalur Terverifikasi
-                </span>
-                <span className="text-[10px] font-semibold text-[#8B6045] bg-[#8B6045]/10 px-2 py-0.5 rounded-full">
-                  {currentUnit.jenis.toUpperCase()}
-                </span>
-              </div>
-              <h1 className="text-base sm:text-lg font-black text-[#1C1C16] truncate mt-0.5">
-                {currentUnit.nama_unit}
-              </h1>
-              <p className="text-xs text-[#57635A] truncate">
-                PIC: {currentUser?.nama || currentUnit.pic_nama} • Kontak: {currentUnit.kontak_pic}
-              </p>
-            </div>
+    <div className="w-full pb-20 max-w-xl mx-auto space-y-4 font-sans text-[#1A2E22]">
+      
+      {/* 1. Top User Profile Bar */}
+      <div className="flex items-center justify-between px-1 py-1">
+        <div className="flex items-center gap-3">
+          {/* User Avatar */}
+          <div className="w-11 h-11 rounded-full bg-[#D8F3DC] border border-[#2D6A4F]/20 flex items-center justify-center font-black text-[#2D6A4F] text-base shadow-xs overflow-hidden">
+            {currentUser?.nama ? currentUser.nama.charAt(0) : currentUnit.inisial || 'U'}
           </div>
-        </div>
-
-        {/* Drop point banner note */}
-        <div className="mt-3.5 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-[#57635A]">
-          <div className="flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[16px] text-[#176B4D]">
-              pin_drop
-            </span>
-            <span className="truncate">{APP_BRAND.dropPointUtama.nama}</span>
-          </div>
-          <span className="text-[11px] font-bold text-[#176B4D] shrink-0">
-            {primaryTong.nomor}
-          </span>
-        </div>
-      </div>
-
-      {/* 2. Hero CTA Card: Setor Kertas */}
-      <div className="w-full rounded-3xl p-6 text-white bg-gradient-to-br from-[#176B4D] to-[#0E4632] shadow-xl relative overflow-hidden">
-        {/* Decorative blur elements */}
-        <div className="absolute -right-8 -bottom-8 w-40 h-40 rounded-full bg-white/10 blur-2xl pointer-events-none" />
-        <div className="absolute -left-6 -top-6 w-28 h-28 rounded-full bg-white/5 blur-xl pointer-events-none" />
-
-        <div className="relative z-10 space-y-4">
-          <div className="flex items-start justify-between gap-2 flex-wrap">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold">
-              <span className="material-symbols-outlined text-[15px]">eco</span>
-              <span>Sirkularitas Limbah Kertas</span>
-            </div>
-            <div className="text-[11px] font-medium text-white/80 bg-white/10 px-2.5 py-1 rounded-full backdrop-blur-xs shrink-0">
-              Terisi: {primaryTong.berat_kg} Kg
-            </div>
-          </div>
-
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-snug">
-              Ada Sampah Kertas Siap Disalurkan?
-            </h2>
-            <p className="text-xs sm:text-sm text-white/85 mt-1 leading-relaxed">
-              Catat dan setorkan kertas ke wadah tong unit Anda di drop point serbaguna. Terkoneksi langsung dengan mitra pabrik daur ulang!
-            </p>
+            <div className="text-[11px] font-bold text-[#52645A] tracking-tight">
+              Halo, {currentUser?.nama || currentUnit.pic_nama} 👋
+            </div>
+            <h1 className="text-base font-extrabold text-[#1A2E22] tracking-tight leading-tight">
+              {currentUnit.nama_unit}
+            </h1>
+          </div>
+        </div>
+
+        {/* Leaderboard button */}
+        <button
+          onClick={() => setActiveRoute('/leaderboard')}
+          className="px-3 py-1.5 rounded-full bg-white border border-[#2D6A4F]/20 flex items-center gap-1.5 shadow-xs text-[#2D6A4F] text-xs font-bold hover:bg-[#D8F3DC] transition-all cursor-pointer"
+        >
+          <span className="material-symbols-outlined text-base text-amber-500">trophy</span>
+          <span>Leaderboard</span>
+        </button>
+      </div>
+
+      {/* 2. Summary Banner Card */}
+      <div className="w-full rounded-[28px] p-6 text-white bg-[#2D6A4F] shadow-lg shadow-[#2D6A4F]/20 relative overflow-hidden">
+        {/* Decorative circles */}
+        <div className="absolute -right-10 -bottom-10 w-36 h-36 rounded-full bg-white/8 blur-xl pointer-events-none" />
+        <div className="absolute -left-6 -top-6 w-24 h-24 rounded-full bg-white/8 blur-lg pointer-events-none" />
+
+        {/* 4 Stat Highlights in Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center relative z-10">
+          {/* Stat 1: Dana Rupiah Kas */}
+          <div 
+            onClick={() => setActiveRoute('/unit/dompet')}
+            className="relative flex flex-col items-center justify-center p-2 rounded-2xl bg-white/10 backdrop-blur-xs cursor-pointer hover:bg-white/20 transition-colors"
+          >
+            <span className="material-symbols-outlined absolute top-1.5 right-1.5 text-[14px] text-white/40">arrow_outward</span>
+            <div className="w-8 h-8 rounded-full bg-amber-400/20 text-amber-300 flex items-center justify-center mb-1">
+              <span className="material-symbols-outlined text-[18px]">payments</span>
+            </div>
+            <div className="text-lg font-black text-amber-200 tracking-tight leading-none">
+              Rp {(estimasiUnitRupiah / 1000).toFixed(0)}k
+            </div>
+            <div className="text-[9px] uppercase font-extrabold text-white/80 tracking-wider mt-1">
+              DANA TERHIMPUN
+            </div>
           </div>
 
-          {/* Primary Action Button */}
-          <button
-            onClick={() => setActiveRoute('/unit/setor-kertas')}
-            className="w-full h-12 rounded-2xl bg-[#E8F8F0] hover:bg-white text-[#0E4632] font-black text-sm shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-          >
-            <span className="material-symbols-outlined text-[20px]">add_circle</span>
-            <span>Setor Kertas Sekarang</span>
-          </button>
+          {/* Stat 2: Total Kg */}
+          <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white/10 backdrop-blur-xs">
+            <div className="w-8 h-8 rounded-full bg-emerald-400/20 text-emerald-200 flex items-center justify-center mb-1">
+              <span className="material-symbols-outlined text-[18px]">recycling</span>
+            </div>
+            <div className="text-lg font-black text-white tracking-tight leading-none">
+              {totalUnitKg} <span className="text-xs font-semibold">Kg</span>
+            </div>
+            <div className="text-[9px] uppercase font-extrabold text-white/80 tracking-wider mt-1">
+              TERDAUR ULANG
+            </div>
+          </div>
+
+          {/* Stat 3: Eco-Points */}
+          <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white/10 backdrop-blur-xs">
+            <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center mb-1">
+              <span className="material-symbols-outlined text-[18px] text-amber-200">monetization_on</span>
+            </div>
+            <div className="text-lg font-black text-white tracking-tight leading-none">
+              {totalUnitPoints}
+            </div>
+            <div className="text-[9px] uppercase font-extrabold text-white/80 tracking-wider mt-1">
+              ECO-POINTS
+            </div>
+          </div>
+
+          {/* Stat 4: Pohon */}
+          <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white/10 backdrop-blur-xs">
+            <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center mb-1">
+              <span className="material-symbols-outlined text-[18px] text-sky-200">forest</span>
+            </div>
+            <div className="text-lg font-black text-white tracking-tight leading-none">
+              {pohonSelamat} <span className="text-xs font-semibold">Pohon</span>
+            </div>
+            <div className="text-[9px] uppercase font-extrabold text-white/80 tracking-wider mt-1">
+              DISELAMATKAN
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* 3. Status Tong Unit (Quick Live Status) */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#176B4D]/10 space-y-3">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#8B6045]/10 text-[#8B6045] flex items-center justify-center">
-              <span className="material-symbols-outlined text-[18px]">inventory_2</span>
+      {/* 3. Primary CTA Card: Setor Kertas */}
+      <div className="bg-white rounded-[24px] p-5 shadow-xs border border-[#2D6A4F]/8 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-xl bg-[#D8F3DC] text-[#2D6A4F] flex items-center justify-center">
+              <span className="material-symbols-outlined text-[22px]">add_box</span>
             </div>
             <div>
-              <span className="text-[10px] font-bold text-[#8B6045] uppercase tracking-wider block">
-                Wadah Tong Fisik Unit
-              </span>
-              <h3 className="text-sm font-bold text-[#1C1C16]">
-                {primaryTong.nama_tong} ({primaryTong.nomor})
-              </h3>
+              <h2 className="text-sm font-extrabold text-[#1A2E22]">Setor Kertas Baru</h2>
+              <p className="text-[11px] font-medium text-[#52645A]">Penyaluran Sirkular Kertas Kampus</p>
             </div>
           </div>
-          {primaryTong.berat_kg === 0 ? (
-            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600">
-              Wadah Kosong (0 Kg)
-            </span>
-          ) : primaryTong.berat_kg < 10 ? (
-            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 flex items-center gap-1">
-              <span className="material-symbols-outlined text-[13px]">hourglass_top</span>
-              <span>Mengumpulkan ({primaryTong.berat_kg}/10 Kg)</span>
-            </span>
-          ) : (
-            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 flex items-center gap-1">
-              <span className="material-symbols-outlined text-[13px]">check_circle</span>
-              <span>Siap Dijemput ({primaryTong.berat_kg} Kg)</span>
-            </span>
-          )}
+          <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-[#D8F3DC] text-[#2D6A4F]">
+            Tong {primaryTong.nomor}
+          </span>
         </div>
 
-        {/* Meter bar & Kuota Minimum Guard */}
-        <div className="space-y-1.5 pt-1">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs gap-1">
-            <span className="text-[#57635A]">Akumulasi Berat di Tong Fisik</span>
-            <strong className="text-[#176B4D]">
-              {primaryTong.berat_kg} / {primaryTong.kapasitas_max_kg} Kg ({tongPercent}%)
-            </strong>
+        {/* Tong Capacity Progress */}
+        <div className="bg-[#F2F7F4] rounded-2xl p-3.5 space-y-2 border border-[#2D6A4F]/8">
+          <div className="flex justify-between items-center text-xs">
+            <span className="text-[#52645A] font-medium">Kapasitas Tong Unit Saat Ini</span>
+            <span className="font-extrabold text-[#1A2E22]">{primaryTong.berat_kg} / {primaryTong.kapasitas_max_kg} Kg ({tongPercent}%)</span>
           </div>
-          <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden shadow-inner">
+          <div className="w-full bg-[#D8F3DC] rounded-full h-2.5 overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-500 ${
-                tongPercent > 80
-                  ? 'bg-[#8B6045]'
-                  : primaryTong.berat_kg >= 10
-                  ? 'bg-[#176B4D]'
-                  : 'bg-amber-500'
+                tongPercent > 80 ? 'bg-[#F4A261]' : 'bg-[#2D6A4F]'
               }`}
-              style={{ width: `${Math.max(primaryTong.berat_kg > 0 ? 5 : 0, tongPercent)}%` }}
+              style={{ width: `${Math.max(primaryTong.berat_kg > 0 ? 6 : 0, tongPercent)}%` }}
             />
           </div>
         </div>
 
-        {/* Quota requirement notice */}
-        <div className="p-2.5 rounded-xl bg-[#F5F1E8] border border-[#176B4D]/10 flex flex-col sm:flex-row items-start sm:items-center justify-between text-[11px] gap-2">
-          <div className="flex items-center gap-1.5 text-[#57635A]">
-            <span className="material-symbols-outlined text-[15px] text-[#176B4D]">
-              rule
-            </span>
-            <span>Penjagaan Kuota Jemput: <strong>Min. 10 Kg</strong></span>
-          </div>
-          <span className={`font-bold ${primaryTong.berat_kg >= 10 ? 'text-[#176B4D]' : 'text-amber-700'}`}>
-            {primaryTong.berat_kg >= 10
-              ? '✅ Kuota Terpenuhi'
-              : `Kurang ${10 - primaryTong.berat_kg} Kg lagi`}
-          </span>
+        <button
+          onClick={() => setActiveRoute('/unit/setor-kertas')}
+          className="w-full h-12 rounded-full bg-[#2D6A4F] hover:bg-[#1A4235] active:bg-[#0F2E22] text-white font-extrabold text-sm shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+        >
+          <span className="material-symbols-outlined text-[20px]">add_circle</span>
+          <span>Catat & Setor Kertas Sekarang</span>
+        </button>
+      </div>
+
+      {/* 4. Kategori Sampah Kertas */}
+      <div className="space-y-3 pt-1">
+        <div className="flex items-center justify-between px-1">
+          <h2 className="text-base font-extrabold text-[#1A2E22] tracking-tight">
+            Kategori Sampah Kertas
+          </h2>
+          <span className="text-xs text-[#2D6A4F] font-bold">Terintegrasi</span>
         </div>
 
-        {/* If Tong Reaches 120 Kg (Full Capacity Guard) */}
-        {primaryTong.berat_kg >= primaryTong.kapasitas_max_kg && (
-          <div className="p-4 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-900 space-y-3 animate-in fade-in">
-            <div className="flex items-center gap-2 font-bold text-xs text-rose-700 uppercase tracking-wide">
-              <span className="material-symbols-outlined text-[20px] text-rose-600 animate-pulse">
-                warning
-              </span>
-              <span>Kapasitas Penuh (120/120 Kg) — Butuh Pengosongan Segera</span>
+        <div className="grid grid-cols-3 gap-3">
+          {/* Category 1: HVS */}
+          <div
+            onClick={() => { setSelectedCategory('HVS & Office Paper'); setShowHowToModal(true); }}
+            className="bg-white rounded-2xl p-3.5 text-center shadow-xs border border-[#2D6A4F]/8 hover:border-[#2D6A4F]/30 cursor-pointer transition-all hover:shadow-md group"
+          >
+            <div className="w-12 h-12 rounded-xl bg-[#D8F3DC] text-[#2D6A4F] flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined text-[26px]">description</span>
             </div>
-            <p className="text-xs text-rose-800 leading-relaxed">
-              Wadah tong telah mencapai batas fisik 120 Kg. Tong otomatis diprioritaskan di sistem mitra pabrik daur ulang untuk segera dijemput ke Gedung Serbaguna.
+            <div className="text-xs font-extrabold text-[#1A2E22] truncate">HVS & Office</div>
+            <div className="text-[10px] text-[#52645A] font-medium mt-0.5">Kertas Putih</div>
+          </div>
+
+          {/* Category 2: Kardus */}
+          <div
+            onClick={() => { setSelectedCategory('Kardus & Packaging'); setShowHowToModal(true); }}
+            className="bg-white rounded-2xl p-3.5 text-center shadow-xs border border-[#2D6A4F]/8 hover:border-[#F4A261]/40 cursor-pointer transition-all hover:shadow-md group"
+          >
+            <div className="w-12 h-12 rounded-xl bg-[#F4A261]/10 text-[#C27D3A] flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined text-[26px]">inventory_2</span>
+            </div>
+            <div className="text-xs font-extrabold text-[#1A2E22] truncate">Kardus & Box</div>
+            <div className="text-[10px] text-[#52645A] font-medium mt-0.5">Box Paket</div>
+          </div>
+
+          {/* Category 3: Arsip */}
+          <div
+            onClick={() => { setSelectedCategory('Arsip & Majalah'); setShowHowToModal(true); }}
+            className="bg-white rounded-2xl p-3.5 text-center shadow-xs border border-[#2D6A4F]/8 hover:border-sky-300/50 cursor-pointer transition-all hover:shadow-md group"
+          >
+            <div className="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined text-[26px]">auto_stories</span>
+            </div>
+            <div className="text-xs font-extrabold text-[#1A2E22] truncate">Arsip & Dupleks</div>
+            <div className="text-[10px] text-[#52645A] font-medium mt-0.5">Brosur & Buku</div>
+          </div>
+        </div>
+      </div>
+
+      {/* 5. Tips & Panduan */}
+      <div className="space-y-3 pt-1">
+        <div className="flex items-center justify-between px-1">
+          <h2 className="text-base font-extrabold text-[#1A2E22] tracking-tight">
+            Panduan & Tips Daur Ulang
+          </h2>
+          <button
+            onClick={() => setShowHowToModal(true)}
+            className="text-xs text-[#2D6A4F] hover:underline font-extrabold"
+          >
+            Lihat Semua
+          </button>
+        </div>
+
+        {/* Tip Card 1 */}
+        <div
+          onClick={() => setShowHowToModal(true)}
+          className="bg-white rounded-2xl p-4 shadow-xs border border-[#2D6A4F]/8 flex items-center gap-3 cursor-pointer hover:shadow-md transition-all group"
+        >
+          <div className="w-11 h-11 rounded-xl bg-[#D8F3DC] text-[#2D6A4F] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <span className="material-symbols-outlined text-[22px]">dry_cleaning</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-xs font-extrabold text-[#1A2E22] truncate">
+              Pisahkan Kertas Kering & Bebas Minyak
+            </h3>
+            <p className="text-[11px] text-[#52645A] truncate mt-0.5 font-medium">
+              Kertas basah merusak kualitas serat daur ulang pabrik.
             </p>
-
-            <div className="flex flex-col sm:flex-row items-center gap-2 pt-1">
-              <button
-                type="button"
-                onClick={() => {
-                  submitLaporan({
-                    tongNama: primaryTong.nama_tong,
-                    unitNama: currentUnit.nama_unit,
-                    alasan: 'Tong Penuh (120 Kg) Butuh Penjemputan Cepat',
-                    detail: 'Wadah mencapai kapasitas maksimal 120 Kg di Gedung Serbaguna. Mohon armada pabrik segera menjemput.',
-                    level: 'kritis'
-                  });
-                  setReportSuccess(true);
-                  setTimeout(() => setReportSuccess(false), 3000);
-                }}
-                className="w-full sm:flex-1 py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5"
-              >
-                <span className="material-symbols-outlined text-[16px]">notifications_active</span>
-                <span>Kirim Notifikasi Prioritas ke Pabrik</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => emptyTong(primaryTong.id)}
-                className="w-full sm:w-auto py-2 px-3 rounded-xl bg-white border border-rose-300 hover:bg-rose-100 text-rose-800 font-bold text-xs transition-colors flex items-center justify-center gap-1.5"
-                title="Simulasi armada pabrik selesai mengosongkan tong"
-              >
-                <span className="material-symbols-outlined text-[16px]">local_shipping</span>
-                <span>Simulasi Pengosongan (Reset ke 0 Kg)</span>
-              </button>
-            </div>
-
-            {reportSuccess && (
-              <div className="p-2 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-800 text-[11px] font-semibold flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[16px]">check_circle</span>
-                <span>Notifikasi penjemputan urgent terkirim ke admin drop point dan dispatcher pabrik!</span>
-              </div>
-            )}
           </div>
-        )}
-
-        {/* If unit has only 1 tong, provide shortcut to activate Tong No. 2 */}
-        {assignedTongs.length < 2 && (
-          <button
-            type="button"
-            onClick={() => requestSecondTong(currentUnit.id)}
-            className="w-full py-2 px-3 rounded-xl border border-dashed border-[#176B4D]/30 hover:border-[#176B4D] bg-[#176B4D]/5 text-[#176B4D] text-xs font-bold transition-all flex items-center justify-center gap-1.5"
-          >
-            <span className="material-symbols-outlined text-[16px]">add_circle</span>
-            <span>Buka / Aktifkan Wadah Cadangan (Tong {currentUnit.inisial} No. 2)</span>
-          </button>
-        )}
-
-        <div className="flex items-center justify-between pt-2 border-t border-gray-100 text-xs">
-          <span className="text-[#57635A] text-[11px]">
-            Lokasi: {primaryTong.lokasi_spesifik}
-          </span>
-          <button
-            onClick={() => setActiveRoute('/unit/status')}
-            className="text-[11px] font-bold text-[#176B4D] hover:underline flex items-center gap-1"
-          >
-            <span>Detail Status</span>
-            <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-          </button>
-        </div>
-      </div>
-
-      {/* 4. Rekam Jejak & Dampak Lingkungan Unit */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#176B4D]/10 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-[#1C1C16] flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[#176B4D] text-[18px]">
-              analytics
-            </span>
-            <span>Dampak & Kontribusi Unit</span>
-          </h3>
-          <button
-            onClick={() => setActiveRoute('/leaderboard')}
-            className="text-xs font-bold text-[#176B4D] hover:underline flex items-center gap-0.5"
-          >
-            <span>Lihat Peringkat</span>
-            <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-          </button>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2.5">
-          <div className="bg-[#F5F1E8] rounded-2xl p-3 border border-[#176B4D]/10">
-            <div className="text-[11px] text-[#57635A]">Total Kertas Disalurkan</div>
-            <div className="text-xl font-black text-[#176B4D] mt-0.5">
-              {totalUnitKg} <span className="text-xs font-bold">Kg</span>
-            </div>
-            <div className="text-[10px] text-[#8B6045] mt-1 font-semibold">
-              ≈ Rp {estimasiDana.toLocaleString('id-ID')} Dana Riset
-            </div>
-          </div>
-
-          <div className="bg-[#F5F1E8] rounded-2xl p-3 border border-[#176B4D]/10">
-            <div className="text-[11px] text-[#57635A]">Eco-Points Unit</div>
-            <div className="text-xl font-black text-[#8B6045] mt-0.5">
-              {totalUnitPoints} <span className="text-xs font-bold">Pts</span>
-            </div>
-            <div className="text-[10px] text-[#176B4D] mt-1 font-semibold">
-              Terverifikasi Otomatis
-            </div>
-          </div>
-
-          <div className="bg-[#F5F1E8] rounded-2xl p-3 border border-[#176B4D]/10">
-            <div className="text-[11px] text-[#57635A]">Pohon Terselamatkan</div>
-            <div className="text-base font-bold text-[#1C1C16] mt-0.5 flex items-center gap-1">
-              <span className="material-symbols-outlined text-[#176B4D] text-[18px]">
-                park
-              </span>
-              <span>{pohonSelamat} Pohon</span>
-            </div>
-          </div>
-
-          <div className="bg-[#F5F1E8] rounded-2xl p-3 border border-[#176B4D]/10">
-            <div className="text-[11px] text-[#57635A]">Air Bersih Terhemat</div>
-            <div className="text-base font-bold text-[#1C1C16] mt-0.5 flex items-center gap-1">
-              <span className="material-symbols-outlined text-[#176B4D] text-[18px]">
-                water_drop
-              </span>
-              <span>{airTerhemat.toLocaleString('id-ID')} Liter</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 5. Riwayat Penyetoran Kertas Terakhir */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#176B4D]/10 space-y-3">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-          <h3 className="text-sm font-bold text-[#1C1C16] flex items-center gap-1.5 min-w-0">
-            <span className="material-symbols-outlined text-[#8B6045] text-[18px]">
-              history
-            </span>
-            <span>Riwayat Penyetoran Terakhir</span>
-          </h3>
-          <span className="text-xs text-[#57635A]">
-            {unitListings.length} Total Penyetoran
+          <span className="material-symbols-outlined text-[18px] text-[#8CA090] group-hover:text-[#2D6A4F] transition-colors">
+            chevron_right
           </span>
         </div>
 
-        {recentListings.length > 0 ? (
-          <div className="space-y-2.5">
-            {recentListings.map(listing => (
+        {/* Tip Card 2 */}
+        <div
+          onClick={() => setActiveRoute('/leaderboard')}
+          className="bg-white rounded-2xl p-4 shadow-xs border border-[#2D6A4F]/8 flex items-center gap-3 cursor-pointer hover:shadow-md transition-all group"
+        >
+          <div className="w-11 h-11 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <span className="material-symbols-outlined text-[22px]">payments</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-xs font-extrabold text-[#1A2E22] truncate">
+              Kompensasi Dana Kas Unit
+            </h3>
+            <p className="text-[11px] text-[#52645A] truncate mt-0.5 font-medium">
+              Tiap Kg kertas disetor otomatis terkonversi rupiah untuk kas operasional.
+            </p>
+          </div>
+          <span className="material-symbols-outlined text-[18px] text-[#8CA090] group-hover:text-[#2D6A4F] transition-colors">
+            chevron_right
+          </span>
+        </div>
+      </div>
+
+      {/* 6. Daftar Penyetoran Kertas Aktif */}
+      <div className="space-y-3 pt-2">
+        <div className="flex items-center justify-between px-1">
+          <h2 className="text-base font-extrabold text-[#1A2E22] tracking-tight">
+            Daftar Penyetoran Kertas Aktif ({unitListings.length})
+          </h2>
+        </div>
+
+        {unitListings.length === 0 ? (
+          <div className="bg-white rounded-2xl p-6 text-center text-xs text-[#52645A] border border-[#2D6A4F]/8">
+            Belum ada data penyetoran kertas. Mulai setor sekarang!
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {unitListings.map(item => (
               <div
-                key={listing.id}
-                className="p-3 rounded-2xl border border-gray-100 bg-gray-50/50 hover:bg-gray-50 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+                key={item.id}
+                className="bg-white rounded-2xl p-3.5 border border-[#2D6A4F]/8 flex items-center justify-between gap-3 shadow-xs"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-200 shrink-0 border border-gray-100">
-                    <img
-                      src={listing.foto}
-                      alt={listing.kategori_label}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="w-9 h-9 rounded-xl bg-[#F2F7F4] text-[#2D6A4F] flex items-center justify-center shrink-0 font-bold text-xs border border-black/5">
+                    <span className="material-symbols-outlined text-[18px]">description</span>
                   </div>
                   <div className="min-w-0">
-                    <div className="text-xs font-bold text-[#1C1C16] truncate">
-                      {listing.jumlah_kg} Kg • {listing.kategori_label}
+                    <div className="text-xs font-bold text-[#1A2E22] truncate">
+                      {item.kategori_label} • {item.jumlah_kg} Kg
                     </div>
-                    <div className="text-[10px] text-[#57635A] truncate mt-0.5">
-                      {listing.tong_nama} • {listing.tanggal_post}
+                    <div className="text-[10px] text-[#52645A] font-medium truncate">
+                      {item.tanggal_post} • {item.unit_nama}
                     </div>
                   </div>
                 </div>
 
-                <div className="shrink-0 text-right">
-                  <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      listing.status === 'sudah_diambil'
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : listing.status === 'siap_pickup'
-                        ? 'bg-amber-100 text-amber-800'
-                        : 'bg-gray-200 text-gray-700'
-                    }`}
-                  >
-                    {listing.status === 'sudah_diambil'
-                      ? 'Diambil Pabrik'
-                      : listing.status === 'siap_pickup'
-                      ? 'Siap Pickup'
-                      : 'Menunggu Mitra'}
-                  </span>
-                  <div className="text-[10px] text-[#176B4D] font-bold mt-1">
-                    +{listing.jumlah_kg * 2} Pts
-                  </div>
-                </div>
+                <span
+                  className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full shrink-0 ${
+                    item.status === 'sudah_diambil'
+                      ? 'bg-[#D8F3DC] text-[#2D6A4F]'
+                      : item.status === 'siap_pickup'
+                      ? 'bg-sky-50 text-sky-700'
+                      : 'bg-[#F4A261]/15 text-[#C27D3A]'
+                  }`}
+                >
+                  {item.status === 'sudah_diambil'
+                    ? 'Selesai'
+                    : item.status === 'siap_pickup'
+                    ? 'Siap Pickup'
+                    : 'Di Tong'}
+                </span>
               </div>
             ))}
           </div>
-        ) : (
-          <div className="text-center py-6 px-4 rounded-2xl bg-gray-50 border border-dashed border-gray-200">
-            <span className="material-symbols-outlined text-[36px] text-gray-400 mb-1">
-              post_add
-            </span>
-            <div className="text-xs font-bold text-gray-700">Belum Ada Setoran Kertas</div>
-            <p className="text-[11px] text-gray-500 mt-0.5 mb-3">
-              Mulai salurkan limbah kertas dari kantor atau gedung unit Anda hari ini.
-            </p>
-            <button
-              onClick={() => setActiveRoute('/unit/setor-kertas')}
-              className="px-4 py-2 rounded-xl bg-[#176B4D] hover:bg-[#0E4632] text-white text-xs font-bold transition-colors"
-            >
-              Setor Sekarang
-            </button>
-          </div>
         )}
       </div>
 
-      {/* 6. Panduan Pemilahan Kertas (Best Practices) */}
-      <div className="bg-[#FAF7F0] rounded-3xl p-5 border border-[#8B6045]/20 space-y-3">
-        <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-[#8B6045] text-[20px]">
-            tips_and_updates
-          </span>
-          <h3 className="text-xs font-bold text-[#1C1C16] uppercase tracking-wide">
-            Panduan Pemilahan Kertas Bersih
-          </h3>
+      {/* 7. How-To Modal */}
+      {showHowToModal && (
+        <div className="fixed inset-0 z-50 bg-[#1A2E22]/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="bg-white w-full max-w-lg rounded-t-[32px] sm:rounded-[32px] overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-300 max-h-[90vh] flex flex-col">
+            
+            {/* Top Illustration Banner */}
+            <div className="relative w-full h-48 bg-gradient-to-br from-[#D8F3DC] via-[#F2F7F4] to-[#FAFAF7] flex items-center justify-center overflow-hidden">
+              <button
+                onClick={() => { setShowHowToModal(false); setSelectedCategory(null); }}
+                className="absolute top-4 left-4 w-9 h-9 rounded-full bg-white/90 hover:bg-white text-[#1A2E22] flex items-center justify-center shadow-sm backdrop-blur-md transition-all z-10"
+              >
+                <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+              </button>
+
+              <div className="relative flex flex-col items-center">
+                <div className="w-24 h-24 rounded-3xl bg-white shadow-xl border border-[#2D6A4F]/10 flex items-center justify-center relative">
+                  <span className="material-symbols-outlined text-[54px] text-[#2D6A4F]">recycling</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Sheet Body */}
+            <div className="p-6 overflow-y-auto space-y-4">
+              <div className="text-center">
+                <span className="text-[11px] font-extrabold text-[#2D6A4F] bg-[#D8F3DC] px-3 py-1 rounded-full uppercase tracking-wider">
+                  {selectedCategory || 'Panduan Resmi Kampus'}
+                </span>
+                <h3 className="text-xl font-black text-[#1A2E22] tracking-tight mt-2">
+                  Cara Daur Ulang Kertas Kampus
+                </h3>
+              </div>
+
+              {/* Steps */}
+              <div className="space-y-3.5 pt-2">
+                {[
+                  { step: 1, title: 'Pisahkan Jenis Kertas', desc: 'Bedakan kertas HVS putih office, kardus/box paket, dan majalah/arsip. Kertas bercampur lilin atau laminasi plastik tidak dapat didaur ulang.' },
+                  { step: 2, title: 'Bebaskan dari Minyak & Staples Berlebih', desc: 'Pastikan kertas dalam kondisi kering. Basah atau bercak minyak mengkontaminasi seluruh batch bubur kertas di pabrik.' },
+                  { step: 3, title: 'Masukkan ke Wadah Kertas Unit Anda', desc: `Kumpulkan kertas pada wadah unit Anda (Wadah ${primaryTong.nomor}) dalam keadaan terikat rapi.` },
+                  { step: 4, title: 'Konversi Rupiah & Naikkan Peringkat', desc: 'Setiap penyetoran otomatis dihitung per Kg ke nilai Rupiah (Rp) kas unit serta menambah skor di papan leaderboard kampus.' }
+                ].map(({ step, title, desc }) => (
+                  <div key={step} className="flex items-start gap-3 bg-[#F2F7F4] p-3.5 rounded-2xl border border-[#2D6A4F]/8">
+                    <div className="w-7 h-7 rounded-full bg-[#2D6A4F] text-white font-black text-xs flex items-center justify-center shrink-0">
+                      {step}
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-extrabold text-[#1A2E22]">{title}</h4>
+                      <p className="text-[11px] text-[#52645A] leading-relaxed mt-0.5">{desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={() => { setShowHowToModal(false); setSelectedCategory(null); }}
+                className="w-full py-3.5 rounded-full bg-[#2D6A4F] hover:bg-[#1A4235] text-white font-extrabold text-xs shadow-md transition-all"
+              >
+                Paham & Tutup Panduan
+              </button>
+            </div>
+          </div>
         </div>
+      )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-          <div className="bg-white rounded-2xl p-3 border border-[#8B6045]/15 shadow-2xs">
-            <div className="font-bold text-[#1C1C16] flex items-center gap-1 mb-1">
-              <span className="material-symbols-outlined text-[16px] text-[#176B4D]">
-                check_circle
-              </span>
-              <span>Tanpa Logam</span>
-            </div>
-            <p className="text-[11px] text-[#57635A] leading-relaxed">
-              Lepaskan binder klip tebal & staples besar sebelum disetor.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-3 border border-[#8B6045]/15 shadow-2xs">
-            <div className="font-bold text-[#1C1C16] flex items-center gap-1 mb-1">
-              <span className="material-symbols-outlined text-[16px] text-[#176B4D]">
-                check_circle
-              </span>
-              <span>Bebas Minyak</span>
-            </div>
-            <p className="text-[11px] text-[#57635A] leading-relaxed">
-              Hindari kertas bekas kemasan berminyak / basah makanan.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-3 border border-[#8B6045]/15 shadow-2xs">
-            <div className="font-bold text-[#1C1C16] flex items-center gap-1 mb-1">
-              <span className="material-symbols-outlined text-[16px] text-[#176B4D]">
-                check_circle
-              </span>
-              <span>Terikat Rapi</span>
-            </div>
-            <p className="text-[11px] text-[#57635A] leading-relaxed">
-              Kardus dilipat pipih dan kertas HVS diikat tali per bundel.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

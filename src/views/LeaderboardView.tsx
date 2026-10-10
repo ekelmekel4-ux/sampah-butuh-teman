@@ -1,13 +1,43 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 
+// Standar tarif aktual per kategori kertas
+export const HARGA_KERTAS_AKTUAL: Record<string, { label: string; perKg: number; icon: string }> = {
+  hvs: { label: 'HVS / Arsip Putih', perKg: 1500, icon: 'description' },
+  kardus: { label: 'Kardus Box Corrugated', perKg: 1300, icon: 'inventory_2' },
+  koran: { label: 'Koran & Majalah', perKg: 1100, icon: 'newspaper' },
+  campur: { label: 'Campuran Kering Bersih', perKg: 900, icon: 'auto_stories' },
+};
+
 export const LeaderboardView: React.FC = () => {
-  const { units, totalKgTersalurkan, totalPohon, totalAirBersih, setActiveRoute, setRole } = useApp();
+  const { units, matchings, listings, totalKgTersalurkan, totalPohon, setActiveRoute, setRole } = useApp();
   const [period, setPeriod] = useState<'bulan' | 'semester' | 'sepanjang'>('bulan');
-  const [showPanduan, setShowPanduan] = useState(false);
+  const [showRincianHarga, setShowRincianHarga] = useState(false);
+
+  // Hitung nilai Rupiah aktual per unit:
+  // 1. Dari transaksi matchings yang selesai (aktual yang sudah dicairkan)
+  // 2. Ditambah estimasi dari listing unit atau rata-rata aktual Rp 1.450/kg untuk riwayat awal
+  const getUnitRupiah = (unitId: string, totalKg: number): number => {
+    // Ambil dari matching aktual selesai
+    const completedTrx = matchings.filter(m => m.unit_id === unitId && m.status === 'sudah_diambil');
+    const trxTotalRp = completedTrx.reduce((sum, m) => sum + (m.nilai_rupiah || 0), 0);
+    const trxTotalKg = completedTrx.reduce((sum, m) => sum + (m.jumlah_kg || 0), 0);
+
+    const sisaKg = Math.max(0, totalKg - trxTotalKg);
+    // Untuk sisa kg yang tercatat, gunakan rata-rata aktual Rp 1.450 per kg
+    const sisaRp = sisaKg * 1450;
+
+    return trxTotalRp + sisaRp;
+  };
 
   // Sort units descending by total_kg_tersalurkan
-  const sortedUnits = [...units].sort((a, b) => b.total_kg_tersalurkan - a.total_kg_tersalurkan);
+  const sortedUnits = [...units].map(u => ({
+    ...u,
+    totalRupiah: getUnitRupiah(u.id, u.total_kg_tersalurkan)
+  })).sort((a, b) => b.total_kg_tersalurkan - a.total_kg_tersalurkan);
+
+  const totalDanaKampus = sortedUnits.reduce((acc, curr) => acc + curr.totalRupiah, 0);
+
   const firstPlace = sortedUnits[0];
   const secondPlace = sortedUnits[1];
   const thirdPlace = sortedUnits[2];
@@ -15,329 +45,294 @@ export const LeaderboardView: React.FC = () => {
 
   const handleSetorClick = () => {
     setRole('unit');
-    setActiveRoute('/unit/posting-baru');
+    setActiveRoute('/unit/setor-kertas');
   };
 
   return (
-    <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
-      {/* Top Movement Banner */}
-      <div className="rounded-2xl bg-gradient-to-r from-[#176B4D] to-[#0D6D3C] text-white p-4 shadow-md flex items-start gap-3">
-        <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
-          <span className="material-symbols-outlined text-2xl text-[#9CF2B5]">eco</span>
-        </div>
-        <div>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#A4F3CC]">
-            Gerakan Sirkular Kampus
-          </span>
-          <h2 className="text-lg font-bold leading-tight mt-0.5">
-            Aksi Kertas Berkelanjutan
-          </h2>
-          <p className="text-xs text-white/85 mt-1 leading-relaxed">
-            Setiap lembar arsip dan karton kampus diselamatkan menjadi sumber daya baru. Bersama wujudkan kampus minim timbulan sampah!
-          </p>
-        </div>
-      </div>
-
-      {/* Accumulated Impact Real-time */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-base font-bold text-[#1C1C16]">Dampak Terakumulasi</h3>
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#9CF2B5]/30 text-[#157140] text-[10px] font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#157140] animate-ping"></span>
-            REAL-TIME
-          </span>
-        </div>
-
-        {/* Big Total Card */}
-        <div className="bg-[#F7F3EA] rounded-xl p-3.5 flex items-center justify-between">
+    <div className="w-full pb-20 max-w-xl mx-auto space-y-4 font-sans text-[#1A2E22]">
+      
+      {/* 1. Header Profile & Title Bar */}
+      <div className="flex items-center justify-between px-1 py-1">
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-full bg-[#2D6A4F]/20 border border-[#2D6A4F]/30 flex items-center justify-center font-black text-[#0F2E22] text-base shadow-xs">
+            🏆
+          </div>
           <div>
-            <span className="text-[11px] text-[#57635A] block">Total Kertas Tersalurkan</span>
-            <div className="flex items-baseline gap-1 mt-0.5">
-              <span className="text-3xl font-extrabold text-[#005138] tracking-tight">
-                {totalKgTersalurkan.toLocaleString('id-ID')}
-              </span>
-              <span className="text-sm font-bold text-[#005138]">Kg</span>
+            <div className="text-[11px] font-bold text-[#52645A] tracking-tight">
+              Papan Skor Sirkularitas Kampus
             </div>
-            <span className="inline-block mt-1 px-2 py-0.5 rounded-md bg-[#A4F3CC] text-[#002114] text-[10px] font-bold">
-              +124 kg minggu ini dari {units.length} unit kampus
-            </span>
-          </div>
-          <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-[#176B4D] shadow-xs">
-            <span className="material-symbols-outlined text-3xl">recycling</span>
+            <h1 className="text-base font-extrabold text-[#1A2E22] tracking-tight leading-tight">
+              Leaderboard & Konversi Dana
+            </h1>
           </div>
         </div>
 
-        {/* Tree & Water Cards */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-[#F7F3EA] rounded-xl p-3 flex flex-col justify-between">
-            <span className="material-symbols-outlined text-2xl text-[#176B4D]">park</span>
-            <div className="mt-2">
-              <div className="text-xl font-extrabold text-[#005138]">{totalPohon} <span className="text-xs font-normal">Pohon</span></div>
-              <span className="text-[10px] text-[#57635A] leading-tight block mt-0.5">
-                Terselamatkan dari penebangan
-              </span>
-            </div>
-          </div>
-          <div className="bg-[#F7F3EA] rounded-xl p-3 flex flex-col justify-between">
-            <span className="material-symbols-outlined text-2xl text-[#8B6045]">water_drop</span>
-            <div className="mt-2">
-              <div className="text-xl font-extrabold text-[#8B6045]">{totalAirBersih.toLocaleString('id-ID')} <span className="text-xs font-normal">Liter</span></div>
-              <span className="text-[10px] text-[#57635A] leading-tight block mt-0.5">
-                Air bersih terlindungi
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Central Drop Point Status */}
-        <div className="p-3 rounded-xl bg-[#ECE8DF] border border-[#176B4D]/15 space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[#176B4D] text-lg">warehouse</span>
-              <span className="text-xs font-bold text-[#1C1C16]">
-                Drop Point Gedung Serbaguna
-              </span>
-            </div>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#9CF2B5] text-[#157140] font-bold">
-              • Aktif
-            </span>
-          </div>
-          <div className="flex justify-between items-center text-[11px] text-[#57635A]">
-            <span>Kapasitas Tong Terisi</span>
-            <strong className="text-[#005138]">8 dari 12 Tong (67%)</strong>
-          </div>
-          <div className="w-full bg-white rounded-full h-2 overflow-hidden shadow-inner">
-            <div className="bg-[#176B4D] h-full rounded-full transition-all duration-500" style={{ width: '67%' }}></div>
-          </div>
-          <div className="flex justify-between items-center text-[10px] text-[#57635A] pt-0.5">
-            <span className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-[12px]">schedule</span>
-              Jadwal Angkut: Besok, 09:00 WIB
-            </span>
-            <span className="font-bold text-[#8B6045]">4 TONG KOSONG</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Leaderboard Section */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-base font-bold text-[#1C1C16]">Peringkat Keaktifan</h3>
-            <p className="text-xs text-[#57635A]">Kontribusi pemilahan oleh unit & fakultas</p>
-          </div>
-          <span className="material-symbols-outlined text-[#176B4D] text-xl">military_tech</span>
-        </div>
-
-        {/* Period Filter Tabs */}
-        <div className="bg-[#F1EEE5] p-1 rounded-xl flex items-center gap-1 text-xs">
+        {/* Period Filter */}
+        <div className="flex items-center gap-1 bg-white p-1 rounded-full border border-black/5 shadow-xs text-xs">
           <button
             onClick={() => setPeriod('bulan')}
-            className={`flex-1 py-1.5 rounded-lg text-center font-bold transition-all ${
-              period === 'bulan' ? 'bg-white text-[#176B4D] shadow-xs' : 'text-[#57635A]'
+            className={`px-3 py-1 rounded-full font-extrabold text-[11px] transition-all cursor-pointer ${
+              period === 'bulan' ? 'bg-[#2D6A4F] text-white shadow-xs' : 'text-[#52645A]'
             }`}
           >
-            Bulan Ini
+            Bulan
           </button>
           <button
             onClick={() => setPeriod('semester')}
-            className={`flex-1 py-1.5 rounded-lg text-center font-semibold transition-all ${
-              period === 'semester' ? 'bg-white text-[#176B4D] shadow-xs' : 'text-[#57635A]'
+            className={`px-3 py-1 rounded-full font-extrabold text-[11px] transition-all cursor-pointer ${
+              period === 'semester' ? 'bg-[#2D6A4F] text-white shadow-xs' : 'text-[#52645A]'
             }`}
           >
-            Semester Genap
+            Semester
           </button>
+        </div>
+      </div>
+
+      {/* 2. Vibrant Green Summary Banner Card */}
+      <div className="w-full rounded-[28px] p-6 text-white bg-[#2D6A4F] shadow-md shadow-[#2D6A4F]/20 relative overflow-hidden">
+        {/* Subtle decorative circles */}
+        <div className="absolute -right-10 -bottom-10 w-36 h-36 rounded-full bg-white/10 blur-xl pointer-events-none" />
+        <div className="absolute -left-6 -top-6 w-24 h-24 rounded-full bg-white/10 blur-lg pointer-events-none" />
+
+        {/* 4 Stat Highlights in Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center relative z-10">
+          {/* Total Dana Rp Terhimpun */}
+          <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white/10 backdrop-blur-xs">
+            <div className="w-8 h-8 rounded-full bg-amber-400/20 text-amber-300 flex items-center justify-center mb-1 shadow-xs">
+              <span className="material-symbols-outlined text-[18px]">payments</span>
+            </div>
+            <div className="text-lg sm:text-xl font-black text-amber-200 tracking-tight leading-none">
+              Rp {(totalDanaKampus / 1000).toFixed(0)}k
+            </div>
+            <div className="text-[9px] uppercase font-extrabold text-white/80 tracking-wider mt-1">
+              DANA TERHIMPUN
+            </div>
+          </div>
+
+          {/* Total Kertas Terdaur Ulang */}
+          <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white/10 backdrop-blur-xs">
+            <div className="w-8 h-8 rounded-full bg-emerald-400/20 text-emerald-200 flex items-center justify-center mb-1 shadow-xs">
+              <span className="material-symbols-outlined text-[18px]">recycling</span>
+            </div>
+            <div className="text-lg sm:text-xl font-black text-white tracking-tight leading-none">
+              {totalKgTersalurkan.toLocaleString('id-ID')} <span className="text-xs font-semibold">Kg</span>
+            </div>
+            <div className="text-[9px] uppercase font-extrabold text-white/80 tracking-wider mt-1">
+              TERDAUR ULANG
+            </div>
+          </div>
+
+          {/* Eco-Points */}
+          <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white/10 backdrop-blur-xs">
+            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center mb-1 shadow-xs">
+              <span className="material-symbols-outlined text-[18px] text-amber-200">monetization_on</span>
+            </div>
+            <div className="text-lg sm:text-xl font-black text-white tracking-tight leading-none">
+              {(totalKgTersalurkan * 2).toLocaleString('id-ID')}
+            </div>
+            <div className="text-[9px] uppercase font-extrabold text-white/80 tracking-wider mt-1">
+              ECO-POINTS
+            </div>
+          </div>
+
+          {/* Pohon Terselamatkan */}
+          <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white/10 backdrop-blur-xs">
+            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center mb-1 shadow-xs">
+              <span className="material-symbols-outlined text-[18px] text-sky-200">forest</span>
+            </div>
+            <div className="text-lg sm:text-xl font-black text-white tracking-tight leading-none">
+              {totalPohon} <span className="text-xs font-semibold">Pohon</span>
+            </div>
+            <div className="text-[9px] uppercase font-extrabold text-white/80 tracking-wider mt-1">
+              TERSELAMATKAN
+            </div>
+          </div>
+        </div>
+
+        {/* Info konversi aktual button */}
+        <div className="mt-4 pt-3 border-t border-white/15 flex items-center justify-between text-xs text-white/90">
+          <span className="text-[11px] font-medium flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-sm text-amber-300">currency_exchange</span>
+            Nilai dihitung real-time per Kg sesuai standar mitra pabrik.
+          </span>
           <button
-            onClick={() => setPeriod('sepanjang')}
-            className={`flex-1 py-1.5 rounded-lg text-center font-semibold transition-all ${
-              period === 'sepanjang' ? 'bg-white text-[#176B4D] shadow-xs' : 'text-[#57635A]'
-            }`}
+            onClick={() => setShowRincianHarga(!showRincianHarga)}
+            className="text-[11px] font-extrabold underline hover:text-white cursor-pointer"
           >
-            Sepanjang Waktu
+            {showRincianHarga ? 'Tutup Kurs' : 'Cek Kurs Kertas'}
           </button>
         </div>
+      </div>
 
-        {/* Podium Champions: #2 Left, #1 Center, #3 Right */}
-        <div className="grid grid-cols-3 items-end gap-2 pt-6 pb-2">
-          {/* #2 FEB */}
+      {/* Rincian Kurs Kertas Aktual Popup / Card */}
+      {showRincianHarga && (
+        <div className="bg-white rounded-[24px] p-5 shadow-xs border border-black/5 space-y-3 animate-in fade-in">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-[#2D6A4F] text-lg">price_check</span>
+              <h3 className="text-xs font-extrabold text-[#1A2E22]">Tarif Konversi Aktual per Kategori</h3>
+            </div>
+            <span className="text-[10px] font-bold text-[#52645A] bg-[#F5F6F3] px-2 py-0.5 rounded-full">
+              Update Terkini
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            {Object.entries(HARGA_KERTAS_AKTUAL).map(([k, val]) => (
+              <div key={k} className="p-3 bg-[#F5F6F3] rounded-2xl border border-black/5 flex items-center justify-between">
+                <div>
+                  <div className="text-[11px] font-bold text-[#1A2E22]">{val.label}</div>
+                  <div className="text-[10px] text-[#52645A]">Kondisi Kering & Bersih</div>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs font-black text-[#2D6A4F] block">
+                    Rp {val.perKg.toLocaleString('id-ID')}
+                  </span>
+                  <span className="text-[9px] text-[#52645A]">/ Kg</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 3. Top 3 Podiums Section */}
+      <div className="bg-white rounded-[28px] p-5 shadow-xs border border-black/5 space-y-4">
+        <div className="text-center">
+          <span className="text-[10px] font-extrabold text-[#2D6A4F] bg-[#2D6A4F]/10 px-3 py-1 rounded-full uppercase tracking-wider">
+            Unit Kampus Teraktif
+          </span>
+          <h2 className="text-lg font-black text-[#1A2E22] mt-1.5">
+            Podium Sirkularitas & Kas Terhimpun
+          </h2>
+        </div>
+
+        {/* 3 Podiums Grid */}
+        <div className="grid grid-cols-3 gap-2.5 pt-2 items-end">
+          {/* #2 Second Place */}
           {secondPlace && (
-            <div className="flex flex-col items-center">
-              <div className="relative mb-1">
-                <div className="w-10 h-10 rounded-full bg-[#E6E2D9] border-2 border-[#BEC9C1] flex items-center justify-center text-[#57635A]">
-                  <span className="material-symbols-outlined text-xl">account_balance</span>
-                </div>
-                <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#57635A] text-white text-[10px] font-bold flex items-center justify-center shadow-xs">
-                  #2
-                </span>
+            <div className="bg-[#F5F6F3] rounded-2xl p-3 text-center border border-black/5 flex flex-col items-center justify-between h-44">
+              <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-800 font-black text-xs flex items-center justify-center shadow-xs">
+                #2
               </div>
-              <div className="w-full rounded-t-xl bg-[#F7F3EA] border border-[#E6E2D9] p-2 text-center flex flex-col items-center">
-                <span className="text-xs font-bold text-[#1C1C16] truncate w-full block">
-                  {secondPlace.inisial}
-                </span>
-                <span className="text-[11px] font-bold text-[#005138]">
-                  {secondPlace.total_kg_tersalurkan} KG
-                </span>
-                <span className="text-[10px] text-[#8B6045] font-semibold mt-0.5">
-                  ⚡ {secondPlace.eco_points}
-                </span>
-                <div className="mt-2 w-full py-1 rounded bg-[#E6E2D9] text-[#1C1C16] font-bold text-sm">
-                  2
+              <div className="my-auto w-full">
+                <div className="text-xs font-extrabold text-[#1A2E22] line-clamp-1">
+                  {secondPlace.nama_unit}
+                </div>
+                <div className="text-sm font-black text-[#2D6A4F] mt-0.5">
+                  {secondPlace.total_kg_tersalurkan} Kg
+                </div>
+                <div className="text-[11px] font-black text-[#C27D3A] mt-0.5">
+                  Rp {secondPlace.totalRupiah.toLocaleString('id-ID')}
                 </div>
               </div>
+              <span className="text-[10px] text-[#52645A] font-semibold">
+                {secondPlace.eco_points} pts
+              </span>
             </div>
           )}
 
-          {/* #1 Juara FTD (Highest Podium) */}
+          {/* #1 First Place (Tallest) */}
           {firstPlace && (
-            <div className="flex flex-col items-center -mt-4">
-              <div className="flex flex-col items-center mb-1">
-                <span className="text-[#005138] text-lg leading-none">👑</span>
-                <div className="w-12 h-12 rounded-full bg-[#005138] border-2 border-[#52A66F] flex items-center justify-center text-white shadow-md">
-                  <span className="material-symbols-outlined text-2xl">workspace_premium</span>
-                </div>
-                <span className="bg-[#002114] text-[#A4F3CC] text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full shadow-xs -mt-1">
-                  JUARA
-                </span>
+            <div className="bg-gradient-to-b from-amber-50 to-[#F5F6F3] rounded-2xl p-3 text-center border-2 border-amber-300 flex flex-col items-center justify-between h-52 shadow-md relative">
+              <div className="w-10 h-10 rounded-full bg-amber-400 text-amber-950 font-black text-sm flex items-center justify-center shadow-sm">
+                👑 #1
               </div>
-              <div className="w-full rounded-t-xl bg-[#A4F3CC]/20 border-2 border-[#005138] p-2 text-center flex flex-col items-center shadow-sm">
-                <span className="text-xs font-extrabold text-[#005138] truncate w-full block">
-                  {firstPlace.inisial}
-                </span>
-                <span className="text-xs font-extrabold text-[#005138]">
-                  {firstPlace.total_kg_tersalurkan} KG
-                </span>
-                <span className="text-[10px] text-[#0D6D3C] font-bold mt-0.5 flex items-center gap-0.5">
-                  <span className="material-symbols-outlined text-[11px]">eco</span>
-                  {firstPlace.eco_points.toLocaleString('id-ID')} Poin
-                </span>
-                <div className="mt-3 w-full py-2 rounded bg-[#005138] text-white font-extrabold text-base shadow-xs">
-                  1
+              <div className="my-auto w-full">
+                <div className="text-xs sm:text-sm font-black text-[#1A2E22] line-clamp-2">
+                  {firstPlace.nama_unit}
+                </div>
+                <div className="text-base font-black text-[#2D6A4F] mt-1">
+                  {firstPlace.total_kg_tersalurkan} Kg
+                </div>
+                <div className="text-xs font-black text-[#C27D3A] mt-0.5">
+                  Rp {firstPlace.totalRupiah.toLocaleString('id-ID')}
                 </div>
               </div>
+              <span className="text-[10px] font-extrabold text-amber-800 bg-amber-200/60 px-2 py-0.5 rounded-full">
+                {firstPlace.eco_points} pts
+              </span>
             </div>
           )}
 
-          {/* #3 BAA */}
+          {/* #3 Third Place */}
           {thirdPlace && (
-            <div className="flex flex-col items-center">
-              <div className="relative mb-1">
-                <div className="w-10 h-10 rounded-full bg-[#FFDBC8] border-2 border-[#8B6045] flex items-center justify-center text-[#8B6045]">
-                  <span className="material-symbols-outlined text-xl">shield</span>
-                </div>
-                <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#8B6045] text-white text-[10px] font-bold flex items-center justify-center shadow-xs">
-                  #3
-                </span>
+            <div className="bg-[#F5F6F3] rounded-2xl p-3 text-center border border-black/5 flex flex-col items-center justify-between h-40">
+              <div className="w-8 h-8 rounded-full bg-amber-800 text-amber-100 font-black text-xs flex items-center justify-center shadow-xs">
+                #3
               </div>
-              <div className="w-full rounded-t-xl bg-[#F7F3EA] border border-[#E6E2D9] p-2 text-center flex flex-col items-center">
-                <span className="text-xs font-bold text-[#1C1C16] truncate w-full block">
-                  {thirdPlace.inisial}
-                </span>
-                <span className="text-[11px] font-bold text-[#8B6045]">
-                  {thirdPlace.total_kg_tersalurkan} KG
-                </span>
-                <span className="text-[10px] text-[#57635A] font-semibold mt-0.5">
-                  ⚡ {thirdPlace.eco_points}
-                </span>
-                <div className="mt-2 w-full py-1 rounded bg-[#E6E2D9] text-[#1C1C16] font-bold text-sm">
-                  3
+              <div className="my-auto w-full">
+                <div className="text-xs font-extrabold text-[#1A2E22] line-clamp-1">
+                  {thirdPlace.nama_unit}
+                </div>
+                <div className="text-sm font-black text-[#2D6A4F] mt-0.5">
+                  {thirdPlace.total_kg_tersalurkan} Kg
+                </div>
+                <div className="text-[11px] font-black text-[#C27D3A] mt-0.5">
+                  Rp {thirdPlace.totalRupiah.toLocaleString('id-ID')}
                 </div>
               </div>
+              <span className="text-[10px] text-[#52645A] font-semibold">
+                {thirdPlace.eco_points} pts
+              </span>
             </div>
           )}
         </div>
+      </div>
 
-        {/* Ranked List for 4, 5, etc. */}
-        <div className="space-y-2 pt-2">
-          {restUnits.map((u, idx) => (
+      {/* 4. Rest Units List */}
+      <div className="bg-white rounded-[28px] p-5 shadow-xs border border-black/5 space-y-3">
+        <div className="flex items-center justify-between px-1">
+          <h3 className="text-sm font-extrabold text-[#1A2E22]">
+            Daftar Peringkat Unit Lainnya
+          </h3>
+          <span className="text-[11px] font-bold text-[#52645A]">
+            {sortedUnits.length} Unit Kampus
+          </span>
+        </div>
+
+        <div className="space-y-2">
+          {restUnits.map((unit, idx) => (
             <div
-              key={u.id}
-              className="flex items-center justify-between p-3 rounded-xl bg-[#F7F3EA] hover:bg-[#ECE8DF] transition-colors border border-transparent hover:border-[#176B4D]/20"
+              key={unit.id}
+              className="bg-[#F5F6F3] rounded-2xl p-3.5 border border-black/5 flex items-center justify-between gap-3 text-xs hover:border-[#2D6A4F]/30 transition-all"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <span className="w-6 text-center font-bold text-sm text-[#57635A]">
-                  {idx + 4}
-                </span>
-                <div className="w-9 h-9 rounded-lg bg-white flex items-center justify-center text-[#176B4D] shrink-0 shadow-xs">
-                  <span className="material-symbols-outlined text-xl">
-                    {u.jenis === 'biro' ? 'receipt_long' : 'campaign'}
-                  </span>
+                <div className="w-8 h-8 rounded-xl bg-white text-[#1A2E22] border border-black/5 font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                  #{idx + 4}
                 </div>
                 <div className="min-w-0">
-                  <div className="text-xs font-bold text-[#1C1C16] truncate">{u.nama_unit}</div>
-                  <div className="text-[11px] text-[#57635A]">
-                    {u.inisial} • {u.total_kg_tersalurkan} Kg Terkumpul
+                  <div className="font-extrabold text-[#1A2E22] truncate">
+                    {unit.nama_unit}
+                  </div>
+                  <div className="text-[10px] font-medium text-[#52645A] truncate">
+                    {unit.jenis.toUpperCase()} • {unit.eco_points} Eco-Points
                   </div>
                 </div>
               </div>
+
               <div className="text-right shrink-0">
-                <div className="text-xs font-bold text-[#005138]">{u.eco_points} Pts</div>
-                <span className="text-[9px] font-bold text-[#157140] bg-[#9CF2B5]/50 px-1.5 py-0.5 rounded">
-                  {idx === 0 ? 'KONSISTEN' : '+35 POIN'}
+                <span className="font-black text-[#2D6A4F] text-sm block">
+                  {unit.total_kg_tersalurkan} Kg
+                </span>
+                <span className="text-[11px] font-extrabold text-[#C27D3A] block">
+                  Rp {unit.totalRupiah.toLocaleString('id-ID')}
                 </span>
               </div>
             </div>
           ))}
         </div>
+
+        {/* CTA Button */}
+        <button
+          onClick={handleSetorClick}
+          className="w-full mt-2 py-3.5 rounded-full bg-[#2D6A4F] hover:bg-[#1A4235] active:bg-[#0F2E22] text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <span className="material-symbols-outlined text-[18px]">add_circle</span>
+          <span>Setor Kertas & Tambah Nilai Dana Unit Anda</span>
+        </button>
       </div>
 
-      {/* Action Promotion Card */}
-      <div className="bg-[#F7F3EA] border border-[#8B6045]/20 rounded-2xl p-4 shadow-sm space-y-3">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#FFDBC8] text-[#8B6045] flex items-center justify-center shrink-0 shadow-xs">
-            <span className="material-symbols-outlined text-2xl">inventory_2</span>
-          </div>
-          <div>
-            <h4 className="text-sm font-bold text-[#1C1C16]">Punya Tumpukan Arsip & Kardus?</h4>
-            <p className="text-xs text-[#57635A] mt-0.5 leading-relaxed">
-              Laporkan tumpukan kertas tak terpakai di ruangan unit Anda. Tim logistik kampus siap jemput atau Anda dapat masukkan langsung ke tong unit.
-            </p>
-          </div>
-        </div>
-
-        <div className="space-y-2 pt-1">
-          <button
-            onClick={handleSetorClick}
-            className="w-full py-3 px-4 rounded-xl bg-[#176B4D] hover:bg-[#005138] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-98 transition-all"
-          >
-            <span className="material-symbols-outlined text-base">add_circle</span>
-            <span>Setor Kertas Unit Sekarang</span>
-          </button>
-          <button
-            onClick={() => setShowPanduan(!showPanduan)}
-            className="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-gray-50 text-[#57635A] font-semibold text-xs flex items-center justify-center gap-1.5 border border-[#BEC9C1]/50 transition-all"
-          >
-            <span className="material-symbols-outlined text-base">menu_book</span>
-            <span>Panduan Pemilahan Standar Kampus</span>
-          </button>
-        </div>
-
-        {showPanduan && (
-          <div className="p-3 bg-white rounded-xl border border-gray-100 text-xs text-[#3F4943] space-y-2 animate-in fade-in">
-            <div className="font-bold text-[#176B4D]">Kriteria Sortir Bebas Kontaminan:</div>
-            <ul className="list-disc list-inside space-y-1 text-[11px]">
-              <li>Kertas HVS/Arsip: Kering, bebas staples tebal/binder clip, terikat rapi per bendel.</li>
-              <li>Kardus Box: Dilipat gepeng (di-press), bebas lakban tebal berlebih, diikat tali rafia.</li>
-              <li>Dilarang keras memasukkan bungkus berminyak, gelas kopi plastik, atau sampah basah.</li>
-            </ul>
-          </div>
-        )}
-      </div>
-
-      {/* Community Volunteer Footer Pill */}
-      <div className="p-3.5 rounded-2xl bg-white border border-[#176B4D]/10 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-[#A4F3CC] flex items-center justify-center text-[#005138] shrink-0">
-          <span className="material-symbols-outlined text-xl">diversity_3</span>
-        </div>
-        <div className="min-w-0">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#0D6D3C] block">
-            Kolaborasi Civitas
-          </span>
-          <p className="text-xs font-bold text-[#1C1C16]">86 Dosen & Mahasiswa Aktif</p>
-          <p className="text-[11px] text-[#57635A] truncate">
-            Tergabung dalam relawan sirkular minggu ini
-          </p>
-        </div>
-      </div>
     </div>
   );
 };

@@ -44,13 +44,13 @@ export const PerusahaanListingDetailView: React.FC = () => {
       <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-red-100 text-center space-y-3">
           <span className="material-symbols-outlined text-4xl text-red-400">inventory_2</span>
-          <h2 className="text-base font-bold text-[#1C1C16]">Listing Tidak Ditemukan</h2>
-          <p className="text-sm text-[#57635A]">
+          <h2 className="text-base font-bold text-[#1A2E22]">Listing Tidak Ditemukan</h2>
+          <p className="text-sm text-[#52645A]">
             Silakan kembali ke halaman Matching dan pilih listing yang ingin dilihat.
           </p>
           <button
             onClick={() => setActiveRoute('/perusahaan/matching')}
-            className="mt-2 px-4 py-2.5 rounded-xl bg-[#176B4D] text-white text-sm font-bold hover:bg-[#005138] transition-all"
+            className="mt-2 px-4 py-2.5 rounded-xl bg-[#2D6A4F] text-white text-sm font-bold hover:bg-[#005138] transition-all"
           >
             Kembali ke Matching
           </button>
@@ -104,14 +104,14 @@ export const PerusahaanListingDetailView: React.FC = () => {
       {/* Back button */}
       <button
         onClick={() => setActiveRoute('/perusahaan/matching')}
-        className="flex items-center gap-1.5 text-xs font-semibold text-[#176B4D] hover:text-[#005138] transition-colors"
+        className="flex items-center gap-1.5 text-xs font-semibold text-[#2D6A4F] hover:text-[#005138] transition-colors"
       >
         <span className="material-symbols-outlined text-sm">arrow_back</span>
         Kembali ke Matching
       </button>
 
       {/* Foto Kertas */}
-      <div className="relative rounded-2xl overflow-hidden shadow-sm border border-[#176B4D]/10 bg-gray-100 h-52">
+      <div className="relative rounded-2xl overflow-hidden shadow-sm border border-[#2D6A4F]/10 bg-gray-100 h-52">
         <img
           src={listing.foto}
           alt={`Kertas ${listing.kategori_label}`}
@@ -132,22 +132,22 @@ export const PerusahaanListingDetailView: React.FC = () => {
       </div>
 
       {/* Info Utama */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-3">
+      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-3">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <span className="text-[10px] font-bold text-[#176B4D] uppercase tracking-wider block">
+            <span className="text-[10px] font-bold text-[#2D6A4F] uppercase tracking-wider block">
               Detail Listing Kertas
             </span>
-            <h1 className="text-base font-extrabold text-[#1C1C16] mt-0.5">
+            <h1 className="text-base font-extrabold text-[#1A2E22] mt-0.5">
               {listing.kategori_label}
             </h1>
-            <p className="text-xs text-[#57635A] mt-0.5">
+            <p className="text-xs text-[#52645A] mt-0.5">
               Diposting: {listing.tanggal_post}
             </p>
           </div>
           <div className="text-right shrink-0">
             <span className="text-lg font-extrabold text-[#005138] block">{listing.jumlah_kg} Kg</span>
-            <span className="text-[10px] text-[#57635A]">estimasi berat</span>
+            <span className="text-[10px] text-[#52645A]">estimasi berat</span>
           </div>
         </div>
 
@@ -155,22 +155,22 @@ export const PerusahaanListingDetailView: React.FC = () => {
 
         {/* Unit & Tong Info */}
         <div className="space-y-2">
-          <h3 className="text-xs font-bold text-[#1C1C16]">Asal & Lokasi Tong</h3>
+          <h3 className="text-xs font-bold text-[#1A2E22]">Asal & Lokasi Tong</h3>
           <div className="p-3 bg-[#F7F3EA] rounded-xl flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-[#A4F3CC] flex items-center justify-center text-[#005138] font-extrabold text-sm shrink-0">
               {unit?.inisial || listing.unit_id.slice(5, 8).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <span className="text-xs font-bold text-[#1C1C16] block truncate">{listing.unit_nama}</span>
+              <span className="text-xs font-bold text-[#1A2E22] block truncate">{listing.unit_nama}</span>
               {unit && (
-                <span className="text-[11px] text-[#57635A] truncate block">{unit.lokasi_detail}</span>
+                <span className="text-[11px] text-[#52645A] truncate block">{unit.lokasi_detail}</span>
               )}
               <div className="flex items-center gap-1.5 mt-1">
-                <span className="text-[10px] font-extrabold text-[#8B6045] bg-[#FFDBC8] px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-extrabold text-[#C27D3A] bg-[#FFDBC8] px-2 py-0.5 rounded-full">
                   {listing.tong_nama}
                 </span>
                 {tong && (
-                  <span className="text-[10px] text-[#57635A]">{tong.lokasi_spesifik}</span>
+                  <span className="text-[10px] text-[#52645A]">{tong.lokasi_spesifik}</span>
                 )}
               </div>
             </div>
@@ -179,11 +179,11 @@ export const PerusahaanListingDetailView: React.FC = () => {
 
         {/* Kondisi Kertas */}
         <div className="space-y-2">
-          <h3 className="text-xs font-bold text-[#1C1C16]">Kondisi & Kualitas</h3>
+          <h3 className="text-xs font-bold text-[#1A2E22]">Kondisi & Kualitas</h3>
           <div className="space-y-1.5">
             {listing.kondisi.map((k, idx) => (
               <div key={idx} className="flex items-center gap-2 text-xs text-[#3F4943]">
-                <span className="material-symbols-outlined text-[#176B4D] text-base shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>
+                <span className="material-symbols-outlined text-[#2D6A4F] text-base shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>
                   {getKondisiIcon(k)}
                 </span>
                 <span>{k}</span>
@@ -196,17 +196,17 @@ export const PerusahaanListingDetailView: React.FC = () => {
         {unit && (
           <div className="p-3 bg-[#F7F3EA] rounded-xl text-xs space-y-1.5">
             <div className="flex justify-between">
-              <span className="text-[#57635A]">Total disalurkan unit ini:</span>
+              <span className="text-[#52645A]">Total disalurkan unit ini:</span>
               <strong className="text-[#005138]">{unit.total_kg_tersalurkan} Kg</strong>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#57635A]">Eco-Points unit:</span>
-              <strong className="text-[#8B6045]">{unit.eco_points} Poin</strong>
+              <span className="text-[#52645A]">Eco-Points unit:</span>
+              <strong className="text-[#C27D3A]">{unit.eco_points} Poin</strong>
             </div>
             {unit.kontak_pic && (
               <div className="flex justify-between">
-                <span className="text-[#57635A]">PIC Unit:</span>
-                <strong className="text-[#1C1C16]">{unit.pic_nama}</strong>
+                <span className="text-[#52645A]">PIC Unit:</span>
+                <strong className="text-[#1A2E22]">{unit.pic_nama}</strong>
               </div>
             )}
           </div>
@@ -220,7 +220,7 @@ export const PerusahaanListingDetailView: React.FC = () => {
             <button
               onClick={handlePilihDanJadwalkan}
               disabled={confirmLoading}
-              className="w-full py-3.5 px-4 rounded-xl bg-[#005138] hover:bg-[#176B4D] active:scale-[0.98] text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-60"
+              className="w-full py-3.5 px-4 rounded-xl bg-[#005138] hover:bg-[#2D6A4F] active:scale-[0.98] text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-60"
             >
               {confirmLoading ? (
                 <>
@@ -237,7 +237,7 @@ export const PerusahaanListingDetailView: React.FC = () => {
               )}
             </button>
           ) : (
-            <div className="p-3.5 bg-[#176B4D] text-white rounded-xl text-xs font-bold text-center flex items-center justify-center gap-2 animate-in zoom-in-95">
+            <div className="p-3.5 bg-[#2D6A4F] text-white rounded-xl text-xs font-bold text-center flex items-center justify-center gap-2 animate-in zoom-in-95">
               <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>task_alt</span>
               <span>Berhasil! Mengalihkan ke halaman jadwal...</span>
             </div>
@@ -262,7 +262,7 @@ export const PerusahaanListingDetailView: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-3 shadow-2xl animate-in zoom-in-95">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-sm text-[#1C1C16] flex items-center gap-2">
+              <h3 className="font-bold text-sm text-[#1A2E22] flex items-center gap-2">
                 <span className="material-symbols-outlined text-red-500 text-base">flag</span>
                 Laporkan Listing Ini
               </h3>

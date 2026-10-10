@@ -38,7 +38,7 @@ export const PerusahaanPermintaanView: React.FC = () => {
     setQcRequirements(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const danaRiset = kuotaKg * 1500;
+  const danaRiset = kuotaKg * 1500; // estimasi rata-rata (harga aktual tergantung kategori kertas)
   const ecoPoints = kuotaKg * 2;
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -74,42 +74,42 @@ export const PerusahaanPermintaanView: React.FC = () => {
   return (
     <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
       {/* Company Context Header Card */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 flex items-start gap-3">
-        <div className="w-12 h-12 rounded-xl bg-[#8B6045] text-white flex items-center justify-center shrink-0 shadow-sm">
+      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 flex items-start gap-3">
+        <div className="w-12 h-12 rounded-xl bg-[#C27D3A] text-white flex items-center justify-center shrink-0 shadow-sm">
           <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
             factory
           </span>
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FFDBC8] text-[#8B6045]">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FFDBC8] text-[#C27D3A]">
               MITRA INDUSTRI AKTIF
             </span>
-            <span className="text-[10px] text-[#57635A] font-semibold">
+            <span className="text-[10px] text-[#52645A] font-semibold">
               ID: MDL-2024-K09
             </span>
           </div>
-          <h2 className="text-base font-bold text-[#1C1C16] truncate mt-1">
+          <h2 className="text-base font-bold text-[#1A2E22] truncate mt-1">
             PT Mandiri Daur Lestari
           </h2>
-          <p className="text-xs text-[#57635A] truncate">
+          <p className="text-xs text-[#52645A] truncate">
             Mitra Pengolah Daur Ulang Kertas Terverifikasi
           </p>
         </div>
       </div>
 
       {/* Main Demand Form */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-4">
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-4">
         <div className="border-b border-gray-100 pb-2">
-          <h3 className="text-sm font-bold text-[#1C1C16]">Buat Permintaan Pasokan Kertas</h3>
-          <p className="text-xs text-[#57635A] mt-0.5">
+          <h3 className="text-sm font-bold text-[#1A2E22]">Buat Permintaan Pasokan Kertas</h3>
+          <p className="text-xs text-[#52645A] mt-0.5">
             Tentukan kuota dan spesifikasi bahan baku untuk matching dengan tong unit kampus.
           </p>
         </div>
 
         {/* 1. Jenis Kertas */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-[#1C1C16] block">
+          <label className="text-xs font-bold text-[#1A2E22] block">
             1. Jenis Kertas yang Dibutuhkan (Pilih satu atau lebih)
           </label>
 
@@ -128,8 +128,8 @@ export const PerusahaanPermintaanView: React.FC = () => {
                   onClick={() => toggleType(item.id)}
                   className={`p-3 rounded-xl text-left transition-all border ${
                     active
-                      ? 'bg-[#8B6045] text-white border-[#8B6045] shadow-xs'
-                      : 'bg-[#F7F3EA] text-[#1C1C16] border-transparent hover:bg-[#ECE8DF]'
+                      ? 'bg-[#C27D3A] text-white border-[#C27D3A] shadow-xs'
+                      : 'bg-[#F7F3EA] text-[#1A2E22] border-transparent hover:bg-[#ECE8DF]'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
@@ -137,7 +137,7 @@ export const PerusahaanPermintaanView: React.FC = () => {
                     {active && <span className="material-symbols-outlined text-sm">check_circle</span>}
                   </div>
                   <div className="text-xs font-bold leading-tight">{item.id}</div>
-                  <div className={`text-[10px] mt-0.5 ${active ? 'text-white/80' : 'text-[#57635A]'}`}>
+                  <div className={`text-[10px] mt-0.5 ${active ? 'text-white/80' : 'text-[#52645A]'}`}>
                     {item.sub}
                   </div>
                 </button>
@@ -149,24 +149,24 @@ export const PerusahaanPermintaanView: React.FC = () => {
         {/* 2. Target Kuota Pasokan Mingguan */}
         <div className="space-y-2">
           <div className="flex justify-between items-center text-xs">
-            <label className="font-bold text-[#1C1C16]">2. Target Kuota Pasokan Mingguan</label>
-            <span className="text-[10px] text-[#8B6045] font-semibold">Min 50 Kg per siklus</span>
+            <label className="font-bold text-[#1A2E22]">2. Target Kuota Pasokan Mingguan</label>
+            <span className="text-[10px] text-[#C27D3A] font-semibold">Min 50 Kg per siklus</span>
           </div>
 
           <div className="bg-[#F7F3EA] p-3 rounded-xl flex items-center justify-between">
             <button
               type="button"
               onClick={() => setKuotaKg(prev => Math.max(50, prev - 25))}
-              className="w-10 h-10 rounded-lg bg-white text-[#1C1C16] flex items-center justify-center font-bold text-lg shadow-xs active:scale-95 transition-all"
+              className="w-10 h-10 rounded-lg bg-white text-[#1A2E22] flex items-center justify-center font-bold text-lg shadow-xs active:scale-95 transition-all"
             >
               −
             </button>
 
             <div className="text-center">
-              <div className="text-2xl font-extrabold text-[#8B6045]">
-                {kuotaKg} <span className="text-sm font-normal text-[#1C1C16]">Kg</span>
+              <div className="text-2xl font-extrabold text-[#C27D3A]">
+                {kuotaKg} <span className="text-sm font-normal text-[#1A2E22]">Kg</span>
               </div>
-              <span className="text-[10px] text-[#57635A]">
+              <span className="text-[10px] text-[#52645A]">
                 Rekomendasi pikap: Armada L300 / Pickup
               </span>
             </div>
@@ -174,7 +174,7 @@ export const PerusahaanPermintaanView: React.FC = () => {
             <button
               type="button"
               onClick={() => setKuotaKg(prev => prev + 25)}
-              className="w-10 h-10 rounded-lg bg-[#8B6045] text-white flex items-center justify-center font-bold text-lg shadow-xs active:scale-95 transition-all"
+              className="w-10 h-10 rounded-lg bg-[#C27D3A] text-white flex items-center justify-center font-bold text-lg shadow-xs active:scale-95 transition-all"
             >
               +
             </button>
@@ -182,7 +182,7 @@ export const PerusahaanPermintaanView: React.FC = () => {
 
           {/* Quick preset chips */}
           <div className="flex items-center gap-1.5 pt-1">
-            <span className="text-[10px] text-[#57635A]">Pilihan Cepat:</span>
+            <span className="text-[10px] text-[#52645A]">Pilihan Cepat:</span>
             {[50, 100, 250, 500].map(val => (
               <button
                 key={val}
@@ -190,8 +190,8 @@ export const PerusahaanPermintaanView: React.FC = () => {
                 onClick={() => setKuotaKg(val)}
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all ${
                   kuotaKg === val
-                    ? 'bg-[#8B6045] text-white'
-                    : 'bg-[#ECE8DF] text-[#1C1C16] hover:bg-[#E6E2D9]'
+                    ? 'bg-[#C27D3A] text-white'
+                    : 'bg-[#ECE8DF] text-[#1A2E22] hover:bg-[#E6E2D9]'
                 }`}
               >
                 {val} Kg
@@ -202,14 +202,14 @@ export const PerusahaanPermintaanView: React.FC = () => {
 
         {/* 3. Parameter & Kriteria Kualitas */}
         <div className="space-y-2.5">
-          <label className="text-xs font-bold text-[#1C1C16] block">
+          <label className="text-xs font-bold text-[#1A2E22] block">
             3. Parameter & Kriteria Kualitas
           </label>
 
           <div className="p-3 rounded-xl bg-[#F7F3EA] space-y-2">
             <div className="flex justify-between items-center text-xs">
-              <span className="text-[#57635A]">Toleransi Kadar Air Maksimal</span>
-              <strong className="text-[#8B6045]">{kadarAir}% (Kering Optimal)</strong>
+              <span className="text-[#52645A]">Toleransi Kadar Air Maksimal</span>
+              <strong className="text-[#C27D3A]">{kadarAir}% (Kering Optimal)</strong>
             </div>
             <input
               type="range"
@@ -217,7 +217,7 @@ export const PerusahaanPermintaanView: React.FC = () => {
               max={20}
               value={kadarAir}
               onChange={e => setKadarAir(Number(e.target.value))}
-              className="w-full accent-[#8B6045] cursor-pointer"
+              className="w-full accent-[#C27D3A] cursor-pointer"
             />
             <div className="flex justify-between text-[10px] text-gray-400">
               <span>8% Sangat Kering</span>
@@ -227,7 +227,7 @@ export const PerusahaanPermintaanView: React.FC = () => {
           </div>
 
           <div className="space-y-1.5 pt-1">
-            <span className="text-[11px] font-semibold text-[#57635A] block">
+            <span className="text-[11px] font-semibold text-[#52645A] block">
               Syarat Wajib QC Kampus (Checklist):
             </span>
 
@@ -236,9 +236,9 @@ export const PerusahaanPermintaanView: React.FC = () => {
                 type="checkbox"
                 checked={qcRequirements.terikat}
                 onChange={() => toggleQc('terikat')}
-                className="mt-0.5 accent-[#8B6045]"
+                className="mt-0.5 accent-[#C27D3A]"
               />
-              <span className="text-[#1C1C16]">Kertas sudah terikat rapi per tumpukan</span>
+              <span className="text-[#1A2E22]">Kertas sudah terikat rapi per tumpukan</span>
             </label>
 
             <label className="flex items-start gap-2.5 p-2 rounded-lg bg-[#F7F3EA] cursor-pointer text-xs">
@@ -246,9 +246,9 @@ export const PerusahaanPermintaanView: React.FC = () => {
                 type="checkbox"
                 checked={qcRequirements.bebasMinyak}
                 onChange={() => toggleQc('bebasMinyak')}
-                className="mt-0.5 accent-[#8B6045]"
+                className="mt-0.5 accent-[#C27D3A]"
               />
-              <span className="text-[#1C1C16]">Bebas kotoran minyak, cairan, & sisa makanan</span>
+              <span className="text-[#1A2E22]">Bebas kotoran minyak, cairan, & sisa makanan</span>
             </label>
 
             <label className="flex items-start gap-2.5 p-2 rounded-lg bg-[#F7F3EA] cursor-pointer text-xs">
@@ -256,16 +256,16 @@ export const PerusahaanPermintaanView: React.FC = () => {
                 type="checkbox"
                 checked={qcRequirements.bebasKlip}
                 onChange={() => toggleQc('bebasKlip')}
-                className="mt-0.5 accent-[#8B6045]"
+                className="mt-0.5 accent-[#C27D3A]"
               />
-              <span className="text-[#1C1C16]">Bebas klip kawat tebal & lakban jilid plastik</span>
+              <span className="text-[#1A2E22]">Bebas klip kawat tebal & lakban jilid plastik</span>
             </label>
           </div>
         </div>
 
         {/* 4. Jadwal Armada & Titik Jemput */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-[#1C1C16] block">
+          <label className="text-xs font-bold text-[#1A2E22] block">
             4. Jadwal Armada & Titik Jemput
           </label>
 
@@ -280,8 +280,8 @@ export const PerusahaanPermintaanView: React.FC = () => {
                     onClick={() => toggleDay(d)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                       active
-                        ? 'bg-[#176B4D] text-white'
-                        : 'bg-[#F7F3EA] text-[#57635A] hover:bg-[#ECE8DF]'
+                        ? 'bg-[#2D6A4F] text-white'
+                        : 'bg-[#F7F3EA] text-[#52645A] hover:bg-[#ECE8DF]'
                     }`}
                   >
                     {d}
@@ -292,18 +292,18 @@ export const PerusahaanPermintaanView: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="p-2.5 rounded-lg bg-[#F7F3EA]">
-                <span className="text-[10px] text-[#57635A] block">Jendela Waktu Operasional</span>
+                <span className="text-[10px] text-[#52645A] block">Jendela Waktu Operasional</span>
                 <input
                   type="text"
                   value={waktu}
                   onChange={e => setWaktu(e.target.value)}
-                  className="w-full bg-transparent font-bold text-[#1C1C16] outline-none"
+                  className="w-full bg-transparent font-bold text-[#1A2E22] outline-none"
                 />
               </div>
 
               <div className="p-2.5 rounded-lg bg-[#F7F3EA]">
-                <span className="text-[10px] text-[#57635A] block">Titik Kumpul Terpusat</span>
-                <span className="font-bold text-[#176B4D] truncate block">
+                <span className="text-[10px] text-[#52645A] block">Titik Kumpul Terpusat</span>
+                <span className="font-bold text-[#2D6A4F] truncate block">
                   Drop Point Serbaguna (Sayap Barat)
                 </span>
               </div>
@@ -312,19 +312,19 @@ export const PerusahaanPermintaanView: React.FC = () => {
         </div>
 
         {/* Impact Calculation Preview */}
-        <div className="p-3 rounded-xl bg-gradient-to-r from-[#A4F3CC]/20 to-[#FFDBC8]/20 border border-[#176B4D]/15 space-y-1.5">
+        <div className="p-3 rounded-xl bg-gradient-to-r from-[#A4F3CC]/20 to-[#FFDBC8]/20 border border-[#2D6A4F]/15 space-y-1.5">
           <div className="text-[10px] font-bold text-[#005138] uppercase tracking-wider">
             Estimasi Nilai Dampak Edukasi
           </div>
           <div className="flex justify-between items-center text-xs">
-            <span className="text-[#57635A]">Kontribusi Dana Riset Kampus:</span>
+            <span className="text-[#52645A]">Kontribusi Dana Riset Kampus:</span>
             <strong className="text-[#005138]">
               Rp {danaRiset.toLocaleString('id-ID')}
             </strong>
           </div>
           <div className="flex justify-between items-center text-xs">
-            <span className="text-[#57635A]">Alokasi Eco-Points Unit:</span>
-            <strong className="text-[#8B6045]">+{ecoPoints} Poin</strong>
+            <span className="text-[#52645A]">Alokasi Eco-Points Unit:</span>
+            <strong className="text-[#C27D3A]">+{ecoPoints} Poin</strong>
           </div>
         </div>
 
@@ -332,7 +332,7 @@ export const PerusahaanPermintaanView: React.FC = () => {
         <button
           type="submit"
           disabled={isSubmitting || selectedTypes.length === 0}
-          className="w-full py-3.5 px-4 rounded-xl bg-[#8B6045] hover:bg-[#633E25] active:scale-[0.98] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-50"
+          className="w-full py-3.5 px-4 rounded-xl bg-[#C27D3A] hover:bg-[#633E25] active:scale-[0.98] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-50"
         >
           {isSubmitting ? (
             <>

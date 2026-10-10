@@ -13,7 +13,7 @@ export const RoleDemoBanner: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-[#176B4D] text-white text-xs border-b border-[#52A66F]/30 shadow-xs">
+    <div className="w-full bg-[#2D6A4F] text-white text-xs border-b border-[#52A66F]/30 shadow-xs">
       <div className="max-w-2xl mx-auto px-4 py-2">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 overflow-x-auto py-0.5 scrollbar-none">
@@ -28,7 +28,7 @@ export const RoleDemoBanner: React.FC = () => {
                   onClick={() => setActiveRoute('/unit/posting-baru')}
                   className={`px-2.5 py-1 rounded-full text-[11px] font-medium shrink-0 transition-all ${
                     activeRoute === '/unit/posting-baru'
-                      ? 'bg-white text-[#176B4D] font-bold shadow-xs'
+                      ? 'bg-white text-[#2D6A4F] font-bold shadow-xs'
                       : 'bg-white/15 text-white hover:bg-white/25'
                   }`}
                 >
@@ -38,7 +38,7 @@ export const RoleDemoBanner: React.FC = () => {
                   onClick={() => setActiveRoute('/unit/status')}
                   className={`px-2.5 py-1 rounded-full text-[11px] font-medium shrink-0 transition-all ${
                     activeRoute === '/unit/status'
-                      ? 'bg-white text-[#176B4D] font-bold shadow-xs'
+                      ? 'bg-white text-[#2D6A4F] font-bold shadow-xs'
                       : 'bg-white/15 text-white hover:bg-white/25'
                   }`}
                 >
@@ -53,7 +53,7 @@ export const RoleDemoBanner: React.FC = () => {
                   onClick={() => setActiveRoute('/perusahaan/matching')}
                   className={`px-2.5 py-1 rounded-full text-[11px] font-medium shrink-0 transition-all ${
                     activeRoute === '/perusahaan/matching'
-                      ? 'bg-white text-[#176B4D] font-bold shadow-xs'
+                      ? 'bg-white text-[#2D6A4F] font-bold shadow-xs'
                       : 'bg-white/15 text-white hover:bg-white/25'
                   }`}
                 >
@@ -63,7 +63,7 @@ export const RoleDemoBanner: React.FC = () => {
                   onClick={() => setActiveRoute('/perusahaan/permintaan-baru')}
                   className={`px-2.5 py-1 rounded-full text-[11px] font-medium shrink-0 transition-all ${
                     activeRoute === '/perusahaan/permintaan-baru'
-                      ? 'bg-white text-[#176B4D] font-bold shadow-xs'
+                      ? 'bg-white text-[#2D6A4F] font-bold shadow-xs'
                       : 'bg-white/15 text-white hover:bg-white/25'
                   }`}
                 >
@@ -73,7 +73,7 @@ export const RoleDemoBanner: React.FC = () => {
                   onClick={() => setActiveRoute('/perusahaan/riwayat')}
                   className={`px-2.5 py-1 rounded-full text-[11px] font-medium shrink-0 transition-all ${
                     activeRoute === '/perusahaan/riwayat'
-                      ? 'bg-white text-[#176B4D] font-bold shadow-xs'
+                      ? 'bg-white text-[#2D6A4F] font-bold shadow-xs'
                       : 'bg-white/15 text-white hover:bg-white/25'
                   }`}
                 >
@@ -88,17 +88,17 @@ export const RoleDemoBanner: React.FC = () => {
                   onClick={() => setActiveRoute('/admin/dashboard')}
                   className={`px-2.5 py-1 rounded-full text-[11px] font-medium shrink-0 transition-all ${
                     activeRoute === '/admin/dashboard'
-                      ? 'bg-white text-[#176B4D] font-bold shadow-xs'
+                      ? 'bg-white text-[#2D6A4F] font-bold shadow-xs'
                       : 'bg-white/15 text-white hover:bg-white/25'
                   }`}
                 >
-                  Denah Tong Drop Point
+                  Dashboard Analitik
                 </button>
                 <button
                   onClick={() => setActiveRoute('/admin/unit-tong')}
                   className={`px-2.5 py-1 rounded-full text-[11px] font-medium shrink-0 transition-all ${
                     activeRoute === '/admin/unit-tong'
-                      ? 'bg-white text-[#176B4D] font-bold shadow-xs'
+                      ? 'bg-white text-[#2D6A4F] font-bold shadow-xs'
                       : 'bg-white/15 text-white hover:bg-white/25'
                   }`}
                 >
@@ -108,7 +108,7 @@ export const RoleDemoBanner: React.FC = () => {
                   onClick={() => setActiveRoute('/admin/laporan')}
                   className={`px-2.5 py-1 rounded-full text-[11px] font-medium shrink-0 transition-all ${
                     activeRoute === '/admin/laporan'
-                      ? 'bg-white text-[#176B4D] font-bold shadow-xs'
+                      ? 'bg-white text-[#2D6A4F] font-bold shadow-xs'
                       : 'bg-white/15 text-white hover:bg-white/25'
                   }`}
                 >
@@ -121,7 +121,7 @@ export const RoleDemoBanner: React.FC = () => {
               onClick={() => setActiveRoute('/leaderboard')}
               className={`px-2.5 py-1 rounded-full text-[11px] font-medium shrink-0 transition-all ${
                 activeRoute === '/leaderboard'
-                  ? 'bg-white text-[#176B4D] font-bold shadow-xs'
+                  ? 'bg-white text-[#2D6A4F] font-bold shadow-xs'
                   : 'bg-white/15 text-white hover:bg-white/25'
               }`}
             >
@@ -133,7 +133,7 @@ export const RoleDemoBanner: React.FC = () => {
           <div className="flex items-center gap-1.5 shrink-0">
             <button
               onClick={handleReset}
-              className="px-2 py-0.5 rounded text-[10px] bg-[#8B6045] hover:bg-[#633E25] text-white font-semibold transition-colors flex items-center gap-1"
+              className="px-2 py-0.5 rounded text-[10px] bg-[#C27D3A] hover:bg-[#633E25] text-white font-semibold transition-colors flex items-center gap-1"
               title="Kembalikan data ke awal simulasi demo"
             >
               <span className="material-symbols-outlined text-[13px]">restart_alt</span>

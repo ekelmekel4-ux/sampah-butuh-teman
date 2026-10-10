@@ -57,8 +57,8 @@ export const AdminUnitTongView: React.FC = () => {
   const getTongForUnit = (unitId: string) => tongList.find(t => t.unit_id === unitId);
 
   const getTongStatusStyle = (status: string) => {
-    if (status === 'siap_pickup') return { bg: 'bg-[#FFDBC8]', text: 'text-[#8B6045]', label: 'Siap Pickup', dot: 'bg-[#8B6045] animate-ping' };
-    if (status === 'terisi') return { bg: 'bg-[#A4F3CC]/30', text: 'text-[#176B4D]', label: 'Terisi', dot: 'bg-[#176B4D]' };
+    if (status === 'siap_pickup') return { bg: 'bg-[#FFDBC8]', text: 'text-[#C27D3A]', label: 'Siap Pickup', dot: 'bg-[#C27D3A] animate-ping' };
+    if (status === 'terisi') return { bg: 'bg-[#A4F3CC]/30', text: 'text-[#2D6A4F]', label: 'Terisi', dot: 'bg-[#2D6A4F]' };
     return { bg: 'bg-gray-100', text: 'text-gray-500', label: 'Kosong', dot: 'bg-gray-300' };
   };
 
@@ -67,20 +67,20 @@ export const AdminUnitTongView: React.FC = () => {
   const tongKosong = tongList.filter(t => t.status === 'kosong').length;
 
   return (
-    <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
+    <div className="w-full max-w-5xl mx-auto space-y-4">
 
       {/* Header */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-3">
+      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-[10px] font-bold text-[#176B4D] uppercase tracking-wider block">
-              Manajemen Drop Point
+            <span className="text-[10px] font-bold text-[#2D6A4F] uppercase tracking-wider block">
+              Manajemen Logistik Sirkular
             </span>
-            <h1 className="text-base font-bold text-[#1C1C16]">Kelola Unit & Tong</h1>
+            <h1 className="text-base font-bold text-[#1A2E22]">Kelola Unit & Wadah Kertas</h1>
           </div>
           <button
             onClick={() => setActiveRoute('/admin/dashboard')}
-            className="text-xs text-[#57635A] hover:text-[#176B4D] flex items-center gap-1 transition-colors cursor-pointer"
+            className="text-xs text-[#52645A] hover:text-[#2D6A4F] flex items-center gap-1 transition-colors cursor-pointer"
           >
             <span className="material-symbols-outlined text-sm">arrow_back</span>
             Dashboard
@@ -90,16 +90,16 @@ export const AdminUnitTongView: React.FC = () => {
         {/* Stats Row */}
         <div className="grid grid-cols-3 gap-2">
           <div className="p-2.5 bg-[#F7F3EA] rounded-xl text-center">
-            <span className="text-lg font-extrabold text-[#176B4D] block">{units.length}</span>
-            <span className="text-[10px] text-[#57635A]">Total Unit</span>
+            <span className="text-lg font-extrabold text-[#2D6A4F] block">{units.length}</span>
+            <span className="text-[10px] text-[#52645A]">Total Unit</span>
           </div>
           <div className="p-2.5 bg-[#A4F3CC]/20 rounded-xl text-center">
-            <span className="text-lg font-extrabold text-[#176B4D] block">{tongTerisi}</span>
-            <span className="text-[10px] text-[#57635A]">Tong Aktif</span>
+            <span className="text-lg font-extrabold text-[#2D6A4F] block">{tongTerisi}</span>
+            <span className="text-[10px] text-[#52645A]">Tong Aktif</span>
           </div>
           <div className="p-2.5 bg-gray-50 rounded-xl text-center">
             <span className="text-lg font-extrabold text-gray-500 block">{tongKosong}</span>
-            <span className="text-[10px] text-[#57635A]">Tong Kosong</span>
+            <span className="text-[10px] text-[#52645A]">Tong Kosong</span>
           </div>
         </div>
       </div>
@@ -112,26 +112,26 @@ export const AdminUnitTongView: React.FC = () => {
         </div>
       )}
 
-      {/* Sub-Tab Navigation: Denah Fisik & Log vs. Daftar Unit */}
+      {/* Sub-Tab Navigation */}
       <div className="bg-[#F1EEE5] p-1 rounded-xl flex items-center gap-1 text-xs">
         <button
           onClick={() => setActiveTab('denah')}
           className={`flex-1 py-2.5 rounded-lg text-center font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
             activeTab === 'denah'
-              ? 'bg-white text-[#176B4D] shadow-xs'
-              : 'text-[#57635A] hover:text-[#1C1C16]'
+              ? 'bg-white text-[#2D6A4F] shadow-xs'
+              : 'text-[#52645A] hover:text-[#1A2E22]'
           }`}
         >
           <span className="material-symbols-outlined text-base">grid_view</span>
-          <span>Denah Fisik & Log Drop Point</span>
+          <span>Status Wadah & Log Penyaluran</span>
         </button>
 
         <button
           onClick={() => setActiveTab('daftar_unit')}
           className={`flex-1 py-2.5 rounded-lg text-center font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
             activeTab === 'daftar_unit'
-              ? 'bg-white text-[#176B4D] shadow-xs'
-              : 'text-[#57635A] hover:text-[#1C1C16]'
+              ? 'bg-white text-[#2D6A4F] shadow-xs'
+              : 'text-[#52645A] hover:text-[#1A2E22]'
           }`}
         >
           <span className="material-symbols-outlined text-base">domain</span>
@@ -143,18 +143,18 @@ export const AdminUnitTongView: React.FC = () => {
       {activeTab === 'denah' && (
         <div className="space-y-4">
           {/* Denah Visual Terorganisir Per Baris (5 Kotak per Fakultas) */}
-          <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#176B4D]/10 space-y-4">
+          <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#2D6A4F]/10 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-gray-100">
               <div>
-                <h2 className="text-base font-black text-[#1C1C16] flex items-center gap-2">
-                  <span className="material-symbols-outlined text-lg text-[#176B4D]">floor</span>
+                <h2 className="text-base font-black text-[#1A2E22] flex items-center gap-2">
+                  <span className="material-symbols-outlined text-lg text-[#2D6A4F]">floor</span>
                   Denah Tong Drop Point Serbaguna (Tata Letak Per Baris)
                 </h2>
-                <p className="text-xs text-[#57635A] mt-0.5">
+                <p className="text-xs text-[#52645A] mt-0.5">
                   Tersusun rapi per baris fakultas (5 slot tong per baris, kapasitas maks 120 Kg per tong)
                 </p>
               </div>
-              <div className="flex items-center gap-3 text-[11px] text-[#57635A]">
+              <div className="flex items-center gap-3 text-[11px] text-[#52645A]">
                 <span className="flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-gray-300" />
                   <span>Standby (0 Kg)</span>
@@ -198,16 +198,16 @@ export const AdminUnitTongView: React.FC = () => {
                       {/* Row Header */}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 rounded-md bg-[#176B4D] text-white font-black text-[10px] tracking-wider">
+                          <span className="px-2 py-0.5 rounded-md bg-[#2D6A4F] text-white font-black text-[10px] tracking-wider">
                             BARIS {globalRowNumber}
                           </span>
-                          <strong className="text-xs text-[#1C1C16]">
+                          <strong className="text-xs text-[#1A2E22]">
                             {unit.nama_unit} ({unit.inisial})
                           </strong>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-[11px] text-[#57635A]">
-                            Akumulasi: <strong className="text-[#176B4D]">{rowTotalKg}</strong> Kg
+                          <span className="text-[11px] text-[#52645A]">
+                            Akumulasi: <strong className="text-[#2D6A4F]">{rowTotalKg}</strong> Kg
                           </span>
                           {hasFullTong && (
                             <span className="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[9px] font-black animate-pulse">
@@ -247,7 +247,7 @@ export const AdminUnitTongView: React.FC = () => {
                             >
                               {/* Box Header */}
                               <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-black text-[#1C1C16]">
+                                <span className="text-[10px] font-black text-[#1A2E22]">
                                   #{tongIdx + 1}
                                 </span>
                                 <span
@@ -270,7 +270,7 @@ export const AdminUnitTongView: React.FC = () => {
                                     isFull
                                       ? 'bg-rose-600 text-white shadow-xs'
                                       : isReady
-                                      ? 'bg-[#176B4D] text-white shadow-xs'
+                                      ? 'bg-[#2D6A4F] text-white shadow-xs'
                                       : isCollecting
                                       ? 'bg-amber-100 text-amber-900'
                                       : 'bg-gray-100 text-gray-500'
@@ -278,7 +278,7 @@ export const AdminUnitTongView: React.FC = () => {
                                 >
                                   {tong.nomor.replace(/^[^-]+-/, '')}
                                 </div>
-                                <div className="text-[10px] font-black text-[#1C1C16]">
+                                <div className="text-[10px] font-black text-[#1A2E22]">
                                   {tong.berat_kg} <span className="text-[8px] font-normal text-gray-500">Kg</span>
                                 </div>
                               </div>
@@ -300,7 +300,7 @@ export const AdminUnitTongView: React.FC = () => {
                                   />
                                 </div>
 
-                                <span className="text-[8px] text-[#57635A] truncate pt-0.5 border-t border-gray-100 block">
+                                <span className="text-[8px] text-[#52645A] truncate pt-0.5 border-t border-gray-100 block">
                                   {tong.tipe_kertas || 'Standby'}
                                 </span>
                               </div>
@@ -316,43 +316,43 @@ export const AdminUnitTongView: React.FC = () => {
           </div>
 
           {/* Log Aktivitas Drop Point Terkini */}
-          <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-3">
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#176B4D] text-lg">history</span>
-                <h3 className="text-sm font-bold text-[#1C1C16]">Log Aktivitas Drop Point Serbaguna</h3>
+                <span className="material-symbols-outlined text-[#2D6A4F] text-lg">history</span>
+                <h3 className="text-sm font-bold text-[#1A2E22]">Log Aktivitas Drop Point Serbaguna</h3>
               </div>
-              <span className="text-[10px] text-[#57635A]">Hari ini</span>
+              <span className="text-[10px] text-[#52645A]">Hari ini</span>
             </div>
 
             <div className="space-y-2 text-xs">
               <div className="flex items-start gap-2.5 p-2 rounded-lg bg-[#F7F3EA]">
-                <span className="material-symbols-outlined text-[#176B4D] text-base shrink-0 mt-0.5">
+                <span className="material-symbols-outlined text-[#2D6A4F] text-base shrink-0 mt-0.5">
                   move_to_inbox
                 </span>
                 <div className="flex-1 min-w-0">
-                  <span className="font-bold text-[#1C1C16]">FTD menyetorkan 15 Kg HVS</span>
-                  <p className="text-[11px] text-[#57635A]">Tersimpan di Tong FTD No. 1 • 14:30 WIB</p>
+                  <span className="font-bold text-[#1A2E22]">FTD menyetorkan 15 Kg HVS</span>
+                  <p className="text-[11px] text-[#52645A]">Tersimpan di Tong FTD No. 1 • 14:30 WIB</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-2.5 p-2 rounded-lg bg-[#F7F3EA]">
-                <span className="material-symbols-outlined text-[#8B6045] text-base shrink-0 mt-0.5">
+                <span className="material-symbols-outlined text-[#C27D3A] text-base shrink-0 mt-0.5">
                   local_shipping
                 </span>
                 <div className="flex-1 min-w-0">
-                  <span className="font-bold text-[#1C1C16]">PT Mandiri Daur Menjadwalkan Armada</span>
-                  <p className="text-[11px] text-[#57635A]">Truk Pickup B 9821 PQL siap ambil muatan • 12:00 WIB</p>
+                  <span className="font-bold text-[#1A2E22]">PT Mandiri Daur Menjadwalkan Armada</span>
+                  <p className="text-[11px] text-[#52645A]">Truk Pickup B 9821 PQL siap ambil muatan • 12:00 WIB</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-2.5 p-2 rounded-lg bg-[#F7F3EA]">
-                <span className="material-symbols-outlined text-[#176B4D] text-base shrink-0 mt-0.5">
+                <span className="material-symbols-outlined text-[#2D6A4F] text-base shrink-0 mt-0.5">
                   inventory_2
                 </span>
                 <div className="flex-1 min-w-0">
-                  <span className="font-bold text-[#1C1C16]">BAA menyetorkan 55 Kg Kardus Box</span>
-                  <p className="text-[11px] text-[#57635A]">Tersimpan di Tong BAA No. 1 • 09:15 WIB</p>
+                  <span className="font-bold text-[#1A2E22]">BAA menyetorkan 55 Kg Kardus Box</span>
+                  <p className="text-[11px] text-[#52645A]">Tersimpan di Tong BAA No. 1 • 09:15 WIB</p>
                 </div>
               </div>
             </div>
@@ -371,7 +371,7 @@ export const AdminUnitTongView: React.FC = () => {
                   key={jenis}
                   onClick={() => setFilterJenis(jenis)}
                   className={`flex-1 py-1.5 rounded-lg text-center font-semibold transition-all capitalize cursor-pointer ${
-                    filterJenis === jenis ? 'bg-white text-[#176B4D] shadow-xs' : 'text-[#57635A]'
+                    filterJenis === jenis ? 'bg-white text-[#2D6A4F] shadow-xs' : 'text-[#52645A]'
                   }`}
                 >
                   {jenis === 'semua' ? 'Semua' : jenis.charAt(0).toUpperCase() + jenis.slice(1)}
@@ -380,7 +380,7 @@ export const AdminUnitTongView: React.FC = () => {
             </div>
             <button
               onClick={() => setShowAddModal(true)}
-              className="px-3 py-2.5 rounded-xl bg-[#176B4D] hover:bg-[#005138] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs whitespace-nowrap transition-all cursor-pointer"
+              className="px-3 py-2.5 rounded-xl bg-[#2D6A4F] hover:bg-[#005138] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs whitespace-nowrap transition-all cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm">add_circle</span>
               + Unit Baru
@@ -397,7 +397,7 @@ export const AdminUnitTongView: React.FC = () => {
               return (
                 <div
                   key={unit.id}
-                  className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/8 space-y-3"
+                  className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/8 space-y-3"
                 >
                   {/* Unit Header */}
                   <div className="flex items-start justify-between gap-3">
@@ -406,8 +406,8 @@ export const AdminUnitTongView: React.FC = () => {
                         {unit.inisial}
                       </div>
                       <div>
-                        <h3 className="text-xs font-bold text-[#1C1C16]">{unit.nama_unit}</h3>
-                        <p className="text-[11px] text-[#57635A] mt-0.5">{unit.lokasi_detail}</p>
+                        <h3 className="text-xs font-bold text-[#1A2E22]">{unit.nama_unit}</h3>
+                        <p className="text-[11px] text-[#52645A] mt-0.5">{unit.lokasi_detail}</p>
                         <div className="flex items-center gap-1 mt-0.5">
                           <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded capitalize ${
                             unit.jenis === 'fakultas' ? 'bg-blue-50 text-blue-600' :
@@ -420,7 +420,7 @@ export const AdminUnitTongView: React.FC = () => {
                     </div>
                     <div className="text-right shrink-0">
                       <span className="text-sm font-extrabold text-[#005138] block">{unit.total_kg_tersalurkan} Kg</span>
-                      <span className="text-[10px] text-[#8B6045] font-semibold">{unit.eco_points} Pts</span>
+                      <span className="text-[10px] text-[#C27D3A] font-semibold">{unit.eco_points} Pts</span>
                     </div>
                   </div>
 
@@ -434,26 +434,26 @@ export const AdminUnitTongView: React.FC = () => {
                             {tong.nama_tong} — {statusStyle?.label}
                           </span>
                         </div>
-                        <span className="text-[10px] text-[#57635A] font-mono">{tong.nomor}</span>
+                        <span className="text-[10px] text-[#52645A] font-mono">{tong.nomor}</span>
                       </div>
 
                       {/* Progress bar */}
                       <div>
                         <div className="flex justify-between text-[10px] mb-1">
-                          <span className="text-[#57635A]">{tong.berat_kg} Kg terisi</span>
-                          <span className="font-bold text-[#1C1C16]">{loadPercent}% dari {tong.kapasitas_max_kg} Kg</span>
+                          <span className="text-[#52645A]">{tong.berat_kg} Kg terisi</span>
+                          <span className="font-bold text-[#1A2E22]">{loadPercent}% dari {tong.kapasitas_max_kg} Kg</span>
                         </div>
                         <div className="w-full bg-white/60 rounded-full h-2 overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-all ${
-                              loadPercent > 80 ? 'bg-red-500' : loadPercent > 50 ? 'bg-[#8B6045]' : 'bg-[#176B4D]'
+                              loadPercent > 80 ? 'bg-red-500' : loadPercent > 50 ? 'bg-[#C27D3A]' : 'bg-[#2D6A4F]'
                             }`}
                             style={{ width: `${loadPercent}%` }}
                           />
                         </div>
                       </div>
 
-                      <div className="text-[10px] text-[#57635A]">
+                      <div className="text-[10px] text-[#52645A]">
                         {tong.lokasi_spesifik} • {tong.tipe_kertas}
                       </div>
                     </div>
@@ -464,7 +464,7 @@ export const AdminUnitTongView: React.FC = () => {
                   )}
 
                   {/* PIC Info */}
-                  <div className="flex items-center justify-between text-[11px] text-[#57635A] border-t border-gray-100 pt-2">
+                  <div className="flex items-center justify-between text-[11px] text-[#52645A] border-t border-gray-100 pt-2">
                     <span className="flex items-center gap-1">
                       <span className="material-symbols-outlined text-xs">person</span>
                       PIC: {unit.pic_nama}
@@ -482,7 +482,7 @@ export const AdminUnitTongView: React.FC = () => {
                         setActionNotice(`Notifikasi pengisian tong dikirim ke PIC ${unit.nama_unit}.`);
                         setTimeout(() => setActionNotice(null), 3000);
                       }}
-                      className="py-2 px-3 rounded-lg bg-[#F7F3EA] text-[#57635A] text-[11px] font-semibold hover:bg-[#ECE8DF] flex items-center justify-center gap-1 transition-all cursor-pointer"
+                      className="py-2 px-3 rounded-lg bg-[#F7F3EA] text-[#52645A] text-[11px] font-semibold hover:bg-[#ECE8DF] flex items-center justify-center gap-1 transition-all cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-xs">notifications</span>
                       Notif PIC
@@ -492,7 +492,7 @@ export const AdminUnitTongView: React.FC = () => {
                         setActionNotice(`Status tong ${tong?.nama_tong || unit.tong_nama} berhasil di-reset ke Kosong.`);
                         setTimeout(() => setActionNotice(null), 3000);
                       }}
-                      className="py-2 px-3 rounded-lg bg-[#F7F3EA] text-[#57635A] text-[11px] font-semibold hover:bg-[#ECE8DF] flex items-center justify-center gap-1 transition-all cursor-pointer"
+                      className="py-2 px-3 rounded-lg bg-[#F7F3EA] text-[#52645A] text-[11px] font-semibold hover:bg-[#ECE8DF] flex items-center justify-center gap-1 transition-all cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-xs">refresh</span>
                       Reset Tong
@@ -515,11 +515,11 @@ export const AdminUnitTongView: React.FC = () => {
       {/* Modal Add Unit */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-3 shadow-2xl animate-in zoom-in-95 border border-[#176B4D]/20 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-3 shadow-2xl animate-in zoom-in-95 border border-[#2D6A4F]/20 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-2 border-b border-gray-100">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#176B4D]">add_circle</span>
-                <h3 className="font-bold text-sm text-[#1C1C16]">Daftarkan Unit & Tong Baru</h3>
+                <span className="material-symbols-outlined text-[#2D6A4F]">add_circle</span>
+                <h3 className="font-bold text-sm text-[#1A2E22]">Daftarkan Unit & Tong Baru</h3>
               </div>
               <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-700 cursor-pointer">✕</button>
             </div>
@@ -533,7 +533,7 @@ export const AdminUnitTongView: React.FC = () => {
                   onChange={e => setNewUnitNama(e.target.value)}
                   placeholder="Contoh: Fakultas Kedokteran"
                   required
-                  className="w-full p-2.5 rounded-lg border border-gray-200 bg-gray-50 outline-none focus:border-[#176B4D]"
+                  className="w-full p-2.5 rounded-lg border border-gray-200 bg-gray-50 outline-none focus:border-[#2D6A4F]"
                 />
               </div>
 
@@ -547,7 +547,7 @@ export const AdminUnitTongView: React.FC = () => {
                     placeholder="FK"
                     maxLength={6}
                     required
-                    className="w-full p-2.5 rounded-lg border border-gray-200 bg-gray-50 outline-none uppercase font-bold focus:border-[#176B4D]"
+                    className="w-full p-2.5 rounded-lg border border-gray-200 bg-gray-50 outline-none uppercase font-bold focus:border-[#2D6A4F]"
                   />
                 </div>
                 <div>
@@ -571,7 +571,7 @@ export const AdminUnitTongView: React.FC = () => {
                   value={newUnitLokasi}
                   onChange={e => setNewUnitLokasi(e.target.value)}
                   placeholder="Gedung C Lantai 2"
-                  className="w-full p-2.5 rounded-lg border border-gray-200 bg-gray-50 outline-none focus:border-[#176B4D]"
+                  className="w-full p-2.5 rounded-lg border border-gray-200 bg-gray-50 outline-none focus:border-[#2D6A4F]"
                 />
               </div>
 
@@ -583,7 +583,7 @@ export const AdminUnitTongView: React.FC = () => {
                     value={newPicNama}
                     onChange={e => setNewPicNama(e.target.value)}
                     placeholder="Nama PIC"
-                    className="w-full p-2.5 rounded-lg border border-gray-200 bg-gray-50 outline-none focus:border-[#176B4D]"
+                    className="w-full p-2.5 rounded-lg border border-gray-200 bg-gray-50 outline-none focus:border-[#2D6A4F]"
                   />
                 </div>
                 <div>
@@ -593,7 +593,7 @@ export const AdminUnitTongView: React.FC = () => {
                     value={newKontakPic}
                     onChange={e => setNewKontakPic(e.target.value)}
                     placeholder="0812xxxx"
-                    className="w-full p-2.5 rounded-lg border border-gray-200 bg-gray-50 outline-none focus:border-[#176B4D]"
+                    className="w-full p-2.5 rounded-lg border border-gray-200 bg-gray-50 outline-none focus:border-[#2D6A4F]"
                   />
                 </div>
               </div>
@@ -630,7 +630,7 @@ export const AdminUnitTongView: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 rounded-xl bg-[#176B4D] hover:bg-[#005138] text-white font-bold transition-all shadow-xs cursor-pointer"
+                  className="flex-1 py-2.5 rounded-xl bg-[#2D6A4F] hover:bg-[#005138] text-white font-bold transition-all shadow-xs cursor-pointer"
                 >
                   Simpan & Alokasikan
                 </button>
@@ -643,15 +643,15 @@ export const AdminUnitTongView: React.FC = () => {
       {/* Modal Tong Detail & Empty Action */}
       {selectedTong && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl animate-in zoom-in-95 border border-[#176B4D]/20">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl animate-in zoom-in-95 border border-[#2D6A4F]/20">
             <div className="flex items-center justify-between pb-2 border-b border-gray-100">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#176B4D] text-white flex items-center justify-center font-bold text-xs">
+                <div className="w-8 h-8 rounded-lg bg-[#2D6A4F] text-white flex items-center justify-center font-bold text-xs">
                   {selectedTong.nomor.split('-')[1] || '01'}
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-[#1C1C16]">Detail {selectedTong.nama_tong}</h3>
-                  <p className="text-[10px] text-[#57635A] font-mono">{selectedTong.nomor}</p>
+                  <h3 className="font-bold text-sm text-[#1A2E22]">Detail {selectedTong.nama_tong}</h3>
+                  <p className="text-[10px] text-[#52645A] font-mono">{selectedTong.nomor}</p>
                 </div>
               </div>
               <button
@@ -666,7 +666,7 @@ export const AdminUnitTongView: React.FC = () => {
             {/* Status & Load Display */}
             <div className="p-3 rounded-xl bg-gray-50 border border-gray-100 space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-[#57635A]">Status Muatan:</span>
+                <span className="text-[#52645A]">Status Muatan:</span>
                 <span
                   className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
                     selectedTong.berat_kg >= selectedTong.kapasitas_max_kg
@@ -689,11 +689,11 @@ export const AdminUnitTongView: React.FC = () => {
               </div>
 
               <div className="text-center py-1">
-                <div className="text-3xl font-black text-[#1C1C16]">
+                <div className="text-3xl font-black text-[#1A2E22]">
                   {selectedTong.berat_kg}{' '}
-                  <span className="text-sm font-bold text-[#57635A]">/ {selectedTong.kapasitas_max_kg} Kg</span>
+                  <span className="text-sm font-bold text-[#52645A]">/ {selectedTong.kapasitas_max_kg} Kg</span>
                 </div>
-                <p className="text-xs text-[#57635A] mt-0.5">
+                <p className="text-xs text-[#52645A] mt-0.5">
                   Sisa Kapasitas: <strong>{Math.max(0, selectedTong.kapasitas_max_kg - selectedTong.berat_kg)} Kg</strong>
                 </p>
               </div>
@@ -726,7 +726,7 @@ export const AdminUnitTongView: React.FC = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Tipe Kertas Tampung:</span>
-                  <strong className="text-[#176B4D]">{selectedTong.tipe_kertas || 'Campur Bersih'}</strong>
+                  <strong className="text-[#2D6A4F]">{selectedTong.tipe_kertas || 'Campur Bersih'}</strong>
                 </div>
                 {selectedTong.catatan && (
                   <div className="flex justify-between pt-1 border-t border-gray-200/60">

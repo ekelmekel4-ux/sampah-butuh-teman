@@ -4,7 +4,7 @@ import { APP_BRAND } from '../data/initialData';
 import { UserRole } from '../types';
 
 export const LandingAuthView: React.FC = () => {
-  const { setRole, setActiveRoute } = useApp();
+  const { setRole, setActiveRoute, login } = useApp();
   const [authMode, setAuthMode] = useState<'login' | 'register'>('register');
   const [selectedRole, setSelectedRole] = useState<'unit' | 'mitra'>('unit');
   const [showPassword, setShowPassword] = useState(false);
@@ -20,9 +20,21 @@ export const LandingAuthView: React.FC = () => {
   const [agreed, setAgreed] = useState(true);
   const [successNotice, setSuccessNotice] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const roleTarget: UserRole = selectedRole === 'unit' ? 'unit' : 'perusahaan';
+    
+    if (authMode === 'login') {
+      const { success, message } = await login(email, password);
+      if (!success) {
+        setSuccessNotice(message || 'Login gagal');
+        return;
+      }
+    } else {
+      // Basic mock registration for prototype
+      setRole(roleTarget);
+    }
+    
     setRole(roleTarget);
 
     const actionText = authMode === 'login' ? 'Masuk' : 'Pendaftaran';
@@ -31,18 +43,19 @@ export const LandingAuthView: React.FC = () => {
 
     setTimeout(() => {
       if (roleTarget === 'unit') {
-        setActiveRoute('/unit/posting-baru');
+        setActiveRoute('/unit/beranda');
       } else {
-        setActiveRoute('/perusahaan/matching');
+        setActiveRoute('/perusahaan/dashboard');
       }
     }, 1200);
   };
 
-  const handleSSO = () => {
+  const handleSSO = async () => {
+    await login('penyalur@ft.univ.ac.id');
     setRole('unit');
     setSuccessNotice('Autentikasi SSO Kampus Terpadu Berhasil! Mengalihkan...');
     setTimeout(() => {
-      setActiveRoute('/unit/posting-baru');
+      setActiveRoute('/unit/beranda');
     }, 1000);
   };
 
@@ -104,7 +117,7 @@ export const LandingAuthView: React.FC = () => {
 
       {/* Role Selection */}
       <div className="px-4 mt-4">
-        <label className="text-xs text-[#1C1C16] font-bold mb-2 block">
+        <label className="text-xs text-[#1A2E22] font-bold mb-2 block">
           Pilih Peran Anda
         </label>
         <div className="grid grid-cols-1 gap-2.5">
@@ -126,7 +139,7 @@ export const LandingAuthView: React.FC = () => {
                 className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
                   selectedRole === 'unit'
                     ? 'bg-[#A4F3CC] text-[#005138]'
-                    : 'bg-[#E6E2D9] text-[#6F7A73]'
+                    : 'bg-[#E6E2D9] text-[#8CA090]'
                 }`}
               >
                 <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
@@ -168,7 +181,7 @@ export const LandingAuthView: React.FC = () => {
                 className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
                   selectedRole === 'mitra'
                     ? 'bg-[#FFDBC8] text-[#7E553B]'
-                    : 'bg-[#E6E2D9] text-[#6F7A73]'
+                    : 'bg-[#E6E2D9] text-[#8CA090]'
                 }`}
               >
                 <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
@@ -177,7 +190,7 @@ export const LandingAuthView: React.FC = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-1">
-                  <span className="text-sm text-[#1C1C16] font-bold">Mitra Industri</span>
+                  <span className="text-sm text-[#1A2E22] font-bold">Mitra Industri</span>
                   <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#E6E2D9] text-[#3F4943] font-bold">
                     Penerima
                   </span>
@@ -196,75 +209,75 @@ export const LandingAuthView: React.FC = () => {
 
       {/* Main Form Box */}
       <div className="px-4 mt-4">
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-[#176B4D]/10">
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-[#2D6A4F]/10">
           <form onSubmit={handleSubmit} className="space-y-3.5">
             {/* Conditional Fields: Register Mode */}
             {authMode === 'register' && selectedRole === 'unit' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-semibold text-[#1C1C16] mb-1">
+                  <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Nama Unit / Fakultas
                   </label>
                   <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
-                    <span className="material-symbols-outlined text-[#6F7A73] mr-2 text-lg">domain</span>
+                    <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">domain</span>
                     <input
                       type="text"
                       value={unitName}
                       onChange={e => setUnitName(e.target.value)}
                       required
                       placeholder="Contoh: Fakultas Teknik & Desain"
-                      className="w-full bg-transparent border-none outline-none text-xs text-[#1C1C16] placeholder:text-[#6F7A73]"
+                      className="w-full bg-transparent border-none outline-none text-xs text-[#1A2E22] placeholder:text-[#8CA090]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#1C1C16] mb-1">
+                  <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Penanggung Jawab (PIC)
                   </label>
                   <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
-                    <span className="material-symbols-outlined text-[#6F7A73] mr-2 text-lg">badge</span>
+                    <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">badge</span>
                     <input
                       type="text"
                       value={picName}
                       onChange={e => setPicName(e.target.value)}
                       required
                       placeholder="Nama lengkap koordinator unit"
-                      className="w-full bg-transparent border-none outline-none text-xs text-[#1C1C16] placeholder:text-[#6F7A73]"
+                      className="w-full bg-transparent border-none outline-none text-xs text-[#1A2E22] placeholder:text-[#8CA090]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#1C1C16] mb-1">
+                  <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Email Institusi Resmi
                   </label>
                   <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
-                    <span className="material-symbols-outlined text-[#6F7A73] mr-2 text-lg">alternate_email</span>
+                    <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">alternate_email</span>
                     <input
                       type="email"
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       required
                       placeholder="penyalur@ft.univ.ac.id"
-                      className="w-full bg-transparent border-none outline-none text-xs text-[#1C1C16] placeholder:text-[#6F7A73]"
+                      className="w-full bg-transparent border-none outline-none text-xs text-[#1A2E22] placeholder:text-[#8CA090]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#1C1C16] mb-1">
+                  <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Nomor WhatsApp PIC
                   </label>
                   <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
-                    <span className="material-symbols-outlined text-[#6F7A73] mr-2 text-lg">call</span>
+                    <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">call</span>
                     <input
                       type="tel"
                       value={phone}
                       onChange={e => setPhone(e.target.value)}
                       required
                       placeholder="081234567890"
-                      className="w-full bg-transparent border-none outline-none text-xs text-[#1C1C16] placeholder:text-[#6F7A73]"
+                      className="w-full bg-transparent border-none outline-none text-xs text-[#1A2E22] placeholder:text-[#8CA090]"
                     />
                   </div>
                 </div>
@@ -274,65 +287,65 @@ export const LandingAuthView: React.FC = () => {
             {authMode === 'register' && selectedRole === 'mitra' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-semibold text-[#1C1C16] mb-1">
+                  <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Nama PT / Entitas Pabrik
                   </label>
                   <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
-                    <span className="material-symbols-outlined text-[#6F7A73] mr-2 text-lg">corporate_fare</span>
+                    <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">corporate_fare</span>
                     <input
                       type="text"
                       defaultValue="PT Mandiri Daur Lestari"
                       required
                       placeholder="Contoh: PT Mandiri Daur Lestari"
-                      className="w-full bg-transparent border-none outline-none text-xs text-[#1C1C16] placeholder:text-[#6F7A73]"
+                      className="w-full bg-transparent border-none outline-none text-xs text-[#1A2E22] placeholder:text-[#8CA090]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#1C1C16] mb-1">
+                  <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Nomor Induk Berusaha (NIB / Izin)
                   </label>
                   <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
-                    <span className="material-symbols-outlined text-[#6F7A73] mr-2 text-lg">verified</span>
+                    <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">verified</span>
                     <input
                       type="text"
                       defaultValue="9120001234567"
                       required
                       placeholder="9120001234567"
-                      className="w-full bg-transparent border-none outline-none text-xs text-[#1C1C16] placeholder:text-[#6F7A73]"
+                      className="w-full bg-transparent border-none outline-none text-xs text-[#1A2E22] placeholder:text-[#8CA090]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#1C1C16] mb-1">
+                  <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Email Logistik Perusahaan
                   </label>
                   <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
-                    <span className="material-symbols-outlined text-[#6F7A73] mr-2 text-lg">mail</span>
+                    <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">mail</span>
                     <input
                       type="email"
                       defaultValue="logistik@daurlestari.co.id"
                       required
                       placeholder="logistik@daurlestari.co.id"
-                      className="w-full bg-transparent border-none outline-none text-xs text-[#1C1C16] placeholder:text-[#6F7A73]"
+                      className="w-full bg-transparent border-none outline-none text-xs text-[#1A2E22] placeholder:text-[#8CA090]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#1C1C16] mb-1">
+                  <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     WhatsApp Dispatcher Logistik
                   </label>
                   <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
-                    <span className="material-symbols-outlined text-[#6F7A73] mr-2 text-lg">local_shipping</span>
+                    <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">local_shipping</span>
                     <input
                       type="tel"
                       defaultValue="081987654321"
                       required
                       placeholder="081987654321"
-                      className="w-full bg-transparent border-none outline-none text-xs text-[#1C1C16] placeholder:text-[#6F7A73]"
+                      className="w-full bg-transparent border-none outline-none text-xs text-[#1A2E22] placeholder:text-[#8CA090]"
                     />
                   </div>
                 </div>
@@ -343,18 +356,18 @@ export const LandingAuthView: React.FC = () => {
             {authMode === 'login' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-semibold text-[#1C1C16] mb-1">
+                  <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Email Akun Terdaftar
                   </label>
                   <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
-                    <span className="material-symbols-outlined text-[#6F7A73] mr-2 text-lg">mail</span>
+                    <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">mail</span>
                     <input
                       type="email"
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       required
                       placeholder="nama@institusi.ac.id atau nama@mitra.com"
-                      className="w-full bg-transparent border-none outline-none text-xs text-[#1C1C16] placeholder:text-[#6F7A73]"
+                      className="w-full bg-transparent border-none outline-none text-xs text-[#1A2E22] placeholder:text-[#8CA090]"
                     />
                   </div>
                 </div>
@@ -363,23 +376,23 @@ export const LandingAuthView: React.FC = () => {
 
             {/* Password */}
             <div>
-              <label className="block text-xs font-semibold text-[#1C1C16] mb-1">
+              <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                 Kata Sandi
               </label>
               <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5 relative">
-                <span className="material-symbols-outlined text-[#6F7A73] mr-2 text-lg">lock</span>
+                <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">lock</span>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
                   placeholder="Minimal 8 karakter"
-                  className="w-full bg-transparent border-none outline-none text-xs text-[#1C1C16] placeholder:text-[#6F7A73] pr-8"
+                  className="w-full bg-transparent border-none outline-none text-xs text-[#1A2E22] placeholder:text-[#8CA090] pr-8"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 text-[#6F7A73] hover:text-[#1C1C16]"
+                  className="absolute right-3 text-[#8CA090] hover:text-[#1A2E22]"
                 >
                   <span className="material-symbols-outlined text-lg">
                     {showPassword ? 'visibility_off' : 'visibility'}
@@ -391,23 +404,23 @@ export const LandingAuthView: React.FC = () => {
             {/* Confirm Password (Register mode) */}
             {authMode === 'register' && (
               <div>
-                <label className="block text-xs font-semibold text-[#1C1C16] mb-1">
+                <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                   Konfirmasi Kata Sandi
                 </label>
                 <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5 relative">
-                  <span className="material-symbols-outlined text-[#6F7A73] mr-2 text-lg">lock_reset</span>
+                  <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">lock_reset</span>
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={e => setConfirmPassword(e.target.value)}
                     required
                     placeholder="Ulangi kata sandi Anda"
-                    className="w-full bg-transparent border-none outline-none text-xs text-[#1C1C16] placeholder:text-[#6F7A73] pr-8"
+                    className="w-full bg-transparent border-none outline-none text-xs text-[#1A2E22] placeholder:text-[#8CA090] pr-8"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 text-[#6F7A73] hover:text-[#1C1C16]"
+                    className="absolute right-3 text-[#8CA090] hover:text-[#1A2E22]"
                   >
                     <span className="material-symbols-outlined text-lg">
                       {showConfirmPassword ? 'visibility_off' : 'visibility'}
@@ -441,7 +454,7 @@ export const LandingAuthView: React.FC = () => {
                 type="submit"
                 className={`w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] transition-all text-white ${
                   selectedRole === 'unit'
-                    ? 'bg-[#005138] hover:bg-[#176B4D]'
+                    ? 'bg-[#005138] hover:bg-[#2D6A4F]'
                     : 'bg-[#7E553B] hover:bg-[#633E25]'
                 }`}
               >
@@ -473,7 +486,7 @@ export const LandingAuthView: React.FC = () => {
       <div className="px-4 mt-4 flex flex-col items-center gap-3 text-center">
         <div className="flex items-center justify-center gap-2 w-full max-w-xs">
           <div className="h-[1px] bg-[#E6E2D9] flex-1"></div>
-          <span className="text-[10px] font-bold text-[#6F7A73] uppercase tracking-wider">
+          <span className="text-[10px] font-bold text-[#8CA090] uppercase tracking-wider">
             Atau Akses Cepat
           </span>
           <div className="h-[1px] bg-[#E6E2D9] flex-1"></div>
@@ -482,7 +495,7 @@ export const LandingAuthView: React.FC = () => {
         <button
           type="button"
           onClick={handleSSO}
-          className="w-full max-w-sm py-2.5 px-4 rounded-xl bg-[#ECE8DF] hover:bg-[#E6E2D9] text-[#1C1C16] text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-all"
+          className="w-full max-w-sm py-2.5 px-4 rounded-xl bg-[#ECE8DF] hover:bg-[#E6E2D9] text-[#1A2E22] text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-all"
         >
           <span className="material-symbols-outlined text-[#005138] text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
             domain_verification
@@ -506,12 +519,12 @@ export const LandingAuthView: React.FC = () => {
 
       {/* Live Campus Metric Badge */}
       <div className="px-4 mt-6">
-        <div className="p-3.5 rounded-xl bg-[#F7F3EA] border border-[#176B4D]/10 flex items-center gap-3">
+        <div className="p-3.5 rounded-xl bg-[#F7F3EA] border border-[#2D6A4F]/10 flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-[#9CF2B5] flex items-center justify-center text-[#157140] shrink-0">
             <span className="material-symbols-outlined text-xl">workspace_premium</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-[#1C1C16]">Terkoneksi 12 Fakultas & 8 Mitra Daur</p>
+            <p className="text-xs font-bold text-[#1A2E22]">Terkoneksi 12 Fakultas & 8 Mitra Daur</p>
             <p className="text-[11px] text-[#3F4943] truncate">3.480 kg kertas tersortir bulan ini secara mandiri.</p>
           </div>
         </div>

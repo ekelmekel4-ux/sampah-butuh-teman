@@ -2,28 +2,29 @@ import React from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Navbar } from './components/Navbar';
 import { BottomNav } from './components/BottomNav';
+import { AdminLayout } from './components/AdminLayout';
 import { OnboardingView } from './views/OnboardingView';
 import { AuthGateView } from './views/AuthGateView';
-import { LoginPenyalurView } from './views/auth/LoginPenyalurView';
+import { LoginView } from './views/auth/LoginView';
 import { RegisterPenyalurView } from './views/auth/RegisterPenyalurView';
-import { LoginPenerimaView } from './views/auth/LoginPenerimaView';
 import { RegisterPenerimaView } from './views/auth/RegisterPenerimaView';
-import { LoginAdminView } from './views/auth/LoginAdminView';
 import { LeaderboardView } from './views/LeaderboardView';
 import { UnitBerandaView } from './views/UnitBerandaView';
+import { UnitDompetView } from './views/UnitDompetView';
 import { UnitSetorKertasView } from './views/UnitSetorKertasView';
 import { UnitStatusView } from './views/UnitStatusView';
+import { PerusahaanDashboardView } from './views/PerusahaanDashboardView';
 import { PerusahaanPermintaanView } from './views/PerusahaanPermintaanView';
-import { PerusahaanMatchingView } from './views/PerusahaanMatchingView';
 import { PerusahaanJadwalView } from './views/PerusahaanJadwalView';
 import { PerusahaanListingDetailView } from './views/PerusahaanListingDetailView';
 import { PerusahaanRiwayatView } from './views/PerusahaanRiwayatView';
+import { PerusahaanProfilView } from './views/PerusahaanProfilView';
 import { AdminDashboardView } from './views/AdminDashboardView';
 import { AdminUnitTongView } from './views/AdminUnitTongView';
 import { AdminLaporanView } from './views/AdminLaporanView';
 
 const MainContent: React.FC = () => {
-  const { isLoggedIn, hasSeenOnboarding, authStep, activeRoute } = useApp();
+  const { isLoggedIn, hasSeenOnboarding, authStep, activeRoute, role } = useApp();
 
   // 1. Onboarding Screen (first time)
   if (!hasSeenOnboarding || authStep === 'onboarding') {
@@ -33,16 +34,12 @@ const MainContent: React.FC = () => {
   // 2. Authentication Flow (before logged in)
   if (!isLoggedIn) {
     switch (authStep) {
-      case 'login-penyalur':
-        return <LoginPenyalurView />;
+      case 'login':
+        return <LoginView />;
       case 'register-penyalur':
         return <RegisterPenyalurView />;
-      case 'login-penerima':
-        return <LoginPenerimaView />;
       case 'register-penerima':
         return <RegisterPenerimaView />;
-      case 'login-admin':
-        return <LoginAdminView />;
       case 'gate':
       default:
         return <AuthGateView />;
@@ -55,6 +52,9 @@ const MainContent: React.FC = () => {
       case '/unit/beranda':
         return <UnitBerandaView />;
 
+      case '/unit/dompet':
+        return <UnitDompetView />;
+
       case '/unit/setor-kertas':
       case '/unit/posting-baru':
         return <UnitSetorKertasView />;
@@ -65,8 +65,10 @@ const MainContent: React.FC = () => {
       case '/perusahaan/permintaan-baru':
         return <PerusahaanPermintaanView />;
 
+      case '/perusahaan/dashboard':
+      case '/perusahaan/pasokan':
       case '/perusahaan/matching':
-        return <PerusahaanMatchingView />;
+        return <PerusahaanDashboardView />;
 
       case '/perusahaan/jadwal':
         return <PerusahaanJadwalView />;
@@ -76,6 +78,9 @@ const MainContent: React.FC = () => {
 
       case '/perusahaan/riwayat':
         return <PerusahaanRiwayatView />;
+
+      case '/perusahaan/profil':
+        return <PerusahaanProfilView />;
 
       case '/admin/dashboard':
         return <AdminDashboardView />;
@@ -93,8 +98,16 @@ const MainContent: React.FC = () => {
     }
   };
 
+  if (role === 'admin') {
+    return (
+      <AdminLayout>
+        {renderCurrentView()}
+      </AdminLayout>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#F5F1E8] text-[#1C1C16] font-sans antialiased flex flex-col selection:bg-[#176B4D] selection:text-white">
+    <div className="min-h-screen bg-[#FAFAF7] text-[#1A2E22] font-sans antialiased flex flex-col selection:bg-[#2D6A4F]/20 selection:text-[#2D6A4F]">
       {/* Top Fixed Header with role badge and logout */}
       <Navbar />
 

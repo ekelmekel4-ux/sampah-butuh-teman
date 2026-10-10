@@ -78,9 +78,9 @@ export const UnitPostingView: React.FC = () => {
   return (
     <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
       {/* Unit Profile Header Card */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-3">
+      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-3">
         <div className="flex items-start gap-3">
-          <div className="w-12 h-12 rounded-xl bg-[#176B4D] text-white flex items-center justify-center shrink-0 shadow-sm">
+          <div className="w-12 h-12 rounded-xl bg-[#2D6A4F] text-white flex items-center justify-center shrink-0 shadow-sm">
             <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
               account_balance
             </span>
@@ -90,14 +90,14 @@ export const UnitPostingView: React.FC = () => {
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#9CF2B5] text-[#157140]">
                 UNIT TERVERIFIKASI
               </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FFDBC8] text-[#8B6045]">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FFDBC8] text-[#C27D3A]">
                 {assignedTong.nama_tong}
               </span>
             </div>
-            <h2 className="text-base font-bold text-[#1C1C16] truncate mt-1">
+            <h2 className="text-base font-bold text-[#1A2E22] truncate mt-1">
               {currentUnit.nama_unit}
             </h2>
-            <p className="text-xs text-[#57635A] truncate">
+            <p className="text-xs text-[#52645A] truncate">
               {currentUnit.lokasi_detail}
             </p>
           </div>
@@ -110,7 +110,7 @@ export const UnitPostingView: React.FC = () => {
               <span className="material-symbols-outlined text-xl">eco</span>
             </div>
             <div>
-              <span className="text-[10px] font-semibold text-[#57635A] block uppercase tracking-wider">
+              <span className="text-[10px] font-semibold text-[#52645A] block uppercase tracking-wider">
                 ECO-POINTS
               </span>
               <span className="text-base font-extrabold text-[#005138]">
@@ -120,15 +120,15 @@ export const UnitPostingView: React.FC = () => {
           </div>
 
           <div className="bg-[#F7F3EA] rounded-xl p-3 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-[#FFDBC8] flex items-center justify-center text-[#8B6045]">
+            <div className="w-9 h-9 rounded-lg bg-[#FFDBC8] flex items-center justify-center text-[#C27D3A]">
               <span className="material-symbols-outlined text-xl">military_tech</span>
             </div>
             <div>
-              <span className="text-[10px] font-semibold text-[#57635A] block uppercase tracking-wider">
+              <span className="text-[10px] font-semibold text-[#52645A] block uppercase tracking-wider">
                 PERINGKAT
               </span>
-              <span className="text-base font-extrabold text-[#8B6045]">
-                #1 <span className="text-xs font-normal text-[#57635A]">Se-Kampus</span>
+              <span className="text-base font-extrabold text-[#C27D3A]">
+                #1 <span className="text-xs font-normal text-[#52645A]">Se-Kampus</span>
               </span>
             </div>
           </div>
@@ -136,13 +136,13 @@ export const UnitPostingView: React.FC = () => {
       </div>
 
       {/* Main Form: Input Setor Kertas Baru */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-4">
+      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-4">
         <div className="flex items-center justify-between border-b border-gray-100 pb-2">
           <div className="flex items-center gap-2">
-            <div className="w-1.5 h-4 bg-[#176B4D] rounded-full"></div>
-            <h3 className="text-sm font-bold text-[#1C1C16]">Input Setor Kertas Baru</h3>
+            <div className="w-1.5 h-4 bg-[#2D6A4F] rounded-full"></div>
+            <h3 className="text-sm font-bold text-[#1A2E22]">Input Setor Kertas Baru</h3>
           </div>
-          <span className="text-[10px] font-bold text-[#176B4D] bg-[#A4F3CC]/50 px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-bold text-[#2D6A4F] bg-[#A4F3CC]/50 px-2 py-0.5 rounded-full">
             Langkah Cepat
           </span>
         </div>
@@ -150,8 +150,8 @@ export const UnitPostingView: React.FC = () => {
         {/* 1. Pilih Kategori Kertas */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <label className="font-bold text-[#1C1C16]">Pilih Kategori Kertas</label>
-            <span className="text-[10px] text-[#57635A]">Wajib dipilih</span>
+            <label className="font-bold text-[#1A2E22]">Pilih Kategori Kertas</label>
+            <span className="text-[10px] text-[#52645A]">Wajib dipilih</span>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
@@ -161,8 +161,8 @@ export const UnitPostingView: React.FC = () => {
               onClick={() => setKategori('hvs')}
               className={`p-3 rounded-xl text-left transition-all border ${
                 kategori === 'hvs'
-                  ? 'bg-[#176B4D] text-white border-[#176B4D] shadow-xs'
-                  : 'bg-[#F7F3EA] text-[#1C1C16] border-transparent hover:bg-[#ECE8DF]'
+                  ? 'bg-[#2D6A4F] text-white border-[#2D6A4F] shadow-xs'
+                  : 'bg-[#F7F3EA] text-[#1A2E22] border-transparent hover:bg-[#ECE8DF]'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
@@ -172,7 +172,7 @@ export const UnitPostingView: React.FC = () => {
                 )}
               </div>
               <div className="text-xs font-bold leading-tight">HVS / Arsip</div>
-              <div className={`text-[10px] mt-0.5 ${kategori === 'hvs' ? 'text-white/80' : 'text-[#57635A]'}`}>
+              <div className={`text-[10px] mt-0.5 ${kategori === 'hvs' ? 'text-white/80' : 'text-[#52645A]'}`}>
                 Kertas kerja putih
               </div>
             </button>
@@ -183,8 +183,8 @@ export const UnitPostingView: React.FC = () => {
               onClick={() => setKategori('kardus')}
               className={`p-3 rounded-xl text-left transition-all border ${
                 kategori === 'kardus'
-                  ? 'bg-[#8B6045] text-white border-[#8B6045] shadow-xs'
-                  : 'bg-[#F7F3EA] text-[#1C1C16] border-transparent hover:bg-[#ECE8DF]'
+                  ? 'bg-[#C27D3A] text-white border-[#C27D3A] shadow-xs'
+                  : 'bg-[#F7F3EA] text-[#1A2E22] border-transparent hover:bg-[#ECE8DF]'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
@@ -194,7 +194,7 @@ export const UnitPostingView: React.FC = () => {
                 )}
               </div>
               <div className="text-xs font-bold leading-tight">Kardus Box</div>
-              <div className={`text-[10px] mt-0.5 ${kategori === 'kardus' ? 'text-white/80' : 'text-[#57635A]'}`}>
+              <div className={`text-[10px] mt-0.5 ${kategori === 'kardus' ? 'text-white/80' : 'text-[#52645A]'}`}>
                 Karton & tebal
               </div>
             </button>
@@ -205,8 +205,8 @@ export const UnitPostingView: React.FC = () => {
               onClick={() => setKategori('koran')}
               className={`p-3 rounded-xl text-left transition-all border ${
                 kategori === 'koran'
-                  ? 'bg-[#176B4D] text-white border-[#176B4D] shadow-xs'
-                  : 'bg-[#F7F3EA] text-[#1C1C16] border-transparent hover:bg-[#ECE8DF]'
+                  ? 'bg-[#2D6A4F] text-white border-[#2D6A4F] shadow-xs'
+                  : 'bg-[#F7F3EA] text-[#1A2E22] border-transparent hover:bg-[#ECE8DF]'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
@@ -216,7 +216,7 @@ export const UnitPostingView: React.FC = () => {
                 )}
               </div>
               <div className="text-xs font-bold leading-tight">Koran / Majalah</div>
-              <div className={`text-[10px] mt-0.5 ${kategori === 'koran' ? 'text-white/80' : 'text-[#57635A]'}`}>
+              <div className={`text-[10px] mt-0.5 ${kategori === 'koran' ? 'text-white/80' : 'text-[#52645A]'}`}>
                 Warna & buram
               </div>
             </button>
@@ -227,8 +227,8 @@ export const UnitPostingView: React.FC = () => {
               onClick={() => setKategori('campur')}
               className={`p-3 rounded-xl text-left transition-all border ${
                 kategori === 'campur'
-                  ? 'bg-[#176B4D] text-white border-[#176B4D] shadow-xs'
-                  : 'bg-[#F7F3EA] text-[#1C1C16] border-transparent hover:bg-[#ECE8DF]'
+                  ? 'bg-[#2D6A4F] text-white border-[#2D6A4F] shadow-xs'
+                  : 'bg-[#F7F3EA] text-[#1A2E22] border-transparent hover:bg-[#ECE8DF]'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
@@ -238,7 +238,7 @@ export const UnitPostingView: React.FC = () => {
                 )}
               </div>
               <div className="text-xs font-bold leading-tight">Campuran Bersih</div>
-              <div className={`text-[10px] mt-0.5 ${kategori === 'campur' ? 'text-white/80' : 'text-[#57635A]'}`}>
+              <div className={`text-[10px] mt-0.5 ${kategori === 'campur' ? 'text-white/80' : 'text-[#52645A]'}`}>
                 Brosur & amplop
               </div>
             </button>
@@ -248,7 +248,7 @@ export const UnitPostingView: React.FC = () => {
         {/* 2. Estimasi Berat Total Stepper */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <label className="font-bold text-[#1C1C16]">Estimasi Berat Total</label>
+            <label className="font-bold text-[#1A2E22]">Estimasi Berat Total</label>
             <span className="text-[10px] text-[#0D6D3C] font-semibold">Kelipatan 5 Kg disarankan</span>
           </div>
 
@@ -256,16 +256,16 @@ export const UnitPostingView: React.FC = () => {
             <button
               type="button"
               onClick={handleDecrement}
-              className="w-10 h-10 rounded-lg bg-white text-[#1C1C16] flex items-center justify-center font-bold text-lg shadow-xs active:scale-95 transition-all"
+              className="w-10 h-10 rounded-lg bg-white text-[#1A2E22] flex items-center justify-center font-bold text-lg shadow-xs active:scale-95 transition-all"
             >
               −
             </button>
 
             <div className="text-center">
               <div className="text-2xl font-extrabold text-[#005138]">
-                {beratKg} <span className="text-sm font-normal text-[#1C1C16]">Kg</span>
+                {beratKg} <span className="text-sm font-normal text-[#1A2E22]">Kg</span>
               </div>
-              <span className="text-[10px] text-[#57635A]">
+              <span className="text-[10px] text-[#52645A]">
                 Kapasitas tong tersisa: {assignedTong.kapasitas_max_kg - assignedTong.berat_kg} Kg
               </span>
             </div>
@@ -273,7 +273,7 @@ export const UnitPostingView: React.FC = () => {
             <button
               type="button"
               onClick={handleIncrement}
-              className="w-10 h-10 rounded-lg bg-[#176B4D] text-white flex items-center justify-center font-bold text-lg shadow-xs active:scale-95 transition-all"
+              className="w-10 h-10 rounded-lg bg-[#2D6A4F] text-white flex items-center justify-center font-bold text-lg shadow-xs active:scale-95 transition-all"
             >
               +
             </button>
@@ -282,7 +282,7 @@ export const UnitPostingView: React.FC = () => {
 
         {/* 3. Standar Kerapihan Kertas */}
         <div className="space-y-2">
-          <label className="font-bold text-xs text-[#1C1C16] block">
+          <label className="font-bold text-xs text-[#1A2E22] block">
             Standar Kerapihan Kertas
           </label>
 
@@ -291,16 +291,16 @@ export const UnitPostingView: React.FC = () => {
               type="checkbox"
               checked={isTied}
               onChange={e => setIsTied(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded text-[#176B4D] accent-[#176B4D] cursor-pointer"
+              className="mt-0.5 w-4 h-4 rounded text-[#2D6A4F] accent-[#2D6A4F] cursor-pointer"
             />
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#1C1C16]">Kering & Rapi Diikat Tali</span>
+                <span className="text-xs font-bold text-[#1A2E22]">Kering & Rapi Diikat Tali</span>
                 <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#9CF2B5] text-[#157140]">
                   Rekomendasi
                 </span>
               </div>
-              <p className="text-[11px] text-[#57635A] mt-0.5">
+              <p className="text-[11px] text-[#52645A] mt-0.5">
                 Mencegah lembaran berserakan saat penimbangan mitra pabrik.
               </p>
             </div>
@@ -311,13 +311,13 @@ export const UnitPostingView: React.FC = () => {
               type="checkbox"
               checked={isClean}
               onChange={e => setIsClean(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded text-[#176B4D] accent-[#176B4D] cursor-pointer"
+              className="mt-0.5 w-4 h-4 rounded text-[#2D6A4F] accent-[#2D6A4F] cursor-pointer"
             />
             <div className="flex-1 min-w-0">
-              <span className="text-xs font-bold text-[#1C1C16] block">
+              <span className="text-xs font-bold text-[#1A2E22] block">
                 Bebas Klip Besi / Staples Tebal / Plastik
               </span>
-              <p className="text-[11px] text-[#57635A] mt-0.5">
+              <p className="text-[11px] text-[#52645A] mt-0.5">
                 Mempercepat proses bubur kertas daur ulang tanpa merusak pisau pulper.
               </p>
             </div>
@@ -327,11 +327,11 @@ export const UnitPostingView: React.FC = () => {
         {/* 4. Dokumentasi Tumpukan Kertas */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <label className="font-bold text-[#1C1C16]">Dokumentasi Tumpukan Kertas</label>
-            <span className="text-[10px] text-[#57635A]">1 Foto wajib</span>
+            <label className="font-bold text-[#1A2E22]">Dokumentasi Tumpukan Kertas</label>
+            <span className="text-[10px] text-[#52645A]">1 Foto wajib</span>
           </div>
 
-          <div className="rounded-xl overflow-hidden border border-[#176B4D]/15 bg-[#F7F3EA]">
+          <div className="rounded-xl overflow-hidden border border-[#2D6A4F]/15 bg-[#F7F3EA]">
             <div className="relative h-44 w-full bg-gray-100">
               <img
                 src={photoUrl}
@@ -345,8 +345,8 @@ export const UnitPostingView: React.FC = () => {
             </div>
 
             <div className="p-2.5 flex items-center justify-between">
-              <span className="text-[11px] text-[#57635A]">Foto dokumen & kardus riil</span>
-              <label className="cursor-pointer text-xs font-bold text-[#176B4D] hover:underline flex items-center gap-1">
+              <span className="text-[11px] text-[#52645A]">Foto dokumen & kardus riil</span>
+              <label className="cursor-pointer text-xs font-bold text-[#2D6A4F] hover:underline flex items-center gap-1">
                 <span className="material-symbols-outlined text-sm">photo_camera</span>
                 <span>Ganti Foto Lainnya</span>
                 <input
@@ -361,10 +361,10 @@ export const UnitPostingView: React.FC = () => {
         </div>
 
         {/* 5. Alokasi Tong Otomatis (Central Drop Point Concept) */}
-        <div className="p-3.5 rounded-xl bg-[#F7F3EA] border border-[#176B4D]/20 space-y-2">
+        <div className="p-3.5 rounded-xl bg-[#F7F3EA] border border-[#2D6A4F]/20 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#1C1C16] flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#176B4D]"></span>
+            <span className="text-xs font-bold text-[#1A2E22] flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#2D6A4F]"></span>
               Alokasi Tong Otomatis
             </span>
             <span className="text-[10px] font-bold text-[#157140] bg-[#9CF2B5] px-2 py-0.5 rounded-full">
@@ -372,19 +372,19 @@ export const UnitPostingView: React.FC = () => {
             </span>
           </div>
 
-          <p className="text-xs text-[#57635A]">
+          <p className="text-xs text-[#52645A]">
             Kertas dialokasikan ke: <strong className="text-[#005138]">Drop Point Pusat (Gedung Serbaguna Kampus)</strong>
           </p>
 
-          <div className="flex items-center gap-3 p-2 rounded-lg bg-white border border-[#176B4D]/10">
-            <div className="w-8 h-8 rounded-md bg-[#FFDBC8] text-[#8B6045] flex items-center justify-center font-bold">
+          <div className="flex items-center gap-3 p-2 rounded-lg bg-white border border-[#2D6A4F]/10">
+            <div className="w-8 h-8 rounded-md bg-[#FFDBC8] text-[#C27D3A] flex items-center justify-center font-bold">
               <span className="material-symbols-outlined text-lg">delete</span>
             </div>
             <div>
-              <span className="text-[10px] text-[#57635A] uppercase tracking-wider block font-semibold">
+              <span className="text-[10px] text-[#52645A] uppercase tracking-wider block font-semibold">
                 KODE TONG KHUSUS UNIT
               </span>
-              <span className="text-xs font-extrabold text-[#176B4D]">
+              <span className="text-xs font-extrabold text-[#2D6A4F]">
                 {assignedTong.nama_tong}
               </span>
             </div>
@@ -396,7 +396,7 @@ export const UnitPostingView: React.FC = () => {
           type="button"
           onClick={handlePosting}
           disabled={isSubmitting}
-          className="w-full py-3.5 px-4 rounded-xl bg-[#005138] hover:bg-[#176B4D] active:scale-[0.98] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-50"
+          className="w-full py-3.5 px-4 rounded-xl bg-[#005138] hover:bg-[#2D6A4F] active:scale-[0.98] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-50"
         >
           {isSubmitting ? (
             <>
@@ -422,26 +422,26 @@ export const UnitPostingView: React.FC = () => {
       </div>
 
       {/* Motivational Research Banner */}
-      <div className="p-3.5 rounded-xl bg-gradient-to-r from-[#F7F3EA] to-[#ECE8DF] border border-[#176B4D]/10 flex items-center gap-3">
-        <div className="w-9 h-9 rounded-full bg-[#FFDBC8] flex items-center justify-center text-[#8B6045] shrink-0">
+      <div className="p-3.5 rounded-xl bg-gradient-to-r from-[#F7F3EA] to-[#ECE8DF] border border-[#2D6A4F]/10 flex items-center gap-3">
+        <div className="w-9 h-9 rounded-full bg-[#FFDBC8] flex items-center justify-center text-[#C27D3A] shrink-0">
           <span className="material-symbols-outlined text-lg">school</span>
         </div>
         <div className="text-xs">
-          <strong className="text-[#1C1C16] block">Kertas Anda Membantu Beasiswa Riset!</strong>
-          <span className="text-[#57635A] text-[11px]">
+          <strong className="text-[#1A2E22] block">Kertas Anda Membantu Beasiswa Riset!</strong>
+          <span className="text-[#52645A] text-[11px]">
             Tiap 100 kg terdistribusi dialihkan jadi dana riset operasional unit kampus.
           </span>
         </div>
       </div>
 
       {/* Riwayat Setor Unit */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-3">
+      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#176B4D] text-lg">history</span>
-            <h3 className="text-sm font-bold text-[#1C1C16]">Riwayat Setor Unit</h3>
+            <span className="material-symbols-outlined text-[#2D6A4F] text-lg">history</span>
+            <h3 className="text-sm font-bold text-[#1A2E22]">Riwayat Setor Unit</h3>
           </div>
-          <span className="text-[10px] font-bold text-[#57635A] bg-[#F1EEE5] px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-bold text-[#52645A] bg-[#F1EEE5] px-2 py-0.5 rounded-full">
             {unitListings.length} Batch Aktif
           </span>
         </div>
@@ -454,16 +454,16 @@ export const UnitPostingView: React.FC = () => {
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-start gap-2.5">
-                  <div className="w-9 h-9 rounded-lg bg-white flex items-center justify-center text-[#176B4D] shrink-0 shadow-xs">
+                  <div className="w-9 h-9 rounded-lg bg-white flex items-center justify-center text-[#2D6A4F] shrink-0 shadow-xs">
                     <span className="material-symbols-outlined text-xl">
                       {item.kategori === 'kardus' ? 'inventory_2' : 'description'}
                     </span>
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-[#1C1C16]">
+                    <h4 className="text-xs font-bold text-[#1A2E22]">
                       {item.jumlah_kg} Kg {item.kategori_label}
                     </h4>
-                    <span className="text-[11px] text-[#57635A] block mt-0.5">
+                    <span className="text-[11px] text-[#52645A] block mt-0.5">
                       {item.tong_nama} • {item.tanggal_post}
                     </span>
                   </div>
@@ -473,7 +473,7 @@ export const UnitPostingView: React.FC = () => {
                   className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
                     item.status === 'sudah_diambil'
                       ? 'bg-[#9CF2B5] text-[#157140]'
-                      : 'bg-[#FFDBC8] text-[#8B6045]'
+                      : 'bg-[#FFDBC8] text-[#C27D3A]'
                   }`}
                 >
                   {item.status === 'sudah_diambil' ? '✓ Selesai Diambil' : '• Menunggu Mitra'}
@@ -481,7 +481,7 @@ export const UnitPostingView: React.FC = () => {
               </div>
 
               <div className="flex items-center justify-between pt-1 border-t border-gray-200/50 text-[11px]">
-                <span className="text-[#57635A] flex items-center gap-1">
+                <span className="text-[#52645A] flex items-center gap-1">
                   <span className="material-symbols-outlined text-[13px]">local_shipping</span>
                   PT Mandiri Daur Lestari
                 </span>

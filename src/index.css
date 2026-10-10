@@ -1,10 +1,47 @@
 @import "tailwindcss";
 
+/* ============================================
+   DESIGN SYSTEM — Sampah Butuh Teman
+   Tema: Hijau Bumi + Krem Natural
+   ============================================ */
+:root {
+  /* Primary palette */
+  --sbt-primary:        #2D6A4F;   /* Hijau hutan — CTA utama */
+  --sbt-primary-dark:   #1A4235;   /* Hover/active state */
+  --sbt-primary-light:  #52B788;   /* Accent hijau segar */
+  --sbt-primary-pale:   #D8F3DC;   /* Badge/tag background */
+
+  /* Surface */
+  --sbt-bg:             #FAFAF7;   /* Background halaman */
+  --sbt-surface:        #F2F7F4;   /* Sub-card / input bg */
+  --sbt-card:           #FFFFFF;   /* Card putih */
+  --sbt-border:         rgba(45,106,79,0.12);
+
+  /* Text */
+  --sbt-text-dark:      #1A2E22;   /* Teks utama */
+  --sbt-text-mid:       #52645A;   /* Teks sekunder */
+  --sbt-text-light:     #8CA090;   /* Placeholder/hint */
+
+  /* Semantic */
+  --sbt-warning:        #F4A261;   /* Amber — peringatan */
+  --sbt-error:          #E76F51;   /* Merah terakota — error */
+  --sbt-success:        #52B788;   /* Hijau — sukses */
+}
+
+@layer utilities {
+  .shadow-card {
+    box-shadow: 0 1px 4px rgba(26,46,34,0.06), 0 4px 16px rgba(26,46,34,0.04);
+  }
+  .shadow-float {
+    box-shadow: 0 8px 24px rgba(45,106,79,0.15);
+  }
+}
+
 @layer base {
   html, body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    background-color: #fdf9f0;
-    color: #1c1c16;
+    background-color: #FAFAF7;
+    color: #1A2E22;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
@@ -13,11 +50,6 @@
 
   *, *::before, *::after {
     box-sizing: border-box;
-  }
-
-  p, span, div {
-    word-break: break-word;
-    overflow-wrap: break-word;
   }
 }
 
@@ -38,7 +70,7 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #bec9c1;
+  background: #52B788;
   border-radius: 9999px;
 }
 

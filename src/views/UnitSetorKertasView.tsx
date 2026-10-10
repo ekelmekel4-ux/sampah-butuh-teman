@@ -11,12 +11,15 @@ export const UnitSetorKertasView: React.FC = () => {
     units.find(u => u.inisial === 'FTD') ||
     units[0];
 
-  // Assigned tongs for this unit
-  const unitTongs = tongList.filter(t => t.unit_id === currentUnit.id);
+  // Assigned tongs for this unit (sorted 1 to 5)
+  const unitTongs = [...tongList]
+    .filter(t => t.unit_id === currentUnit.id)
+    .sort((a, b) => a.nomor.localeCompare(b.nomor));
   const availableTongs = unitTongs.length > 0 ? unitTongs : [tongList[0]];
 
-  // Selected tong (default to first tong of unit)
-  const [selectedTongId, setSelectedTongId] = useState<string>(availableTongs[0]?.id || '');
+  // Selected tong: pick the first one that has remaining capacity, fallback to the first tong
+  const firstAvailable = availableTongs.find(t => (t.kapasitas_max_kg - t.berat_kg) > 0) || availableTongs[0];
+  const [selectedTongId, setSelectedTongId] = useState<string>(firstAvailable?.id || '');
 
   // Form states
   const [kategori, setKategori] = useState<KategoriKertas>('hvs');
@@ -40,7 +43,6 @@ export const UnitSetorKertasView: React.FC = () => {
   const activeTong =
     availableTongs.find(t => t.id === selectedTongId) || availableTongs[0];
   const sisaKapasitas = Math.max(0, activeTong.kapasitas_max_kg - activeTong.berat_kg);
-  const isTongPenuh = sisaKapasitas <= 0;
 
   const kategoriOptions: {
     key: KategoriKertas;
@@ -100,225 +102,153 @@ export const UnitSetorKertasView: React.FC = () => {
       setErrorMsg('Berat setoran harus setidaknya 10 Kg agar memenuhi standar kuota logistik.');
       return;
     }
+    if (beratKg > sisaKapasitas) {
+      setErrorMsg(`Berat melebihi sisa kapasitas tong (${sisaKapasitas} Kg).`);
+      return;
+    }
+
     setErrorMsg('');
     setIsSubmitting(true);
 
     setTimeout(() => {
-      const newListing = createListing({
+      const ecoPts = beratKg * 2;
+      createListing({
         unitId: currentUnit.id,
         tongId: activeTong.id,
         jumlahKg: beratKg,
-        kategori,
+        kategori: currentOption.key || 'hvs',
         kategoriLabel: currentOption.label,
-        kondisi: [
-          isTied ? 'Kering & Rapi Diikat Tali' : 'Belum diikat tali',
-          isClean ? 'Bebas Klip Besi / Staples Tebal' : 'Perlu pengecekan klip'
-        ],
+        kondisi: isClean ? ['Kering Rendah (A+)'] : ['Standar Kering (B)'],
         foto: photoUrl
       });
 
-      setIsSubmitting(false);
       setSuccessData({
-        id: newListing.id,
+        id: 'LST-' + Math.floor(1000 + Math.random() * 9000),
         tongNama: activeTong.nama_tong,
         jumlahKg: beratKg,
         kategoriLabel: currentOption.label,
-        ecoPoints: beratKg * 2
+        ecoPoints: ecoPts
       });
+
+      setIsSubmitting(false);
       setShowSuccessModal(true);
-    }, 600);
+    }, 800);
   };
 
   return (
-    <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
-      {/* Top Bar Back */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => setActiveRoute('/unit/beranda')}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#57635A] hover:text-[#176B4D] transition-colors px-2 py-1 rounded-lg hover:bg-black/5"
-        >
-          <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-          <span>Kembali ke Beranda</span>
-        </button>
+    <div className="w-full pb-20 max-w-xl mx-auto space-y-4 font-sans text-[#1A2E22]">
+      
+      {/* Header Profile & Back Button */}
+      <div className="flex items-center justify-between px-1 py-1">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setActiveRoute('/unit/beranda')}
+            className="w-9 h-9 rounded-full bg-white border border-black/5 flex items-center justify-center text-gray-700 hover:bg-gray-50 shadow-xs transition-all"
+          >
+            <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+          </button>
+          <div>
+            <div className="text-[11px] font-bold text-[#52645A] tracking-tight">
+              Penyalur ({currentUnit.inisial})
+            </div>
+            <h1 className="text-base font-extrabold text-[#1A2E22] tracking-tight leading-tight">
+              Catat Setoran Kertas Baru
+            </h1>
+          </div>
+        </div>
 
-        <span className="text-[11px] font-bold text-[#8B6045] bg-[#8B6045]/10 px-2.5 py-0.5 rounded-full">
-          {currentUnit.nama_unit}
+        <span className="text-[10px] font-extrabold px-3 py-1 rounded-full bg-[#2D6A4F]/10 text-[#2D6A4F] border border-[#2D6A4F]/20">
+          Sirkularitas Unit Kampus
         </span>
       </div>
 
-      {/* Header Info */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#176B4D]/10">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-[#176B4D]/10 text-[#176B4D] flex items-center justify-center shrink-0">
-            <span
-              className="material-symbols-outlined text-[24px]"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              add_circle
-            </span>
-          </div>
+      {/* Vibrant Green Header Banner (#2D6A4F Figma Style) */}
+      <div className="w-full rounded-[28px] p-6 text-white bg-[#2D6A4F] shadow-md shadow-[#2D6A4F]/20 relative overflow-hidden">
+        <div className="absolute -right-10 -bottom-10 w-36 h-36 rounded-full bg-white/10 blur-xl pointer-events-none" />
+        <div className="flex items-center justify-between relative z-10">
           <div>
-            <h1 className="text-lg font-black text-[#1C1C16] tracking-tight">
-              Setor Limbah Kertas
-            </h1>
-            <p className="text-xs text-[#57635A] mt-0.5">
-              Masukkan kertas ke wadah tong unit Anda di drop point serbaguna.
+            <span className="text-[10px] font-extrabold text-white/80 uppercase tracking-widest block">
+              FORM SIRKULAR KAMPUS
+            </span>
+            <h2 className="text-xl font-black text-white leading-tight mt-0.5">
+              Input Limbah Kertas Unit
+            </h2>
+            <p className="text-xs text-white/90 mt-1 leading-relaxed font-medium">
+              Kertas yang disetor akan otomatis dihitung nilai rupiah (Rp) dan menambah skor leaderboard unit Anda.
             </p>
+          </div>
+          <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 ml-3">
+            <span className="material-symbols-outlined text-[28px] text-white">post_add</span>
           </div>
         </div>
       </div>
 
+      {/* Form Container */}
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* SECTION 1: Pilihan Tong Unit */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#176B4D]/10 space-y-3">
+        
+        {/* 1. Pilih Wadah Tong Unit */}
+        <div className="bg-white rounded-[24px] p-5 shadow-xs border border-black/5 space-y-3">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-bold text-[#1C1C16] uppercase tracking-wide flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[18px] text-[#8B6045]">
-                delete
-              </span>
-              <span>1. Dimasukkan ke Tong No. Berapa di Bagian Anda?</span>
-            </label>
-            <span className="text-[10px] font-bold text-[#176B4D] bg-[#176B4D]/10 px-2 py-0.5 rounded-full">
-              Wadah Unit Anda
-            </span>
+            <h2 className="text-sm font-extrabold text-[#1A2E22]">1. Pilih Wadah Tong Fisik</h2>
+            <span className="text-xs font-bold text-[#2D6A4F]">{unitTongs.length} Wadah Terdaftar</span>
           </div>
 
-          <p className="text-[11px] text-[#57635A] leading-relaxed">
-            Pilih tong fisik resmi milik unit <strong>{currentUnit.nama_unit}</strong> di Drop Point Gedung Serbaguna yang menjadi wadah setoran ini:
-          </p>
-
-          <div className="grid grid-cols-1 gap-2">
-            {availableTongs.map(tong => {
-              const isSelected = tong.id === activeTong.id;
-              const sisa = Math.max(0, tong.kapasitas_max_kg - tong.berat_kg);
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {availableTongs.map(t => {
+              const isSelected = t.id === selectedTongId;
+              const sisa = Math.max(0, t.kapasitas_max_kg - t.berat_kg);
               const isFull = sisa <= 0;
+
               return (
                 <div
-                  key={tong.id}
-                  onClick={() => setSelectedTongId(tong.id)}
-                  className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                  key={t.id}
+                  onClick={() => !isFull && setSelectedTongId(t.id)}
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                     isSelected
-                      ? isFull
-                        ? 'border-rose-500 bg-rose-50/50 shadow-xs'
-                        : 'border-[#176B4D] bg-[#176B4D]/5 shadow-xs'
+                      ? 'border-[#2D6A4F] bg-[#2D6A4F]/10 shadow-xs'
                       : isFull
-                      ? 'border-gray-200 bg-gray-100/70 opacity-80'
-                      : 'border-gray-200 bg-gray-50/50 hover:bg-gray-50'
+                      ? 'border-gray-200 bg-gray-100/70 opacity-70 cursor-not-allowed'
+                      : 'border-black/5 bg-[#F5F6F3] hover:bg-white'
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div
-                      className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-bold text-sm ${
-                        isFull
-                          ? 'bg-rose-500 text-white'
-                          : isSelected
-                          ? 'bg-[#176B4D] text-white'
-                          : 'bg-gray-200 text-gray-700'
-                      }`}
-                    >
-                      <span className="material-symbols-outlined text-[20px]">
-                        {isFull ? 'report' : 'inventory_2'}
-                      </span>
-                    </div>
-                    <div className="min-w-0">
-                      <div className="text-xs font-bold text-[#1C1C16] truncate flex items-center gap-1.5">
-                        <span>{tong.nama_tong} ({tong.nomor})</span>
-                        {isFull && (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700">
-                            PENUH
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-[10px] text-[#57635A] truncate mt-0.5">
-                        {tong.lokasi_spesifik}
-                      </div>
-                    </div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-extrabold text-[#1A2E22] truncate">{t.nama_tong}</span>
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${isSelected ? 'bg-[#2D6A4F] text-white' : 'bg-gray-200 text-gray-700'}`}>
+                      Tong {t.nomor}
+                    </span>
                   </div>
-
-                  <div className="text-right shrink-0">
-                    <div className={`text-xs font-bold ${isFull ? 'text-rose-600' : 'text-[#176B4D]'}`}>
-                      {tong.berat_kg}/{tong.kapasitas_max_kg} Kg
-                    </div>
-                    <div className="text-[10px] text-gray-500 mt-0.5">
-                      {isFull ? 'Kapasitas Penuh' : `Sisa ruang: ${sisa} Kg`}
-                    </div>
+                  <div className="text-[11px] text-[#52645A] font-medium">
+                    Sisa Kapasitas: <strong className="text-[#2D6A4F]">{sisa} Kg</strong>
                   </div>
                 </div>
               );
             })}
           </div>
-
-          {/* If Active Tong is Full */}
-          {isTongPenuh && (
-            <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900 text-xs flex items-start gap-2.5">
-              <span className="material-symbols-outlined text-rose-600 text-[18px] shrink-0 mt-0.5">
-                error
-              </span>
-              <div className="leading-relaxed">
-                <strong>Wadah {activeTong.nama_tong} Sudah Penuh ({activeTong.kapasitas_max_kg} Kg):</strong> Tidak dapat menerima setoran tambahan. Gunakan tong cadangan unit atau tunggu pengosongan armada pabrik.
-              </div>
-            </div>
-          )}
-
-          {/* Button to Activate Second Tong if only 1 exists */}
-          {availableTongs.length < 2 && (
-            <button
-              type="button"
-              onClick={() => {
-                const newTong = requestSecondTong(currentUnit.id);
-                setSelectedTongId(newTong.id);
-                setErrorMsg('');
-              }}
-              className="w-full py-2.5 px-3 rounded-xl border border-dashed border-[#176B4D]/30 hover:border-[#176B4D] bg-[#176B4D]/5 hover:bg-[#176B4D]/10 text-[#176B4D] text-xs font-bold transition-all flex items-center justify-center gap-1.5"
-            >
-              <span className="material-symbols-outlined text-[16px]">add_circle</span>
-              <span>Aktifkan Wadah Cadangan (Tong {currentUnit.inisial} No. 2)</span>
-            </button>
-          )}
         </div>
 
-        {/* SECTION 2: Jenis Kertas */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#176B4D]/10 space-y-3">
-          <label className="text-xs font-bold text-[#1C1C16] uppercase tracking-wide flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[18px] text-[#176B4D]">
-              category
-            </span>
-            <span>2. Pilih Jenis Kertas</span>
-          </label>
+        {/* 2. Pilih Kategori Kertas (Figma Waste Categories) */}
+        <div className="bg-white rounded-[24px] p-5 shadow-xs border border-black/5 space-y-3">
+          <h2 className="text-sm font-extrabold text-[#1A2E22]">2. Pilih Kategori Kertas</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {kategoriOptions.map(opt => {
-              const isSelected = opt.key === kategori;
+              const isSel = opt.key === kategori;
               return (
                 <div
                   key={opt.key}
                   onClick={() => setKategori(opt.key)}
-                  className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between ${
-                    isSelected
-                      ? 'border-[#176B4D] bg-[#176B4D]/5 shadow-xs'
-                      : 'border-gray-200 bg-gray-50/50 hover:bg-gray-50'
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-start gap-3 ${
+                    isSel
+                      ? 'border-[#2D6A4F] bg-[#2D6A4F]/10 shadow-xs ring-2 ring-[#2D6A4F]/20'
+                      : 'border-black/5 bg-[#F5F6F3] hover:bg-white'
                   }`}
                 >
-                  <div className="flex items-center gap-2.5 mb-1.5">
-                    <span
-                      className={`material-symbols-outlined text-[20px] ${
-                        isSelected ? 'text-[#176B4D]' : 'text-gray-500'
-                      }`}
-                    >
-                      {opt.icon}
-                    </span>
-                    <span className="text-xs font-bold text-[#1C1C16]">
-                      {opt.label}
-                    </span>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${isSel ? 'bg-[#2D6A4F] text-white' : 'bg-white text-[#2D6A4F] border border-black/5'}`}>
+                    <span className="material-symbols-outlined text-[22px]">{opt.icon}</span>
                   </div>
-                  <p className="text-[11px] text-[#57635A] leading-relaxed mb-2">
-                    {opt.sub}
-                  </p>
-                  <div className="flex items-center justify-between pt-1 border-t border-gray-100 text-[10px]">
-                    <span className="text-[#8B6045] font-bold">
-                      Rp {opt.price.toLocaleString('id-ID')}/Kg
-                    </span>
-                    <span className="text-[#176B4D] font-bold">+2 Pts/Kg</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs font-extrabold text-[#1A2E22] truncate">{opt.label}</div>
+                    <div className="text-[10px] text-[#52645A] font-medium leading-tight mt-0.5">{opt.sub}</div>
                   </div>
                 </div>
               );
@@ -326,70 +256,52 @@ export const UnitSetorKertasView: React.FC = () => {
           </div>
         </div>
 
-        {/* SECTION 3: Berat Kertas (Kg) */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#176B4D]/10 space-y-3">
-          <label className="text-xs font-bold text-[#1C1C16] uppercase tracking-wide flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[18px] text-[#176B4D]">
-              scale
-            </span>
-            <span>3. Berat Kertas Yang Disetor (Kg)</span>
-          </label>
+        {/* 3. Estimasi Berat (Kg) */}
+        <div className="bg-white rounded-[24px] p-5 shadow-xs border border-black/5 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-extrabold text-[#1A2E22]">3. Jumlah Berat Kertas (Kg)</h2>
+            <span className="text-xs font-bold text-[#2D6A4F]">Min. 10 Kg</span>
+          </div>
 
-          <div className="flex items-center justify-center gap-3 py-2">
+          <div className="flex items-center justify-center gap-4 bg-[#F5F6F3] p-4 rounded-2xl border border-black/5">
             <button
               type="button"
               onClick={() => setBeratKg(prev => Math.max(10, prev - 5))}
-              className="w-12 h-12 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xl flex items-center justify-center transition-colors active:scale-95"
-              title="Kurang 5 Kg (Minimal 10 Kg)"
+              className="w-11 h-11 rounded-full bg-white hover:bg-gray-100 text-[#1A2E22] font-black text-xl flex items-center justify-center shadow-xs transition-transform active:scale-95"
             >
               -
             </button>
-            <div className="flex items-baseline gap-1.5 px-4 py-2 bg-[#F5F1E8] rounded-2xl border border-[#176B4D]/15">
+            <div className="flex items-baseline gap-1 text-center">
               <input
                 type="number"
-                min={10}
-                max={500}
+                min="10"
+                max={sisaKapasitas || 120}
                 value={beratKg}
-                onChange={e => {
-                  const val = Number(e.target.value);
-                  setBeratKg(val);
-                  if (val < 10) {
-                    setErrorMsg('Berat setoran minimal 10 Kg agar memenuhi standar kuota logistik.');
-                  } else {
-                    setErrorMsg('');
-                  }
-                }}
-                className="w-20 text-center text-3xl font-black text-[#176B4D] bg-transparent outline-hidden"
+                onChange={e => setBeratKg(Math.max(1, parseInt(e.target.value) || 0))}
+                className="w-20 text-center text-3xl font-black text-[#2D6A4F] bg-transparent outline-none"
               />
-              <span className="text-sm font-bold text-gray-600">Kg</span>
+              <span className="text-sm font-extrabold text-[#1A2E22]">Kg</span>
             </div>
             <button
               type="button"
-              onClick={() => {
-                setBeratKg(prev => prev + 5);
-                setErrorMsg('');
-              }}
-              className="w-12 h-12 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xl flex items-center justify-center transition-colors active:scale-95"
-              title="Tambah 5 Kg"
+              onClick={() => setBeratKg(prev => Math.min(sisaKapasitas || 120, prev + 5))}
+              className="w-11 h-11 rounded-full bg-white hover:bg-gray-100 text-[#1A2E22] font-black text-xl flex items-center justify-center shadow-xs transition-transform active:scale-95"
             >
               +
             </button>
           </div>
 
-          {/* Preset Buttons */}
-          <div className="flex items-center justify-center gap-2 pt-1">
-            {[10, 20, 30, 50].map(val => (
+          {/* Quick presets */}
+          <div className="flex items-center justify-center gap-2">
+            {[10, 20, 35, 50, 75].map(val => (
               <button
                 key={val}
                 type="button"
-                onClick={() => {
-                  setBeratKg(val);
-                  setErrorMsg('');
-                }}
-                className={`px-3 py-1 rounded-xl text-xs font-bold transition-all ${
+                onClick={() => setBeratKg(val)}
+                className={`px-3 py-1.5 rounded-full text-xs font-extrabold transition-all ${
                   beratKg === val
-                    ? 'bg-[#176B4D] text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-[#2D6A4F] text-white shadow-xs'
+                    : 'bg-[#F5F6F3] text-[#52645A] hover:bg-gray-200'
                 }`}
               >
                 {val} Kg
@@ -397,167 +309,73 @@ export const UnitSetorKertasView: React.FC = () => {
             ))}
           </div>
 
-          {/* Penjagaan Minimal 10 Kg Alert */}
-          <div
-            className={`p-3 rounded-2xl border flex items-start gap-2.5 text-xs transition-colors ${
-              beratKg < 10
-                ? 'bg-red-50 border-red-200 text-red-700'
-                : 'bg-emerald-50/70 border-emerald-200 text-emerald-800'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[18px] shrink-0 mt-0.5">
-              {beratKg < 10 ? 'error' : 'verified_user'}
-            </span>
-            <div className="leading-relaxed">
-              <strong>Penjagaan Minimal 10 Kg:</strong>{' '}
-              {beratKg < 10
-                ? 'Berat harus setidaknya 10 Kg agar dapat diproses dan siap dijemput oleh armada pabrik daur ulang.'
-                : 'Setoran memenuhi kuota minimal logistik (≥ 10 Kg). Siap dijemput mitra industri!'}
-            </div>
-          </div>
-
-          {/* Live Rewards Estimate */}
-          <div className="p-3 bg-[#F5F1E8] rounded-2xl border border-[#176B4D]/10 flex items-center justify-around text-center text-xs">
-            <div>
-              <div className="text-[10px] text-[#57635A]">Eco-Points Didapat</div>
-              <div className="text-sm font-black text-[#176B4D]">
-                +{beratKg * 2} Pts
+          {/* Real-time Kurs Kalkulasi Rupiah */}
+          <div className="p-4 rounded-2xl bg-[#D8F3DC]/40 border border-[#2D6A4F]/20 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-[#2D6A4F] text-white flex items-center justify-center">
+                <span className="material-symbols-outlined text-lg">payments</span>
+              </div>
+              <div>
+                <div className="text-[11px] font-bold text-[#52645A]">Estimasi Kas Unit (Aktual):</div>
+                <div className="text-xs text-[#1A2E22] font-semibold">
+                  {beratKg} Kg × Rp {currentOption.price.toLocaleString('id-ID')}/Kg
+                </div>
               </div>
             </div>
-            <div className="w-px h-7 bg-gray-300" />
-            <div>
-              <div className="text-[10px] text-[#57635A]">Estimasi Dana Riset</div>
-              <div className="text-sm font-black text-[#8B6045]">
+            <div className="text-right">
+              <div className="text-base font-black text-[#2D6A4F]">
                 Rp {(beratKg * currentOption.price).toLocaleString('id-ID')}
               </div>
+              <div className="text-[10px] font-extrabold text-[#52645A]">
+                +{beratKg * 2} Eco-Points
+              </div>
             </div>
           </div>
         </div>
 
-        {/* SECTION 4: Foto Kertas */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#176B4D]/10 space-y-3">
-          <label className="text-xs font-bold text-[#1C1C16] uppercase tracking-wide flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[18px] text-[#176B4D]">
-              photo_camera
-            </span>
-            <span>4. Foto Sampah Kertas (Opsional / Dokumentasi)</span>
-          </label>
-
-          <div className="flex items-center gap-4">
-            <div className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0 relative group">
-              <img
-                src={photoUrl}
-                alt="Preview"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="flex-1 space-y-2">
-              <p className="text-[11px] text-[#57635A] leading-relaxed">
-                Foto kondisi tumpukan kertas membantu armada pabrik mengonfirmasi kualitas dan kesesuaian muatan sebelum pickup.
-              </p>
-              <label className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-[#1C1C16] text-xs font-bold cursor-pointer transition-colors">
-                <span className="material-symbols-outlined text-[16px]">upload</span>
-                <span>Unggah Foto Baru</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhotoUpload}
-                  className="hidden"
-                />
-              </label>
-            </div>
+        {/* Error Notification */}
+        {errorMsg && (
+          <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center gap-2 animate-in fade-in">
+            <span className="material-symbols-outlined text-base shrink-0">error</span>
+            <span>{errorMsg}</span>
           </div>
-        </div>
-
-        {/* SECTION 5: QC Checklist */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#176B4D]/10 space-y-2.5">
-          <label className="text-xs font-bold text-[#1C1C16] uppercase tracking-wide flex items-center gap-1.5 mb-1">
-            <span className="material-symbols-outlined text-[18px] text-[#176B4D]">
-              checklist
-            </span>
-            <span>5. Verifikasi Kondisi Kertas</span>
-          </label>
-
-          <label className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-gray-50 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={isTied}
-              onChange={e => setIsTied(e.target.checked)}
-              className="rounded-sm text-[#176B4D] focus:ring-[#176B4D]"
-            />
-            <span className="text-xs text-[#1C1C16]">
-              Kertas dalam kondisi <strong>kering</strong> dan terikat rapi / tersusun dalam kardus
-            </span>
-          </label>
-
-          <label className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-gray-50 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={isClean}
-              onChange={e => setIsClean(e.target.checked)}
-              className="rounded-sm text-[#176B4D] focus:ring-[#176B4D]"
-            />
-            <span className="text-xs text-[#1C1C16]">
-              Bebas dari klip besi binder besar, staples tebal, dan plastik pembungkus
-            </span>
-          </label>
-        </div>
+        )}
 
         {/* Submit Button */}
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-14 rounded-2xl bg-[#176B4D] hover:bg-[#0E4632] disabled:opacity-50 text-white font-black text-sm shadow-lg shadow-[#176B4D]/25 transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+          className="w-full py-4 rounded-full bg-[#2D6A4F] hover:bg-[#1A4235] active:bg-[#0F2E22] text-white font-extrabold text-sm shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50"
         >
           {isSubmitting ? (
-            <span>Menyimpan Setoran...</span>
+            <span>Proses Menyimpan...</span>
           ) : (
             <>
-              <span className="material-symbols-outlined text-[20px]">
-                check_circle
-              </span>
-              <span>
-                Konfirmasi Setor {beratKg} Kg ke {activeTong.nama_tong}
-              </span>
+              <span className="material-symbols-outlined text-[20px]">check_circle</span>
+              <span>Simpan & Setor Kertas Ke Tong</span>
             </>
           )}
         </button>
+
       </form>
 
-      {/* Success Modal Dialog */}
+      {/* Success Modal */}
       {showSuccessModal && successData && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-[#176B4D]/20 animate-in fade-in zoom-in-95 text-center">
-            <div className="w-14 h-14 rounded-full bg-[#176B4D]/10 text-[#176B4D] flex items-center justify-center mx-auto mb-4">
-              <span className="material-symbols-outlined text-[32px]">
-                task_alt
-              </span>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-sm rounded-[32px] p-6 text-center space-y-4 shadow-2xl animate-in zoom-in-95">
+            <div className="w-16 h-16 rounded-full bg-[#2D6A4F]/10 text-[#2D6A4F] flex items-center justify-center mx-auto">
+              <span className="material-symbols-outlined text-[36px]">verified</span>
             </div>
-
-            <h3 className="text-lg font-black text-[#1C1C16]">
-              Setoran Berhasil Dicatat!
-            </h3>
-            <p className="text-xs text-[#57635A] mt-1 leading-relaxed">
-              Kertas telah ditautkan ke <strong>{successData.tongNama}</strong> di drop point Gedung Serbaguna.
-            </p>
-
-            <div className="bg-[#F5F1E8] rounded-2xl p-4 my-4 space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-500">Jumlah:</span>
-                <strong className="text-[#1C1C16]">{successData.jumlahKg} Kg</strong>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Kategori:</span>
-                <strong className="text-[#1C1C16]">{successData.kategoriLabel}</strong>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Wadah Tong:</span>
-                <strong className="text-[#8B6045]">{successData.tongNama}</strong>
-              </div>
-              <div className="pt-1 border-t border-gray-200 flex justify-between text-[#176B4D] font-bold">
-                <span>Eco-Points Tambahan:</span>
-                <span>+{successData.ecoPoints} Pts</span>
-              </div>
+            <div>
+              <span className="text-[11px] font-extrabold text-[#2D6A4F] uppercase tracking-wider bg-[#2D6A4F]/10 px-3 py-1 rounded-full">
+                Setoran Berhasil Terdaftar
+              </span>
+              <h3 className="text-xl font-black text-[#1A2E22] mt-2">
+                {successData.jumlahKg} Kg {successData.kategoriLabel}
+              </h3>
+              <p className="text-xs text-[#52645A] font-medium mt-1">
+                Kertas telah dicatat di {successData.tongNama}. Bonus +{successData.ecoPoints} Eco-Points ditambahkan ke unit Anda!
+              </p>
             </div>
 
             <button
@@ -565,13 +383,14 @@ export const UnitSetorKertasView: React.FC = () => {
                 setShowSuccessModal(false);
                 setActiveRoute('/unit/beranda');
               }}
-              className="w-full h-11 rounded-xl bg-[#176B4D] hover:bg-[#0E4632] text-white text-xs font-bold transition-colors shadow-xs"
+              className="w-full py-3.5 rounded-full bg-[#2D6A4F] hover:bg-[#1A4235] text-white font-extrabold text-xs shadow-md transition-all"
             >
-              Kembali ke Beranda Penyalur
+              Kembali Ke Beranda Unit
             </button>
           </div>
         </div>
       )}
+
     </div>
   );
 };

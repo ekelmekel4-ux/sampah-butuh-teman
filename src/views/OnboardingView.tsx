@@ -8,46 +8,31 @@ export const OnboardingView: React.FC = () => {
 
   const slides = [
     {
-      title: 'Sampah Kertas Kampus Butuh Teman',
-      subtitle: 'Platform Sirkular Sampah Kertas Terintegrasi Kampus',
+      title: 'Kumpulkan & Kelola Limbah Kertas Kampus',
+      subtitle: 'Platform Sirkular Kampus',
       description:
-        'Menghubungkan unit kampus (BEM, Fakultas, Biro, Prodi) yang menghasilkan limbah kertas bernilai tinggi langsung dengan mitra industri daur ulang.',
-      badge: 'Solusi Sirkular Kampus',
-      icon: 'recycling',
-      gradient: 'from-[#176B4D] to-[#0E4632]',
-      accentColor: 'text-[#176B4D]',
-      stats: [
-        { label: 'Kampus Hijau', value: '100%' },
-        { label: 'Sirkularitas', value: 'Terpadu' }
-      ]
+        'Menghubungkan unit kampus (BEM, Fakultas, Biro) yang menghasilkan limbah kertas bernilai tinggi langsung dengan mitra industri daur ulang.',
+      image: '/onboarding-1.jpg',
+      badge: 'BEM & Unit Kampus',
+      icon: 'recycling'
     },
     {
-      title: 'Drop Point Terpusat & Matching Cerdas',
-      subtitle: 'Satu Titik Logistik Gedung Serbaguna',
+      title: 'Penyaluran Langsung & Leaderboard Kampus',
+      subtitle: 'Konversi Nilai Rupiah Real-Time',
       description:
-        'Kertas disalurkan ke wadah tong bernomor per unit. Sistem mencocokkan kriteria kadar air dan tonase secara instan dengan kebutuhan pabrik.',
-      badge: 'Logistik Terpusat',
-      icon: 'inventory_2',
-      gradient: 'from-[#8B6045] to-[#5C3B25]',
-      accentColor: 'text-[#8B6045]',
-      stats: [
-        { label: 'Kapasitas Tong', value: '120-180 Kg' },
-        { label: 'Akurasi Match', value: '96%+' }
-      ]
+        'Kertas disalurkan langsung oleh unit kampus. Setiap kilogram dihitung nilai rupiah (Rp) aktualnya dan dicatat di leaderboard sirkularitas kampus.',
+      image: '/onboarding-2.jpg',
+      badge: 'Leaderboard & Kas',
+      icon: 'trophy'
     },
     {
-      title: 'Dampak Nyata & Konversi Dana Riset',
-      subtitle: 'Kertas Terkelola Jadi Eco-Points & Dana Kampus',
+      title: 'Dampak Lingkungan & Dana Riset',
+      subtitle: 'Eco-Points & Transparansi',
       description:
-        'Pantau pohon yang terselamatkan, air bersih yang terhemat, serta leaderboard keaktifan unit kampus dalam mendukung keberlanjutan lingkungan.',
-      badge: 'Dampak Lingkungan',
-      icon: 'forest',
-      gradient: 'from-[#176B4D] to-[#2E8B57]',
-      accentColor: 'text-[#176B4D]',
-      stats: [
-        { label: 'Eco-Points', value: '2x/Kg' },
-        { label: 'Pohon Selamat', value: '17/Ton' }
-      ]
+        'Pantau pohon terselamatkan, air bersih terhemat, serta leaderboard keaktifan unit kampus dalam mendukung keberlanjutan.',
+      image: '/onboarding-3.jpg',
+      badge: 'Impact Dashboard',
+      icon: 'forest'
     }
   ];
 
@@ -62,108 +47,104 @@ export const OnboardingView: React.FC = () => {
   const slide = slides[currentSlide];
 
   return (
-    <div className="min-h-screen bg-[#F5F1E8] text-[#1C1C16] flex flex-col justify-between p-4 sm:p-6 max-w-lg mx-auto select-none">
-      {/* Top Bar: Brand Logo + Skip */}
-      <div className="flex items-center justify-between pt-2">
-        <div className="flex items-center gap-2">
-          <img
-            src={APP_BRAND.logoUrl}
-            alt="Logo"
-            className="w-8 h-8 object-contain drop-shadow-xs"
-          />
-          <span className="font-bold text-[#176B4D] text-sm tracking-tight">
-            {APP_BRAND.name}
-          </span>
-        </div>
-        <button
-          onClick={completeOnboarding}
-          className="text-xs font-semibold text-[#6F7A73] hover:text-[#176B4D] px-3 py-1.5 rounded-full hover:bg-black/5 transition-colors"
-        >
-          Lewati
-        </button>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-[#D8F3DC] via-[#FAFAF7] to-[#F2F7F4] text-[#1A2E22] flex flex-col justify-center items-center p-4 sm:p-6 select-none relative overflow-hidden">
+      {/* Background ambient glow */}
+      <div className="absolute top-10 left-10 w-96 h-96 rounded-full bg-[#2D6A4F]/8 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-[#52B788]/10 blur-3xl pointer-events-none" />
 
-      {/* Main Slide Card */}
-      <div className="my-auto py-8">
-        {/* Visual Card Hero */}
-        <div
-          className={`w-full rounded-3xl p-8 text-white bg-gradient-to-br ${slide.gradient} shadow-xl relative overflow-hidden transition-all duration-500`}
-        >
-          {/* Decorative background shapes */}
-          <div className="absolute -right-10 -bottom-10 w-44 h-44 rounded-full bg-white/10 blur-2xl pointer-events-none" />
-          <div className="absolute -left-6 -top-6 w-32 h-32 rounded-full bg-white/5 blur-xl pointer-events-none" />
-
-          {/* Badge */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold tracking-wide text-white mb-6">
-            <span className="material-symbols-outlined text-[15px]">eco</span>
-            {slide.badge}
-          </div>
-
-          {/* Hero Icon */}
-          <div className="w-20 h-20 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center mb-6 shadow-inner">
-            <span
-              className="material-symbols-outlined text-[44px] text-white"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              {slide.icon}
+      {/* Main Onboarding Card */}
+      <div className="w-full max-w-sm sm:max-w-md bg-white rounded-[36px] shadow-2xl shadow-[#2D6A4F]/15 border border-[#2D6A4F]/10 overflow-hidden flex flex-col justify-between relative z-10 my-auto min-h-[640px] sm:min-h-[680px] transition-all">
+        
+        {/* Top Header Controls */}
+        <div className="absolute top-4 inset-x-4 flex items-center justify-between z-20">
+          {/* Brand Badge */}
+          <div className="flex items-center gap-2 bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-[#2D6A4F]/10 shadow-xs">
+            <img src={APP_BRAND.logoUrl} alt="Logo" className="w-6 h-6 object-contain" />
+            <span className="font-extrabold text-[#2D6A4F] text-xs tracking-tight">
+              {APP_BRAND.name}
             </span>
           </div>
+          {/* Skip Button */}
+          <button
+            onClick={completeOnboarding}
+            className="text-xs font-bold text-[#52645A] hover:text-[#2D6A4F] px-3.5 py-1.5 rounded-full bg-white/80 hover:bg-white backdrop-blur-md border border-[#2D6A4F]/10 shadow-xs transition-all"
+          >
+            Lewati
+          </button>
+        </div>
 
-          {/* Stats Bar */}
-          <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/20">
-            {slide.stats.map((st, i) => (
-              <div key={i} className="bg-white/10 rounded-xl p-2.5 backdrop-blur-xs">
-                <div className="text-[11px] opacity-80">{st.label}</div>
-                <div className="text-base font-bold text-white tracking-tight">
-                  {st.value}
-                </div>
-              </div>
-            ))}
+        {/* Illustration Area */}
+        <div className="relative w-full h-[310px] sm:h-[340px] bg-[#F2F7F4] overflow-hidden">
+          <img
+            key={slide.image}
+            src={slide.image}
+            alt={slide.title}
+            className="w-full h-full object-cover object-center transition-all duration-500"
+          />
+
+          {/* Feature Badge */}
+          <div className="absolute bottom-10 left-6 z-10 flex items-center gap-1.5 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-extrabold text-[#2D6A4F] shadow-md border border-[#2D6A4F]/15">
+            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+            <span>{slide.badge}</span>
+          </div>
+
+          {/* Wave separator */}
+          <div className="absolute -bottom-1 inset-x-0 w-full pointer-events-none leading-none z-10">
+            <svg viewBox="0 0 500 120" preserveAspectRatio="none" className="w-full h-16 text-white fill-current">
+              <path d="M0,0 C150,90 350,-40 500,60 L500,120 L0,120 Z"></path>
+            </svg>
           </div>
         </div>
 
-        {/* Text Content */}
-        <div className="mt-8 text-center px-2">
-          <h1 className="text-2xl font-black text-[#176B4D] tracking-tight leading-tight">
-            {slide.title}
-          </h1>
-          <div className="text-xs font-bold text-[#8B6045] uppercase tracking-wider mt-1.5 mb-3">
-            {slide.subtitle}
+        {/* Bottom Content Area */}
+        <div className="p-6 sm:p-8 flex-1 flex flex-col justify-between text-center bg-white relative z-10">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-black text-[#1A2E22] tracking-tight leading-snug mb-2">
+              {slide.title}
+            </h1>
+            <div className="inline-block text-[11px] font-extrabold text-[#2D6A4F] bg-[#D8F3DC] px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+              {slide.subtitle}
+            </div>
+            <p className="text-xs sm:text-sm text-[#52645A] leading-relaxed font-normal max-w-xs mx-auto">
+              {slide.description}
+            </p>
           </div>
-          <p className="text-sm text-[#57635A] leading-relaxed max-w-sm mx-auto">
-            {slide.description}
-          </p>
+
+          {/* Controls */}
+          <div className="pt-6 space-y-5">
+            {/* Step Dots */}
+            <div className="flex items-center justify-center gap-2">
+              {slides.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${
+                    currentSlide === idx
+                      ? 'w-8 bg-[#2D6A4F] shadow-xs'
+                      : 'w-2.5 bg-[#2D6A4F]/20 hover:bg-[#2D6A4F]/40'
+                  }`}
+                  aria-label={`Slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* CTA Button */}
+            <button
+              onClick={handleNext}
+              className="w-full py-3.5 sm:py-4 rounded-full bg-[#2D6A4F] hover:bg-[#1A4235] active:bg-[#0F2E22] text-white font-extrabold text-sm shadow-lg shadow-[#2D6A4F]/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+            >
+              <span>{currentSlide === slides.length - 1 ? 'Mulai Sekarang' : 'Lanjutkan'}</span>
+              <span className="material-symbols-outlined text-[18px]">
+                {currentSlide === slides.length - 1 ? 'check_circle' : 'arrow_forward'}
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Bottom Controls: Dots + Button */}
-      <div className="pb-4 space-y-4">
-        {/* Step Indicator Dots */}
-        <div className="flex items-center justify-center gap-2">
-          {slides.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentSlide(idx)}
-              className={`h-2.5 rounded-full transition-all duration-300 ${
-                currentSlide === idx
-                  ? 'w-8 bg-[#176B4D]'
-                  : 'w-2.5 bg-[#176B4D]/25 hover:bg-[#176B4D]/50'
-              }`}
-              aria-label={`Slide ${idx + 1}`}
-            />
-          ))}
-        </div>
-
-        {/* Next / Start Button */}
-        <button
-          onClick={handleNext}
-          className="w-full h-14 rounded-2xl bg-[#176B4D] hover:bg-[#0E4632] text-white font-bold text-base shadow-lg shadow-[#176B4D]/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
-        >
-          <span>{currentSlide === slides.length - 1 ? 'Mulai Sekarang' : 'Lanjutkan'}</span>
-          <span className="material-symbols-outlined text-[20px]">
-            {currentSlide === slides.length - 1 ? 'check_circle' : 'arrow_forward'}
-          </span>
-        </button>
+      {/* Footer */}
+      <div className="mt-4 text-center text-[11px] font-semibold text-[#52645A] flex items-center justify-center gap-1.5 z-10">
+        <span>{APP_BRAND.subtitle}</span>
       </div>
     </div>
   );

@@ -36,24 +36,26 @@ export const BottomNav: React.FC = () => {
       case 'perusahaan':
         return [
           {
-            route: '/perusahaan/matching',
-            label: 'Pasokan Kertas',
-            icon: 'handshake',
+            route: '/perusahaan/dashboard',
+            label: 'Dashboard',
+            icon: 'dashboard',
             isActive:
+              activeRoute === '/perusahaan/dashboard' ||
+              activeRoute === '/perusahaan/pasokan' ||
               activeRoute === '/perusahaan/matching' ||
               activeRoute === '/perusahaan/jadwal' ||
               activeRoute === '/perusahaan/listing-detail'
           },
           {
             route: '/perusahaan/permintaan-baru',
-            label: 'Buat Kebutuhan',
+            label: 'Kebutuhan',
             icon: 'post_add',
             isActive: activeRoute === '/perusahaan/permintaan-baru'
           },
           {
             route: '/perusahaan/riwayat',
-            label: 'Riwayat Pickup',
-            icon: 'history',
+            label: 'Riwayat',
+            icon: 'receipt_long',
             isActive: activeRoute === '/perusahaan/riwayat'
           }
         ];
@@ -85,27 +87,31 @@ export const BottomNav: React.FC = () => {
   const navItems = getNavItems();
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-40 pb-safe bg-[#FDF9F0]/95 backdrop-blur-xl border-t border-[#176B4D]/10 shadow-[0_-4px_16px_rgba(23,107,77,0.08)]">
-      <div className="max-w-2xl mx-auto flex justify-around items-center h-16 px-4">
-        {navItems.map((item, index) => (
-          <button
-            key={index}
-            onClick={() => handleNav(item.route)}
-            className={`flex flex-col items-center justify-center gap-1 flex-1 h-12 rounded-xl transition-all ${
-              item.isActive
-                ? 'text-[#176B4D] font-bold scale-105'
-                : 'text-[#57635A] hover:text-[#176B4D] font-medium'
-            }`}
-          >
-            <span
-              className="material-symbols-outlined text-[24px]"
-              style={{ fontVariationSettings: item.isActive ? "'FILL' 1" : "'FILL' 0" }}
+    <nav className="fixed bottom-4 inset-x-0 z-40 pb-safe pointer-events-none">
+      <div className="max-w-md mx-auto px-4 pointer-events-auto">
+        <div className="flex items-center justify-around bg-white/95 backdrop-blur-md rounded-full px-2 py-2 shadow-xl border border-black/5">
+          {navItems.map((item, index) => (
+            <button
+              key={index}
+              onClick={() => handleNav(item.route)}
+              className={`flex items-center justify-center gap-1.5 px-4 py-2 rounded-full transition-all duration-300 cursor-pointer ${
+                item.isActive
+                  ? 'bg-[#2D6A4F] text-white font-extrabold shadow-sm scale-105'
+                  : 'text-[#52645A] hover:text-[#1A2E22] font-semibold'
+              }`}
             >
-              {item.icon}
-            </span>
-            <span className="text-[11px] leading-none tracking-tight">{item.label}</span>
-          </button>
-        ))}
+              <span
+                className="material-symbols-outlined text-[20px]"
+                style={{ fontVariationSettings: item.isActive ? "'FILL' 1" : "'FILL' 0" }}
+              >
+                {item.icon}
+              </span>
+              {item.isActive && (
+                <span className="text-xs font-extrabold tracking-tight">{item.label}</span>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
     </nav>
   );

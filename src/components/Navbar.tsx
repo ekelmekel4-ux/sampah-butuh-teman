@@ -11,21 +11,21 @@ export const Navbar: React.FC = () => {
     switch (role) {
       case 'unit':
         return {
-          label: 'Penyalur • Unit Kampus',
-          bg: 'bg-[#176B4D]/10 text-[#176B4D] border-[#176B4D]/20',
-          dot: 'bg-[#176B4D]'
+          label: 'Penyalur',
+          bg: 'bg-[#2D6A4F] text-white',
+          dot: 'bg-[#52B788]'
         };
       case 'perusahaan':
         return {
-          label: 'Penerima • Mitra Industri',
-          bg: 'bg-[#8B6045]/10 text-[#8B6045] border-[#8B6045]/20',
-          dot: 'bg-[#8B6045]'
+          label: 'Penerima',
+          bg: 'bg-[#2D6A4F] text-white',
+          dot: 'bg-[#52B788]'
         };
       case 'admin':
         return {
-          label: 'Admin • Drop Point',
-          bg: 'bg-gray-100 text-gray-800 border-gray-300',
-          dot: 'bg-gray-800'
+          label: 'Admin Sirkularitas',
+          bg: 'bg-[#1A4235] text-white',
+          dot: 'bg-[#52B788]'
         };
     }
   };
@@ -40,82 +40,88 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <header className="fixed top-0 inset-x-0 z-40 bg-[#FDF9F0]/95 backdrop-blur-xl border-b border-[#176B4D]/10 shadow-[0_2px_12px_rgba(23,107,77,0.06)] pt-safe">
-        <div className="max-w-2xl mx-auto h-16 px-4 flex items-center justify-between gap-2">
+      <header className="fixed top-0 inset-x-0 z-40 bg-transparent pt-safe">
+        <div className="max-w-2xl mx-auto h-20 px-4 flex items-center justify-between gap-2 mt-2">
           {/* Brand Logo & Name */}
           <button
             onClick={handleHomeClick}
-            className="flex items-center gap-2 min-w-0 flex-1 text-left group overflow-hidden"
+            className="flex items-center gap-2.5 min-w-0 text-left group overflow-hidden bg-white/80 hover:bg-white backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm border border-[#2D6A4F]/10 transition-all"
           >
             <img
               src={APP_BRAND.logoUrl}
               alt="Sampah Butuh Teman Logo"
-              className="h-8 w-8 object-contain shrink-0 drop-shadow-xs group-hover:scale-105 transition-transform"
+              className="h-8 w-8 object-contain shrink-0 group-hover:scale-105 transition-transform"
             />
-            <div className="flex flex-col min-w-0 justify-center">
-              <span className="text-[15px] font-bold text-[#176B4D] tracking-tight truncate leading-tight">
-                Sampah Butuh Teman
-              </span>
-              <span className="text-[9px] font-semibold text-[#8B6045] tracking-wider uppercase truncate leading-none mt-0.5 hidden xs:block sm:block">
-                Drop Point Kampus
+            <div className="flex flex-col min-w-0 justify-center pr-1">
+              <span className="text-[13px] font-black text-[#1A2E22] tracking-tight truncate leading-tight">
+                {APP_BRAND.name}
               </span>
             </div>
           </button>
 
-          {/* Right section: Static Role Badge + Profile & Logout Menu */}
-          <div className="flex items-center gap-2 shrink-0">
-            {/* Role Badge (Static, no switcher) */}
+          {/* Right section: Role Badge + Profile Menu */}
+          <div className="flex items-center gap-2 shrink-0 bg-white/60 backdrop-blur-md px-1.5 py-1.5 rounded-full border border-[#2D6A4F]/10">
+            {/* Role Badge */}
             <div
-              className={`hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${badge.bg}`}
+              className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider ${badge.bg}`}
             >
               <span className={`w-1.5 h-1.5 rounded-full ${badge.dot}`} />
               <span>{badge.label}</span>
             </div>
 
-            {/* User Profile Button with Menu */}
+            {/* User Profile Button */}
             <div className="relative">
               <button
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
-                className="flex items-center gap-1.5 p-1 sm:px-2 sm:py-1 rounded-full hover:bg-black/5 transition-colors border border-transparent hover:border-black/10"
+                className="flex items-center gap-1.5 rounded-full transition-transform hover:scale-105 active:scale-95"
                 title="Menu Pengguna"
               >
-                <div className="w-8 h-8 rounded-full bg-[#176B4D] text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                <div className="w-9 h-9 rounded-full bg-[#2D6A4F] text-white flex items-center justify-center font-bold text-xs">
                   {currentUser?.nama?.charAt(0) || 'U'}
                 </div>
-                <span className="material-symbols-outlined text-[18px] text-gray-500">
-                  expand_more
-                </span>
               </button>
 
               {/* Profile Dropdown */}
               {showProfileMenu && (
-                <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-200 p-2 z-50 animate-in fade-in zoom-in-95">
-                  <div className="px-3 py-2.5 border-b border-gray-100">
-                    <div className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                <div className="absolute right-0 mt-3 w-64 bg-white rounded-3xl shadow-xl p-3 z-50 animate-in fade-in zoom-in-95 origin-top-right border border-[#2D6A4F]/10">
+                  <div className="px-3 py-3 bg-[#D8F3DC]/50 rounded-2xl mb-2">
+                    <div className="text-[10px] font-black uppercase tracking-wider text-[#52645A] mb-1">
                       Akun Aktif
                     </div>
-                    <div className="text-xs font-bold text-[#1C1C16] truncate mt-0.5">
+                    <div className="text-sm font-black text-[#1A2E22] truncate">
                       {currentUser?.nama || 'Pengguna'}
                     </div>
-                    <div className="text-[11px] text-[#57635A] truncate">
+                    <div className="text-xs font-semibold text-[#52645A] truncate mb-3">
                       {currentUser?.email || '-'}
                     </div>
-                    <div className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-gray-100 text-gray-700">
-                      <span className={`w-1.5 h-1.5 rounded-full ${badge.dot}`} />
+                    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-black uppercase ${badge.bg}`}>
+                      <span className={`w-1 h-1 rounded-full ${badge.dot}`} />
                       <span>{badge.label}</span>
                     </div>
                   </div>
 
-                  <div className="pt-1.5">
+                  <div className="pt-1">
+                    {role === 'perusahaan' && (
+                      <button
+                        onClick={() => {
+                          setShowProfileMenu(false);
+                          setActiveRoute('/perusahaan/profil');
+                        }}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#E5F6EB] text-xs font-black text-[#2D6A4F] hover:bg-[#D8F3DC] transition-colors mb-2"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">settings</span>
+                        <span>Pengaturan Profil</span>
+                      </button>
+                    )}
                     <button
                       onClick={() => {
                         setShowProfileMenu(false);
                         setShowConfirmLogout(true);
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left text-xs font-bold text-red-600 hover:bg-red-50 transition-colors"
+                      className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#2D6A4F] text-xs font-black text-white hover:bg-[#1A4235] transition-colors"
                     >
                       <span className="material-symbols-outlined text-[18px]">logout</span>
-                      <span>Keluar dari Akun</span>
+                      <span>Keluar</span>
                     </button>
                   </div>
                 </div>
@@ -127,19 +133,19 @@ export const Navbar: React.FC = () => {
 
       {/* Logout Confirmation Modal */}
       {showConfirmLogout && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-gray-200 animate-in fade-in zoom-in-95">
-            <div className="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center mb-4">
-              <span className="material-symbols-outlined text-[26px]">logout</span>
+        <div className="fixed inset-0 z-50 bg-[#1A2E22]/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full animate-in fade-in zoom-in-95 border border-[#2D6A4F]/15 shadow-xl">
+            <div className="w-14 h-14 rounded-2xl bg-[#D8F3DC] text-[#2D6A4F] flex items-center justify-center mb-4 mx-auto">
+              <span className="material-symbols-outlined text-[28px]">logout</span>
             </div>
-            <h3 className="text-base font-bold text-[#1C1C16]">Konfirmasi Keluar</h3>
-            <p className="text-xs text-[#57635A] mt-1.5 leading-relaxed">
-              Apakah Anda yakin ingin keluar dari akun ini? Anda akan kembali ke halaman pemilihan peran.
+            <h3 className="text-xl font-black text-[#1A2E22] text-center mb-1">Keluar Akun?</h3>
+            <p className="text-xs font-medium text-[#52645A] text-center mb-6">
+              Anda akan kembali ke halaman pemilih peran aplikasi.
             </p>
-            <div className="flex items-center gap-2 mt-6">
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => setShowConfirmLogout(false)}
-                className="flex-1 h-10 rounded-xl border border-gray-200 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+                className="flex-1 h-12 rounded-full bg-[#F2F7F4] text-xs font-black text-[#1A2E22] border border-[#2D6A4F]/10 transition-transform hover:scale-105 active:scale-95"
               >
                 Batal
               </button>
@@ -148,7 +154,7 @@ export const Navbar: React.FC = () => {
                   setShowConfirmLogout(false);
                   logout();
                 }}
-                className="flex-1 h-10 rounded-xl bg-red-600 hover:bg-red-700 text-xs font-bold text-white transition-colors shadow-xs"
+                className="flex-1 h-12 rounded-full bg-[#2D6A4F] text-xs font-black text-white hover:bg-[#1A4235] transition-all hover:scale-105 active:scale-95"
               >
                 Ya, Keluar
               </button>

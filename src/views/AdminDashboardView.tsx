@@ -1,833 +1,776 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useApp } from '../context/AppContext';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+const markerIconUnit = L.divIcon({
+  className: 'custom-map-marker-unit',
+  html: `<div style="background-color: #2D6A4F; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.2); border: 2px solid white;"><span class="material-symbols-outlined" style="color: white; font-size: 16px;">school</span></div>`,
+  iconSize: [28, 28],
+  iconAnchor: [14, 14],
+  popupAnchor: [0, -14],
+});
+
+const markerIconIndustri = L.divIcon({
+  className: 'custom-map-marker-industri',
+  html: `<div style="background-color: #E76F51; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.2); border: 2px solid white;"><span class="material-symbols-outlined" style="color: white; font-size: 16px;">factory</span></div>`,
+  iconSize: [28, 28],
+  iconAnchor: [14, 14],
+  popupAnchor: [0, -14],
+});
+
+/* ─── Donut Gauge (fixed — text NOT rotated) ─── */
+const DonutGauge: React.FC<{ pct: number; color: string; bg?: string; size?: number; sw?: number }> = ({
+  pct, color, bg = '#e5e7eb', size = 76, sw = 9
+}) => {
+  const r = (size - sw) / 2;
+  const circ = 2 * Math.PI * r;
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: 'rotate(-90deg)' }}>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={bg} strokeWidth={sw} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={sw}
+          strokeDasharray={`${(pct / 100) * circ} ${circ}`} strokeLinecap="round" />
+      </svg>
+      {/* Text sits on top, NOT inside SVG so it doesn't rotate */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-base font-black" style={{ color }}>{pct}%</span>
+      </div>
+    </div>
+  );
+};
+
+/* ─── Sparkline ─── */
+const Sparkline: React.FC<{ data: number[]; color: string; fill?: string }> = ({ data, color, fill }) => {
+  const max = Math.max(...data), min = Math.min(...data);
+  const w = 100, h = 28;
+  const pts = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * w;
+    const y = h - ((v - min) / (max - min || 1)) * (h - 2) - 1;
+    return `${x},${y}`;
+  }).join(' ');
+  const fillPath = `M0,${h} L${pts.split(' ').join(' L')} L${w},${h} Z`;
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} className="w-full" style={{ height: 28 }} preserveAspectRatio="none">
+      {fill && <path d={fillPath} fill={fill} opacity="0.2" />}
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+};
+
+/* ══════════════════════════════════════════
+   PAPER & CARDBOARD MASCOT HERO ILLUSTRATION
+══════════════════════════════════════════ */
+const Illu3DCandyCrushHero = () => (
+  <svg viewBox="0 0 460 340" className="w-full h-full overflow-visible" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      {/* Paper character gradients */}
+      <linearGradient id="paperBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FFFFFF" />
+        <stop offset="40%" stopColor="#F5F5F0" />
+        <stop offset="100%" stopColor="#E8E4DC" />
+      </linearGradient>
+      <linearGradient id="paperSheetGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FAFAF8" />
+        <stop offset="100%" stopColor="#EAE8E2" />
+      </linearGradient>
+
+      {/* Cardboard character gradients */}
+      <linearGradient id="cardboardBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#D4A96A" />
+        <stop offset="40%" stopColor="#C4934F" />
+        <stop offset="100%" stopColor="#A87540" />
+      </linearGradient>
+      <linearGradient id="cardboardSheetGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#DDB678" />
+        <stop offset="100%" stopColor="#B8884A" />
+      </linearGradient>
+
+      {/* Green elements */}
+      <linearGradient id="greenSneakerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#4CAF72" />
+        <stop offset="100%" stopColor="#2D6A4F" />
+      </linearGradient>
+      <linearGradient id="leafGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="#2D6A4F" />
+        <stop offset="100%" stopColor="#52B788" />
+      </linearGradient>
+      <linearGradient id="bagGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#3D8B5E" />
+        <stop offset="100%" stopColor="#1E4D35" />
+      </linearGradient>
+      <linearGradient id="armGreenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#52B788" />
+        <stop offset="100%" stopColor="#2D6A4F" />
+      </linearGradient>
+
+      <filter id="mascotShadow" x="-20%" y="-5%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="14" stdDeviation="12" floodColor="#0A2016" floodOpacity="0.35" />
+      </filter>
+      <filter id="leafShadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="1" dy="2" stdDeviation="2" floodColor="#0A2016" floodOpacity="0.25" />
+      </filter>
+    </defs>
+
+    {/* ── Background decorative glows ── */}
+    <circle cx="100" cy="90" r="50" fill="#52B788" opacity="0.12" />
+    <circle cx="360" cy="60" r="45" fill="#D4A96A" opacity="0.15" />
+    <circle cx="380" cy="230" r="30" fill="#52B788" opacity="0.10" />
+
+    {/* Confetti / floating particles */}
+    <circle cx="60" cy="40" r="5" fill="#52B788" opacity="0.7" />
+    <circle cx="420" cy="80" r="6" fill="#D4A96A" opacity="0.8" />
+    <rect x="380" y="30" width="8" height="8" rx="2" fill="#52B788" opacity="0.7" transform="rotate(30 380 30)" />
+    <rect x="50" y="200" width="7" height="7" rx="2" fill="#C4934F" opacity="0.6" transform="rotate(20 50 200)" />
+    <path d="M150 30 Q158 15 165 35" stroke="#52B788" strokeWidth="3.5" strokeLinecap="round" opacity="0.8" />
+    <path d="M280 15 Q288 0 296 20" stroke="#D4A96A" strokeWidth="3.5" strokeLinecap="round" opacity="0.8" />
+
+    {/* ════════ CHARACTER 1: PAPER MASCOT (LEFT) ════════ */}
+    <g transform="translate(30, 15)" filter="url(#mascotShadow)">
+
+      {/* ── Stem / twig ── */}
+      <rect x="96" y="22" width="5" height="30" rx="2.5" fill="#4A7C59" />
+
+      {/* ── Leaf sprout (2 leaves + center bud) ── */}
+      <g filter="url(#leafShadow)">
+        {/* Left leaf */}
+        <path d="M101 42 C88 30 72 28 75 44 C78 56 101 52 101 42Z" fill="url(#leafGrad)" />
+        <path d="M75 44 Q88 37 101 42" stroke="#2D6A4F" strokeWidth="1" fill="none" opacity="0.5" />
+        {/* Right leaf */}
+        <path d="M101 38 C114 26 130 25 127 41 C124 53 101 48 101 38Z" fill="url(#leafGrad)" />
+        <path d="M127 41 Q114 33 101 38" stroke="#2D6A4F" strokeWidth="1" fill="none" opacity="0.5" />
+        {/* Bud tip */}
+        <ellipse cx="101" cy="24" rx="5" ry="6" fill="#52B788" />
+        <ellipse cx="101" cy="22" rx="3" ry="3" fill="#74C69D" />
+      </g>
+
+      {/* ── Paper stack body (layered sheets) ── */}
+      {/* Back sheets (depth effect) */}
+      <rect x="52" y="58" width="105" height="130" rx="6" fill="#E0DDD5" transform="rotate(4 52 58)" />
+      <rect x="52" y="56" width="105" height="130" rx="6" fill="#ECEAE4" transform="rotate(-3 52 56)" />
+      {/* Main front sheet */}
+      <rect x="48" y="52" width="108" height="132" rx="8" fill="url(#paperBodyGrad)" stroke="#D8D5CE" strokeWidth="1.5" />
+      {/* Sheet edge lines (stacked paper look) */}
+      <line x1="52" y1="62" x2="152" y2="62" stroke="#D0CEC8" strokeWidth="1" opacity="0.6" />
+      <line x1="51" y1="68" x2="153" y2="68" stroke="#D0CEC8" strokeWidth="1" opacity="0.5" />
+      <line x1="50" y1="74" x2="154" y2="74" stroke="#D0CEC8" strokeWidth="0.8" opacity="0.4" />
+      {/* Inner page line lines */}
+      <line x1="62" y1="120" x2="140" y2="120" stroke="#D0CEC8" strokeWidth="1.2" opacity="0.35" />
+      <line x1="62" y1="130" x2="125" y2="130" stroke="#D0CEC8" strokeWidth="1.2" opacity="0.3" />
+      <line x1="62" y1="140" x2="132" y2="140" stroke="#D0CEC8" strokeWidth="1.2" opacity="0.3" />
+      {/* Highlight gloss */}
+      <rect x="55" y="56" width="35" height="55" rx="4" fill="white" opacity="0.22" />
+
+      {/* ── Face ── */}
+      {/* Left eye (winking — closed arc) */}
+      <path d="M76 100 Q84 92 92 100" stroke="#2D1A0E" strokeWidth="3.5" strokeLinecap="round" fill="none" />
+      {/* Right eye (open, round) */}
+      <ellipse cx="122" cy="97" rx="9" ry="11" fill="#2D1A0E" />
+      <circle cx="125" cy="94" r="4" fill="white" />
+      <circle cx="123" cy="102" r="1.5" fill="white" opacity="0.7" />
+      {/* Rosy cheeks */}
+      <ellipse cx="68" cy="112" rx="10" ry="7" fill="#F48CAB" opacity="0.55" />
+      <ellipse cx="135" cy="110" rx="10" ry="7" fill="#F48CAB" opacity="0.55" />
+      {/* Big happy smile */}
+      <path d="M72 118 Q102 148 132 118" stroke="#2D1A0E" strokeWidth="3.5" strokeLinecap="round" fill="none" />
+      {/* Mouth fill */}
+      <path d="M76 121 Q102 144 128 121 Q102 138 76 121Z" fill="#E07090" opacity="0.7" />
+
+      {/* ── Left arm (green, raised) ── */}
+      <path d="M48 95 Q18 72 25 45" stroke="url(#armGreenGrad)" strokeWidth="16" strokeLinecap="round" />
+      {/* Hand */}
+      <circle cx="27" cy="40" rx="14" ry="14" fill="url(#armGreenGrad)" />
+      <circle cx="18" cy="33" r="7" fill="#52B788" />
+      <circle cx="27" cy="28" r="7" fill="#52B788" />
+      <circle cx="36" cy="33" r="7" fill="#52B788" />
+
+      {/* ── Right arm (green, holding bag) ── */}
+      <path d="M156 115 Q188 100 184 75" stroke="url(#armGreenGrad)" strokeWidth="16" strokeLinecap="round" />
+      {/* Eco bag */}
+      <rect x="172" y="52" width="36" height="32" rx="6" fill="url(#bagGrad)" />
+      <path d="M180 52 Q180 44 188 44 Q196 44 196 52" stroke="#74C69D" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      {/* Leaf icon on bag */}
+      <path d="M188 62 C184 58 178 60 180 66 C182 70 188 68 188 62Z" fill="#52B788" opacity="0.8" />
+      <line x1="181" y1="66" x2="188" y2="62" stroke="#74C69D" strokeWidth="1" />
+
+      {/* ── Legs ── */}
+      <rect x="72" y="180" width="20" height="38" rx="8" fill="url(#armGreenGrad)" />
+      <rect x="108" y="180" width="20" height="38" rx="8" fill="url(#armGreenGrad)" />
+
+      {/* ── Sneakers ── */}
+      {/* Left shoe */}
+      <rect x="62" y="212" width="42" height="18" rx="9" fill="url(#greenSneakerGrad)" />
+      <rect x="64" y="215" width="20" height="6" rx="3" fill="white" opacity="0.5" />
+      <line x1="68" y1="219" x2="100" y2="219" stroke="white" strokeWidth="1.5" opacity="0.7" strokeDasharray="4 3" />
+      {/* Right shoe */}
+      <rect x="98" y="212" width="42" height="18" rx="9" fill="url(#greenSneakerGrad)" />
+      <rect x="100" y="215" width="20" height="6" rx="3" fill="white" opacity="0.5" />
+      <line x1="104" y1="219" x2="136" y2="219" stroke="white" strokeWidth="1.5" opacity="0.7" strokeDasharray="4 3" />
+    </g>
+
+    {/* ════════ CHARACTER 2: CARDBOARD MASCOT (RIGHT) ════════ */}
+    <g transform="translate(235, 25)" filter="url(#mascotShadow)">
+
+      {/* ── Stem / twig ── */}
+      <rect x="95" y="20" width="5" height="30" rx="2.5" fill="#4A7C59" />
+
+      {/* ── Leaf sprout ── */}
+      <g filter="url(#leafShadow)">
+        {/* Left leaf */}
+        <path d="M100 40 C87 28 71 26 74 42 C77 54 100 50 100 40Z" fill="url(#leafGrad)" />
+        <path d="M74 42 Q87 35 100 40" stroke="#2D6A4F" strokeWidth="1" fill="none" opacity="0.5" />
+        {/* Right leaf */}
+        <path d="M100 36 C113 24 129 23 126 39 C123 51 100 46 100 36Z" fill="url(#leafGrad)" />
+        <path d="M126 39 Q113 31 100 36" stroke="#2D6A4F" strokeWidth="1" fill="none" opacity="0.5" />
+        {/* Bud tip */}
+        <ellipse cx="100" cy="22" rx="5" ry="6" fill="#52B788" />
+        <ellipse cx="100" cy="20" rx="3" ry="3" fill="#74C69D" />
+      </g>
+
+      {/* ── Cardboard stack body ── */}
+      {/* Back sheets */}
+      <rect x="50" y="58" width="105" height="130" rx="6" fill="#9C6A30" transform="rotate(4 50 58)" />
+      <rect x="50" y="56" width="105" height="130" rx="6" fill="#B87E3A" transform="rotate(-3 50 56)" />
+      {/* Main front sheet */}
+      <rect x="47" y="52" width="108" height="132" rx="8" fill="url(#cardboardBodyGrad)" stroke="#9C6A30" strokeWidth="1.5" />
+      {/* Corrugated texture lines */}
+      <line x1="51" y1="62" x2="151" y2="62" stroke="#9C6A30" strokeWidth="1.2" opacity="0.55" />
+      <line x1="50" y1="68" x2="152" y2="68" stroke="#9C6A30" strokeWidth="1.2" opacity="0.45" />
+      <line x1="49" y1="74" x2="153" y2="74" stroke="#9C6A30" strokeWidth="1" opacity="0.35" />
+      {/* Horizontal grain lines */}
+      <line x1="61" y1="118" x2="139" y2="118" stroke="#9C6A30" strokeWidth="1.2" opacity="0.3" />
+      <line x1="61" y1="128" x2="124" y2="128" stroke="#9C6A30" strokeWidth="1.2" opacity="0.25" />
+      <line x1="61" y1="138" x2="131" y2="138" stroke="#9C6A30" strokeWidth="1.2" opacity="0.25" />
+      {/* Highlight gloss */}
+      <rect x="54" y="56" width="32" height="50" rx="4" fill="white" opacity="0.14" />
+
+      {/* ── Face ── */}
+      {/* Left eye */}
+      <ellipse cx="80" cy="97" rx="9" ry="11" fill="#2D1A0E" />
+      <circle cx="83" cy="94" r="4" fill="white" />
+      <circle cx="81" cy="102" r="1.5" fill="white" opacity="0.7" />
+      {/* Right eye */}
+      <ellipse cx="120" cy="97" rx="9" ry="11" fill="#2D1A0E" />
+      <circle cx="123" cy="94" r="4" fill="white" />
+      <circle cx="121" cy="102" r="1.5" fill="white" opacity="0.7" />
+      {/* Cheeks */}
+      <ellipse cx="66" cy="111" rx="10" ry="7" fill="#F48CAB" opacity="0.55" />
+      <ellipse cx="134" cy="111" rx="10" ry="7" fill="#F48CAB" opacity="0.55" />
+      {/* Happy smile */}
+      <path d="M71 118 Q100 148 129 118" stroke="#2D1A0E" strokeWidth="3.5" strokeLinecap="round" fill="none" />
+      <path d="M75 121 Q100 144 125 121 Q100 138 75 121Z" fill="#E07090" opacity="0.7" />
+
+      {/* ── Left arm (green, holding bag) ── */}
+      <path d="M47 105 Q16 88 18 62" stroke="url(#armGreenGrad)" strokeWidth="16" strokeLinecap="round" />
+      {/* Eco bag */}
+      <rect x="2" y="40" width="36" height="30" rx="6" fill="url(#bagGrad)" />
+      <path d="M10 40 Q10 32 18 32 Q26 32 26 40" stroke="#74C69D" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <path d="M18 52 C14 48 8 50 10 56 C12 60 18 58 18 52Z" fill="#52B788" opacity="0.8" />
+      <line x1="11" y1="56" x2="18" y2="52" stroke="#74C69D" strokeWidth="1" />
+
+      {/* ── Right arm (green, raised up) ── */}
+      <path d="M155 95 Q188 72 182 42" stroke="url(#armGreenGrad)" strokeWidth="16" strokeLinecap="round" />
+      {/* Hand */}
+      <circle cx="183" cy="36" r="14" fill="url(#armGreenGrad)" />
+      <circle cx="175" cy="29" r="7" fill="#52B788" />
+      <circle cx="183" cy="24" r="7" fill="#52B788" />
+      <circle cx="192" cy="29" r="7" fill="#52B788" />
+
+      {/* ── Legs ── */}
+      <rect x="71" y="180" width="20" height="38" rx="8" fill="url(#armGreenGrad)" />
+      <rect x="107" y="180" width="20" height="38" rx="8" fill="url(#armGreenGrad)" />
+
+      {/* ── Sneakers ── */}
+      {/* Left shoe */}
+      <rect x="61" y="212" width="42" height="18" rx="9" fill="url(#greenSneakerGrad)" />
+      <rect x="63" y="215" width="20" height="6" rx="3" fill="white" opacity="0.5" />
+      <line x1="67" y1="219" x2="99" y2="219" stroke="white" strokeWidth="1.5" opacity="0.7" strokeDasharray="4 3" />
+      {/* Right shoe */}
+      <rect x="97" y="212" width="42" height="18" rx="9" fill="url(#greenSneakerGrad)" />
+      <rect x="99" y="215" width="20" height="6" rx="3" fill="white" opacity="0.5" />
+      <line x1="103" y1="219" x2="135" y2="219" stroke="white" strokeWidth="1.5" opacity="0.7" strokeDasharray="4 3" />
+    </g>
+  </svg>
+);
+
+/* ── Card illustrations (fixed: text area left, illustration right) ── */
+const IlluScale = () => (
+  <svg viewBox="0 0 100 90" className="w-full h-full" fill="none">
+    <rect x="35" y="72" width="30" height="6" rx="3" fill="#C27D3A" opacity="0.7" />
+    <rect x="46" y="35" width="8" height="38" rx="4" fill="#A0632B" opacity="0.5" />
+    <rect x="18" y="33" width="64" height="6" rx="3" fill="#A0632B" opacity="0.6" />
+    <circle cx="50" cy="36" r="6" fill="#A0632B" opacity="0.8" />
+    <path d="M20 38 C20 38 12 42 12 56" stroke="#C27D3A" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+    <rect x="4" y="54" width="18" height="12" rx="3" fill="#F4A261" opacity="0.7" />
+    <rect x="6" y="57" width="8" height="2" rx="1" fill="white" opacity="0.9" />
+    <rect x="6" y="61" width="12" height="2" rx="1" fill="white" opacity="0.7" />
+    <path d="M80 38 C80 38 86 42 86 52" stroke="#C27D3A" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+    <rect x="78" y="50" width="18" height="12" rx="3" fill="#FFDBC8" opacity="0.9" />
+    <rect x="80" y="53" width="6" height="2" rx="1" fill="#C27D3A" opacity="0.5" />
+    <text x="76" y="22" fontSize="16" fill="#F4A261" opacity="0.5">♻</text>
+    <circle cx="14" cy="18" r="9" fill="#2D6A4F" opacity="0.15" />
+    <text x="9" y="23" fontSize="12" fill="#2D6A4F" opacity="0.5">↑</text>
+  </svg>
+);
+
+const IlluMoney = () => (
+  <svg viewBox="0 0 100 90" className="w-full h-full" fill="none">
+    <rect x="15" y="22" width="62" height="44" rx="5" fill="#BECFFF" opacity="0.5" />
+    <rect x="19" y="26" width="54" height="34" rx="3" fill="#EEF4FF" />
+    <rect x="26" y="46" width="6" height="10" rx="2" fill="#5B8DEF" opacity="0.6" />
+    <rect x="35" y="40" width="6" height="16" rx="2" fill="#5B8DEF" opacity="0.8" />
+    <rect x="44" y="34" width="6" height="22" rx="2" fill="#3A5BA0" />
+    <rect x="53" y="37" width="6" height="19" rx="2" fill="#5B8DEF" opacity="0.8" />
+    <rect x="62" y="30" width="6" height="26" rx="2" fill="#3A5BA0" />
+    <polyline points="26,44 35,38 44,32 53,36 62,28" fill="none" stroke="#F4A261" strokeWidth="2" strokeLinecap="round" />
+    <circle cx="62" cy="28" r="3" fill="#F4A261" />
+    <rect x="5" y="66" width="90" height="5" rx="2" fill="#BECFFF" opacity="0.6" />
+    <circle cx="12" cy="34" r="10" fill="#F4A261" opacity="0.75" />
+    <text x="6" y="38" fontSize="9" fill="white" fontWeight="bold">Rp</text>
+    <circle cx="88" cy="48" r="8" fill="#F4A261" opacity="0.55" />
+    <text x="83" y="52" fontSize="7" fill="white" fontWeight="bold">Rp</text>
+    <rect x="62" y="8" width="30" height="14" rx="7" fill="#2D6A4F" opacity="0.85" />
+    <text x="65" y="18" fontSize="8" fill="white" fontWeight="bold">+18%</text>
+  </svg>
+);
+
+const IlluTruck = () => (
+  <svg viewBox="0 0 110 90" className="w-full h-full" fill="none">
+    <rect x="0" y="66" width="110" height="16" rx="4" fill="#B7E4C7" opacity="0.35" />
+    <rect x="4" y="72" width="16" height="4" rx="2" fill="white" opacity="0.5" />
+    <rect x="46" y="72" width="16" height="4" rx="2" fill="white" opacity="0.5" />
+    <rect x="88" y="72" width="16" height="4" rx="2" fill="white" opacity="0.5" />
+    <rect x="20" y="40" width="52" height="28" rx="5" fill="#2D6A4F" opacity="0.8" />
+    <rect x="68" y="45" width="28" height="23" rx="5" fill="#1A4235" opacity="0.9" />
+    <rect x="71" y="48" width="18" height="12" rx="3" fill="#D8F3DC" opacity="0.9" />
+    <circle cx="38" cy="70" r="9" fill="#1A2E22" opacity="0.9" />
+    <circle cx="38" cy="70" r="5" fill="#52B788" opacity="0.7" />
+    <circle cx="82" cy="70" r="9" fill="#1A2E22" opacity="0.9" />
+    <circle cx="82" cy="70" r="5" fill="#52B788" opacity="0.7" />
+    <text x="29" y="59" fontSize="16" fill="white" opacity="0.65">♻</text>
+    <line x1="2" y1="50" x2="18" y2="50" stroke="#52B788" strokeWidth="2.5" strokeLinecap="round" opacity="0.6" />
+    <line x1="6" y1="57" x2="18" y2="57" stroke="#52B788" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
+    <line x1="0" y1="43" x2="18" y2="43" stroke="#52B788" strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
+    <circle cx="90" cy="20" r="16" fill="#EEF9ED" opacity="0.9" stroke="#B7E4C7" strokeWidth="1.5" />
+    <text x="78" y="24" fontSize="10" fill="#2D6A4F" fontWeight="bold">1.8h</text>
+    <circle cx="22" cy="20" r="10" fill="#D8F3DC" opacity="0.8" />
+    <text x="16" y="25" fontSize="12" fill="#2D6A4F">✓</text>
+  </svg>
+);
+
+const IlluForest = () => (
+  <svg viewBox="0 0 110 90" className="w-full h-full" fill="none">
+    <circle cx="80" cy="45" r="38" fill="#52B788" opacity="0.06" />
+    <polygon points="72,76 85,42 98,76" fill="#1A4235" opacity="0.45" />
+    <rect x="81" y="75" width="7" height="10" rx="2" fill="#1A2E22" opacity="0.35" />
+    <polygon points="86,73 97,46 108,73" fill="#2D6A4F" opacity="0.35" />
+    <polygon points="42,76 57,32 72,76" fill="#52B788" opacity="0.8" />
+    <rect x="53" y="75" width="8" height="12" rx="2" fill="#2D6A4F" opacity="0.6" />
+    <polygon points="18,76 37,34 56,76" fill="#2D6A4F" opacity="0.9" />
+    <rect x="33" y="75" width="8" height="12" rx="2" fill="#1A4235" opacity="0.7" />
+    <polygon points="2,78 14,52 26,78" fill="#52B788" opacity="0.6" />
+    <rect x="0" y="84" width="110" height="10" rx="4" fill="#1A4235" opacity="0.35" />
+    <circle cx="95" cy="18" r="11" fill="#F4A261" opacity="0.22" />
+    <circle cx="95" cy="18" r="7" fill="#F4A261" opacity="0.32" />
+    <text x="2" y="24" fontSize="10" fill="#52B788" opacity="0.55">✦</text>
+    <text x="100" y="42" fontSize="8" fill="#52B788" opacity="0.4">✦</text>
+    <rect x="4" y="52" width="32" height="15" rx="7" fill="#52B788" opacity="0.25" />
+    <text x="7" y="63" fontSize="8" fill="#52B788" fontWeight="bold">-CO₂ ✓</text>
+  </svg>
+);
 
 export const AdminDashboardView: React.FC = () => {
-  const {
-    units,
-    laporanList,
-    totalKgTersalurkan,
-    totalPohon,
-    totalAirBersih,
-    setActiveRoute
-  } = useApp();
-
-  const [timeframe, setTimeframe] = useState<'semester' | 'bulan' | '30hari'>('semester');
-  const [leaderboardPeriod, setLeaderboardPeriod] = useState<'mingguan' | 'bulanan' | 'semester'>('bulanan');
-  const [leaderboardFilter, setLeaderboardFilter] = useState<'semua' | 'fakultas' | 'biro'>('semua');
-  const [expandedUnitId, setExpandedUnitId] = useState<string | null>(null);
-  const [actionNotice, setActionNotice] = useState<string | null>(null);
-
-  const pendingLaporan = laporanList.filter(l => l.status === 'menunggu_tindakan');
+  const { units, totalKgTersalurkan, totalPohon, totalAirBersih, laporanList, setActiveRoute } = useApp();
 
   const targetSemester = 2500;
-  const persentaseTarget = Math.min(100, Math.round((totalKgTersalurkan / targetSemester) * 100));
+  const pct = Math.min(100, Math.round((totalKgTersalurkan / targetSemester) * 100));
+  const nilaiSirkularitas = totalKgTersalurkan * 1400;
+  const pendingLaporan = laporanList.filter(l => l.status === 'menunggu_tindakan').length;
 
-  // Compute leaderboard values based on selected period
-  const getRankedUnits = () => {
-    const periodMultipliers: Record<string, Record<string, { kg: number; points: number; frekuensi: number }>> = {
-      mingguan: {
-        'unit-ftd': { kg: 65, points: 130, frekuensi: 3 },
-        'unit-fk': { kg: 55, points: 110, frekuensi: 2 },
-        'unit-feb': { kg: 45, points: 90, frekuensi: 2 },
-        'unit-fasilkom': { kg: 40, points: 80, frekuensi: 2 },
-        'unit-fikom': { kg: 30, points: 60, frekuensi: 1 },
-        'unit-perpus': { kg: 25, points: 50, frekuensi: 1 },
-        'unit-baa': { kg: 20, points: 40, frekuensi: 1 },
-        'unit-lppm': { kg: 15, points: 30, frekuensi: 1 }
-      },
-      bulanan: {
-        'unit-baa': { kg: 245, points: 490, frekuensi: 8 },
-        'unit-ftd': { kg: 190, points: 380, frekuensi: 6 },
-        'unit-fk': { kg: 170, points: 340, frekuensi: 5 },
-        'unit-feb': { kg: 145, points: 290, frekuensi: 5 },
-        'unit-fasilkom': { kg: 120, points: 240, frekuensi: 4 },
-        'unit-fikom': { kg: 95, points: 190, frekuensi: 3 },
-        'unit-perpus': { kg: 85, points: 170, frekuensi: 3 },
-        'unit-lppm': { kg: 55, points: 110, frekuensi: 2 }
-      }
-    };
-
-    const badges = [
-      'Juara 1 Sirkular',
-      'Most Consistent',
-      'Active Contributor',
-      'Active Contributor',
-      'Rising Star',
-      'Steady Partner',
-      'Developing Unit',
-      'Standby Unit'
-    ];
-
-    const items = units.map(u => {
-      let kg = u.total_kg_tersalurkan;
-      let points = u.eco_points;
-      let frekuensi = Math.max(1, Math.round(kg / 35));
-
-      if (leaderboardPeriod !== 'semester' && periodMultipliers[leaderboardPeriod]?.[u.id]) {
-        kg = periodMultipliers[leaderboardPeriod][u.id].kg;
-        points = periodMultipliers[leaderboardPeriod][u.id].points;
-        frekuensi = periodMultipliers[leaderboardPeriod][u.id].frekuensi;
-      }
-
-      return {
-        ...u,
-        kg,
-        points,
-        frekuensi,
-        hvsKg: Math.round(kg * 0.45),
-        kardusKg: Math.round(kg * 0.35),
-        campurKg: Math.max(0, kg - Math.round(kg * 0.45) - Math.round(kg * 0.35)),
-        pohonSaved: Math.max(1, Math.round(kg / 50)),
-        airSaved: kg * 30,
-        co2Saved: Math.round(kg * 1.3)
-      };
-    }).sort((a, b) => b.kg - a.kg);
-
-    const totalPeriodKg = items.reduce((acc, it) => acc + it.kg, 0) || 1;
-
-    return items.map((it, idx) => ({
-      ...it,
-      rank: idx + 1,
-      kontribusiPct: Math.round((it.kg / totalPeriodKg) * 100),
-      badge: badges[idx] || 'Active Contributor'
-    }));
+  const periodMultipliers: Record<string, { kg: number; points: number }> = {
+    'unit-baa': { kg: 245, points: 490 },
+    'unit-ftd': { kg: 190, points: 380 },
+    'unit-fk': { kg: 170, points: 340 },
+    'unit-feb': { kg: 145, points: 290 },
+    'unit-fasilkom': { kg: 120, points: 240 },
+    'unit-fikom': { kg: 95, points: 190 },
+    'unit-perpus': { kg: 85, points: 170 },
+    'unit-lppm': { kg: 55, points: 110 },
   };
 
-  const allRankedUnits = getRankedUnits();
-  const filteredRankedUnits = leaderboardFilter === 'semua'
-    ? allRankedUnits
-    : allRankedUnits.filter(u => u.jenis === leaderboardFilter);
+  const rankedUnits = units
+    .map(u => ({
+      ...u,
+      kg: periodMultipliers[u.id]?.kg ?? u.total_kg_tersalurkan,
+      points: periodMultipliers[u.id]?.points ?? u.eco_points,
+    }))
+    .sort((a, b) => b.kg - a.kg);
+
+  const monthlyData = [120, 185, 290, 240, 250, totalKgTersalurkan];
 
   return (
-    <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
-      {/* Capaian Kampus Hijau Header */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-3">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-          <div className="min-w-0">
-            <span className="text-[10px] font-bold text-[#176B4D] uppercase tracking-wider block truncate">
-              PANEL SENTRAL KAMPUS
-            </span>
-            <h2 className="text-base font-bold text-[#1C1C16] truncate">
-              Capaian Sirkular Kampus Hijau
-            </h2>
-          </div>
-          <span className="text-[10px] shrink-0 font-bold px-2.5 py-0.5 rounded-full bg-[#9CF2B5] text-[#157140] flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#157140] animate-pulse"></span>
-            Drop Point Normal
-          </span>
-        </div>
+    <div className="w-full max-w-7xl mx-auto font-sans text-[#1A2E22] space-y-6 pb-10">
 
-        {/* Progress Bar */}
-        <div className="space-y-1.5">
-          <div className="flex justify-between items-center text-xs">
-            <span className="text-[#57635A]">Target Semester Genap</span>
-            <strong className="text-[#005138]">
-              {totalKgTersalurkan.toLocaleString('id-ID')} / {targetSemester.toLocaleString('id-ID')} Kg ({persentaseTarget}%)
-            </strong>
+      {/* ═══ CANDY CRUSH STYLE HERO BANNER ═══ */}
+      <div className="w-full rounded-[32px] bg-gradient-to-r from-[#14362B] via-[#1B4D3E] to-[#2D6A4F] text-white relative overflow-visible shadow-2xl border border-[#52B788]/20 my-2">
+        {/* Contour lines decor */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20 rounded-[32px]" preserveAspectRatio="none" viewBox="0 0 800 220">
+          <path d="M -50 100 Q 150 20 350 120 T 750 40 T 950 180" fill="none" stroke="#52B788" strokeWidth="1.5" />
+          <path d="M -50 150 Q 200 60 450 180 T 850 90" fill="none" stroke="#D8F3DC" strokeWidth="1" />
+        </svg>
+
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-6 sm:p-8 md:p-10 min-h-[260px] lg:min-h-[320px]">
+          {/* Left Column Text & Pill Button */}
+          <div className="max-w-md space-y-4 text-left z-20">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-[10px] sm:text-xs font-black tracking-widest text-[#D8F3DC] uppercase border border-white/10">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#70E000] animate-pulse" />
+              SAMPAH BUTUH TEMAN • DASHBOARD
+            </div>
+
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-md">
+              Saatnya Daur Ulang & Raih Sirkularitas!
+            </h1>
+
+            <p className="text-xs sm:text-sm text-[#D8F3DC]/80 font-medium leading-relaxed max-w-sm">
+              Kelola limbah kertas kampus, pantau emisi CO₂, dan salurkan langsung ke mitra daur ulang terpercaya.
+            </p>
           </div>
-          <div className="w-full bg-[#E6E2D9] rounded-full h-3 overflow-hidden shadow-inner">
-            <div
-              className="bg-gradient-to-r from-[#176B4D] to-[#52A66F] h-full rounded-full transition-all duration-500"
-              style={{ width: `${persentaseTarget}%` }}
-            ></div>
-          </div>
-          <div className="flex justify-between text-[10px] text-[#57635A]">
-            <span>Sisa target: {Math.max(0, targetSemester - totalKgTersalurkan)} Kg</span>
-            <span>{totalPohon} Pohon • {totalAirBersih.toLocaleString('id-ID')} L Air</span>
+
+          {/* Right Column — Mina & Moni Mascots */}
+          <div className="absolute -right-16 md:-right-24 lg:-right-32 bottom-0 pointer-events-none flex items-end justify-end">
+            <img
+              src="/mina.png"
+              alt="Mina - Maskot Kertas"
+              className="h-[350px] md:h-[300px] lg:h-[380px] object-contain object-bottom translate-x-20 md:translate-x-28 lg:translate-x-40"
+              style={{ filter: 'drop-shadow(0 20px 30px rgba(6,36,25,0.45))' }}
+            />
+            <img
+              src="/moni.png"
+              alt="Moni - Maskot Kardus"
+              className="h-[250px] md:h-[300px] lg:h-[380px] object-contain object-bottom -ml-20 md:-ml-28 lg:-ml-36 relative z-10"
+              style={{ filter: 'drop-shadow(0 20px 30px rgba(6,36,25,0.45))' }}
+            />
           </div>
         </div>
       </div>
 
-      {/* Akses Cepat Tombol Panel (Quick Access 2 Cards) */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* ═══ QUICK ACTIONS ═══ */}
+      <div className="my-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <button
           onClick={() => setActiveRoute('/admin/unit-tong')}
-          className="p-3.5 rounded-2xl bg-white border border-[#176B4D]/15 hover:border-[#176B4D]/40 shadow-xs hover:shadow-md transition-all text-left flex items-center justify-between group cursor-pointer"
+          className="flex items-center gap-4 bg-gradient-to-br from-[#E8F5EE] to-[#D8F3DC] rounded-2xl p-4 shadow-sm border border-[#52B788]/30 hover:shadow-lg hover:border-[#52B788]/60 hover:-translate-y-1 active:translate-y-0 transition-all text-left group"
         >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-[#E8F8F0] text-[#176B4D] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-              <span className="material-symbols-outlined text-xl">grid_view</span>
-            </div>
-            <div className="min-w-0">
-              <span className="text-[10px] font-bold text-[#57635A] uppercase tracking-wider block">
-                Akses Drop Point
-              </span>
-              <strong className="text-xs font-black text-[#1C1C16] group-hover:text-[#176B4D] transition-colors block truncate">
-                Denah & Log Tong
-              </strong>
-            </div>
+          <div className="w-12 h-12 rounded-xl bg-white text-[#1A4235] flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform shrink-0">
+            <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>inventory_2</span>
           </div>
-          <span className="material-symbols-outlined text-[#57635A] group-hover:text-[#176B4D] text-lg transition-transform group-hover:translate-x-0.5 shrink-0 ml-1">
-            chevron_right
-          </span>
+          <div>
+            <h3 className="text-sm font-black text-[#1A2E22]">Kelola Unit</h3>
+            <p className="text-[10px] text-[#2D6A4F] font-semibold mt-0.5 leading-tight">Atur drop point & kuota</p>
+          </div>
         </button>
 
         <button
           onClick={() => setActiveRoute('/admin/laporan')}
-          className="p-3.5 rounded-2xl bg-white border border-[#176B4D]/15 hover:border-[#BA1A1A]/40 shadow-xs hover:shadow-md transition-all text-left flex items-center justify-between group cursor-pointer"
+          className="flex items-center gap-4 bg-gradient-to-br from-[#FFF0ED] to-[#FFE0D9] rounded-2xl p-4 shadow-sm border border-[#E76F51]/30 hover:shadow-lg hover:border-[#E76F51]/60 hover:-translate-y-1 active:translate-y-0 transition-all text-left group"
         >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-[#FFF3E0] text-[#E65100] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform relative">
-              <span className="material-symbols-outlined text-xl">flag</span>
-              {pendingLaporan.length > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-[#BA1A1A] text-white text-[9px] font-black rounded-full flex items-center justify-center animate-pulse">
-                  {pendingLaporan.length}
-                </span>
-              )}
-            </div>
-            <div className="min-w-0">
-              <span className="text-[10px] font-bold text-[#57635A] uppercase tracking-wider block">
-                Moderasi QC
-              </span>
-              <strong className="text-xs font-black text-[#1C1C16] group-hover:text-[#BA1A1A] transition-colors block truncate">
-                Laporan & Flag
-              </strong>
-            </div>
+          <div className="w-12 h-12 rounded-xl bg-white text-[#A03A2B] flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform shrink-0">
+            <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>flag</span>
           </div>
-          <span className="material-symbols-outlined text-[#57635A] group-hover:text-[#BA1A1A] text-lg transition-transform group-hover:translate-x-0.5 shrink-0 ml-1">
-            chevron_right
-          </span>
+          <div>
+            <h3 className="text-sm font-black text-[#1A2E22]">Laporan Flag</h3>
+            <p className="text-[10px] text-[#A03A2B] font-semibold mt-0.5 leading-tight">Tinjau isu & sengketa</p>
+          </div>
         </button>
       </div>
 
-      {/* Action Notice Alert */}
-      {actionNotice && (
-        <div className="p-3 bg-[#9CF2B5]/30 border border-[#157140]/30 rounded-xl text-xs text-[#157140] font-semibold flex items-center gap-2 animate-in fade-in">
-          <span className="material-symbols-outlined text-base shrink-0">check_circle</span>
-          <span>{actionNotice}</span>
-        </div>
-      )}
+      {/* ═══ OVERVIEW HEADER ═══ */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-black text-[#1A2E22]">Overview</h2>
+        <button className="bg-[#E76F51] hover:bg-[#D46045] active:scale-95 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-[#E76F51]/30 transition-all flex items-center gap-2">
+          Unduh Laporan <span className="material-symbols-outlined text-lg">download</span>
+        </button>
+      </div>
 
-      {/* KONTEN UTAMA: ANALISIS & STATISTIK SIRKULAR KAMPUS */}
-      <div className="space-y-4">
-        {/* 1. Header Analisis & Timeframe Filter */}
-        <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#176B4D]/10 space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      {/* ═══ MAIN GRID ═══ */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+        {/* LEFT 2×2 */}
+        <div className="lg:col-span-2 grid grid-cols-2 gap-5">
+
+          {/* Card 1 — Total Tersalurkan */}
+          <div className="bg-gradient-to-br from-[#FFF4ED] to-[#FFE9D5] border border-[#FFDBC8] rounded-3xl overflow-hidden group hover:shadow-xl transition-all duration-300">
+            <div className="flex h-full">
+              {/* Text left */}
+              <div className="flex-1 p-5 flex flex-col justify-between min-w-0">
+                <div>
+                  <span className="text-[10px] font-extrabold text-[#A0632B] uppercase tracking-wider block mb-2">Total Tersalurkan</span>
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <span className="text-3xl font-black text-[#A0632B] tracking-tighter leading-none">{totalKgTersalurkan}</span>
+                    <span className="inline-flex items-center gap-0.5 bg-[#E76F51] text-white text-[9px] font-black px-2 py-0.5 rounded-full">
+                      <span className="material-symbols-outlined text-[9px]">arrow_downward</span>2.4%
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-[#C27D3A] font-semibold mt-1">Target {targetSemester.toLocaleString('id-ID')} Kg • Semester Genap</div>
+                </div>
+                <div className="mt-3">
+                  <Sparkline data={monthlyData} color="#C27D3A" fill="#F4A261" />
+                </div>
+              </div>
+              {/* Illustration right */}
+              <div className="w-28 shrink-0 flex items-end justify-center pb-0 opacity-90 group-hover:scale-105 transition-transform duration-500">
+                <IlluScale />
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2 — Nilai Sirkularitas */}
+          <div className="bg-gradient-to-br from-[#EEF4FF] to-[#DCEAFF] border border-[#BECFFF] rounded-3xl overflow-hidden group hover:shadow-xl transition-all duration-300">
+            <div className="flex h-full">
+              <div className="flex-1 p-5 flex flex-col justify-between min-w-0">
+                <div>
+                  <span className="text-[10px] font-extrabold text-[#3A5BA0] uppercase tracking-wider block mb-2">Nilai Sirkularitas</span>
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <span className="text-xl font-black text-[#3A5BA0]">Rp</span>
+                    <span className="text-3xl font-black text-[#3A5BA0] tracking-tighter leading-none">{(nilaiSirkularitas / 1000).toFixed(0)}K</span>
+                    <span className="inline-flex items-center gap-0.5 bg-[#2D6A4F] text-white text-[9px] font-black px-2 py-0.5 rounded-full">
+                      <span className="material-symbols-outlined text-[9px]">arrow_upward</span>18.2%
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-[#5B8DEF] font-semibold mt-1">Rata-rata Rp 1.400 / Kg HVS</div>
+                </div>
+                <div className="flex gap-1 items-end mt-3" style={{ height: 28 }}>
+                  {[30, 50, 70, 55, 80, 95].map((v, i) => (
+                    <div key={i} className="flex-1 rounded-t-sm" style={{ height: `${(v / 95) * 100}%`, background: i === 5 ? '#3A5BA0' : '#5B8DEF55' }} />
+                  ))}
+                </div>
+              </div>
+              <div className="w-28 shrink-0 flex items-end justify-center opacity-90 group-hover:scale-105 transition-transform duration-500">
+                <IlluMoney />
+              </div>
+            </div>
+          </div>
+
+          {/* Card 3 — Peta Sebaran */}
+          <div className="bg-[#E8F5EE] border border-[#B7E4C7] rounded-3xl overflow-hidden group hover:shadow-xl transition-all duration-300 flex flex-col relative z-0 min-h-[180px]">
+            <div className="absolute top-4 left-4 z-[400] pointer-events-none">
+              <span className="text-[10px] font-extrabold text-[#1A4235] uppercase tracking-wider block bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-lg shadow-sm border border-white/50">
+                Peta Sebaran Mitra
+              </span>
+            </div>
+            <div className="flex-1 w-full h-full relative z-0" style={{ minHeight: '140px' }}>
+              <MapContainer center={[-6.2737, 106.7323]} zoom={12} zoomControl={false} style={{ height: '100%', width: '100%', zIndex: 1 }}>
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                <Marker position={[-6.2737, 106.7323]} icon={markerIconUnit}>
+                  <Popup className="font-sans font-bold text-xs">Universitas Pembangunan Jaya</Popup>
+                </Marker>
+                <Marker position={[-6.2500, 106.7600]} icon={markerIconIndustri}>
+                  <Popup className="font-sans font-bold text-xs">Mitra Daur Ulang Bintaro</Popup>
+                </Marker>
+                <Marker position={[-6.3000, 106.7000]} icon={markerIconIndustri}>
+                  <Popup className="font-sans font-bold text-xs">Pabrik Kertas Serpong</Popup>
+                </Marker>
+              </MapContainer>
+            </div>
+            <div className="p-2.5 bg-white/60 backdrop-blur-md border-t border-[#B7E4C7] text-[10px] text-[#1A4235] leading-snug">
+              <span className="font-extrabold text-[#2D6A4F] mr-1">Jangkauan Wilayah:</span>
+              Radius ~15km dari UPJ (Bintaro, Tangsel, & sekitarnya).
+            </div>
+          </div>
+
+          {/* Card 4 — Pohon Terselamatkan */}
+          <div className="bg-gradient-to-br from-[#1A2E22] to-[#0F1D16] border border-[#2D6A4F]/30 rounded-3xl overflow-hidden group hover:shadow-xl transition-all duration-300 relative">
+            <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-[#52B788]/15 blur-2xl pointer-events-none" />
+            <div className="flex h-full relative z-10">
+              <div className="flex-1 p-5 flex flex-col justify-between min-w-0">
+                <div>
+                  <span className="text-[10px] font-extrabold text-[#52B788] uppercase tracking-wider block mb-2">Pohon Terselamatkan</span>
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <span className="text-3xl font-black text-white tracking-tighter leading-none">{totalPohon}</span>
+                    <span className="inline-flex items-center gap-0.5 bg-[#52B788] text-white text-[9px] font-black px-2 py-0.5 rounded-full">
+                      <span className="material-symbols-outlined text-[9px]">arrow_upward</span>2.4%
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-[#52B788] font-semibold mt-1">{totalAirBersih.toLocaleString('id-ID')} L Air Terhemat</div>
+                </div>
+                <div className="flex gap-1 items-end mt-3" style={{ height: 28 }}>
+                  {[20, 45, 30, 60, 50, 80].map((v, i) => (
+                    <div key={i} className="flex-1 rounded-t-sm" style={{ height: `${(v / 80) * 100}%`, background: i === 5 ? '#52B788' : '#52B78840' }} />
+                  ))}
+                </div>
+              </div>
+              <div className="w-28 shrink-0 flex items-end justify-center opacity-85 group-hover:scale-105 transition-transform duration-500">
+                <IlluForest />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT — Peringkat Unit */}
+        <div className="lg:col-span-1 bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col">
+          <div className="flex justify-between items-center mb-3 pb-3 border-b border-gray-100">
             <div>
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#176B4D] text-xl">analytics</span>
-                <h3 className="text-sm font-black text-[#1C1C16]">
-                  Analisis & Intelijen Sirkular
-                </h3>
-              </div>
-              <p className="text-xs text-[#57635A] mt-0.5 leading-relaxed">
-                Laporan analitik penyerapan limbah kertas, dinamika penyalur, dan metrik dampak lingkungan
-              </p>
+              <h3 className="font-extrabold text-[#1A2E22] text-base">Peringkat Unit</h3>
+              <p className="text-[11px] text-gray-400 font-medium">{units.length} Unit Aktif</p>
             </div>
-
-            {/* Timeframe Selector */}
-            <div className="flex items-center gap-1 bg-[#F7F3EA] p-1 rounded-xl text-xs shrink-0 self-start sm:self-auto w-full sm:w-auto">
-              {[
-                { key: 'semester', label: 'Semester' },
-                { key: 'bulan', label: 'Bulan Ini' },
-                { key: '30hari', label: '30 Hari' }
-              ].map(t => (
-                <button
-                  key={t.key}
-                  type="button"
-                  onClick={() => setTimeframe(t.key as any)}
-                  className={`flex-1 sm:flex-none px-2 py-1.5 rounded-lg font-bold transition-all text-[11px] cursor-pointer ${
-                    timeframe === t.key
-                      ? 'bg-white text-[#176B4D] shadow-xs'
-                      : 'text-[#57635A] hover:text-[#1C1C16]'
-                  }`}
-                >
-                  {t.label}
-                </button>
-              ))}
-            </div>
+            <span className="text-[10px] font-extrabold bg-[#D8F3DC] text-[#2D6A4F] px-3 py-1 rounded-full whitespace-nowrap">Bulan Ini</span>
           </div>
 
-          {/* 4 Executive KPI Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
-            <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#E8F8F0] to-[#D5F3E4] border border-[#176B4D]/20 space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#176B4D]">Total Tersalurkan</span>
-                <span className="material-symbols-outlined text-base text-[#176B4D]">recycling</span>
-              </div>
-              <div className="text-xl font-black text-[#005138]">
-                {totalKgTersalurkan.toLocaleString('id-ID')} <span className="text-xs font-bold">Kg</span>
-              </div>
-              <div className="text-[10px] font-semibold text-[#176B4D] flex items-center gap-0.5">
-                <span className="material-symbols-outlined text-[13px]">trending_up</span>
-                <span>+18.4% vs bulan lalu</span>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#FFF5ED] to-[#FFE8D6] border border-[#8B6045]/20 space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#8B6045]">Nilai Sirkularitas</span>
-                <span className="material-symbols-outlined text-base text-[#8B6045]">payments</span>
-              </div>
-              <div className="text-xl font-black text-[#5C3D28]">
-                Rp {(totalKgTersalurkan * 1400).toLocaleString('id-ID')}
-              </div>
-              <span className="text-[10px] text-[#8B6045] block">
-                Rerata Rp 1.400 / Kg
-              </span>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#EDF5FF] to-[#DBEAFF] border border-[#1E6091]/20 space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#1E6091]">Waktu Jemput</span>
-                <span className="material-symbols-outlined text-base text-[#1E6091]">timer</span>
-              </div>
-              <div className="text-xl font-black text-[#133E60]">
-                1.8 <span className="text-xs font-bold">Hari</span>
-              </div>
-              <span className="text-[10px] text-[#1E6091] font-semibold">
-                Truk tiba &lt; 48 jam
-              </span>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#F5F1E8] to-[#EBE4D5] border border-gray-300 space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#57635A]">Kualitas QC</span>
-                <span className="material-symbols-outlined text-base text-[#176B4D]">verified</span>
-              </div>
-              <div className="text-xl font-black text-[#1C1C16]">
-                98.2%
-              </div>
-              <span className="text-[10px] text-emerald-700 font-bold">
-                Bebas kontaminasi residu
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* 2. Tren Penyaluran Kertas Kampus (Interactive Visual Bar Chart) */}
-        <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#176B4D]/10 space-y-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-            <div className="min-w-0">
-              <h4 className="text-sm font-bold text-[#1C1C16] truncate">Tren Penyerapan Sampah Kertas (Kg per Bulan)</h4>
-              <p className="text-xs text-[#57635A] truncate">Progres akumulasi penimbangan di timbangan digital Gedung Serbaguna</p>
-            </div>
-            <span className="text-[11px] shrink-0 font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-[#176B4D] border border-emerald-200">
-              Target: 2.500 Kg
-            </span>
+          <div className="grid grid-cols-12 text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1 px-1">
+            <span className="col-span-1">#</span>
+            <span className="col-span-6 pl-2">Unit</span>
+            <span className="col-span-2 text-center">Kg</span>
+            <span className="col-span-3 text-right">Poin</span>
           </div>
 
-          {/* Visual Bar Chart */}
-          <div className="pt-4 pb-2 w-full overflow-x-auto">
-            <div className="h-44 flex items-end justify-between gap-1.5 sm:gap-6 px-1 sm:px-2 border-b border-gray-200 min-w-[320px]">
-              {[
-                { bln: 'Jan', kg: 120, pct: 38, active: false },
-                { bln: 'Feb', kg: 185, pct: 58, active: false },
-                { bln: 'Mar', kg: 290, pct: 92, active: true },
-                { bln: 'Apr', kg: 240, pct: 76, active: false },
-                { bln: 'Mei', kg: 250, pct: 80, active: false },
-                { bln: 'Jun (Proy)', kg: 315, pct: 100, active: false, projected: true }
-              ].map((item, idx) => (
-                <div key={idx} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
-                  {/* Hover Tooltip */}
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-bold bg-[#1C1C16] text-white px-2 py-0.5 rounded shadow-md pointer-events-none whitespace-nowrap">
-                    {item.kg} Kg
+          <div className="flex-1 space-y-1">
+            {rankedUnits.slice(0, 5).map((u, i) => {
+              const rc = [
+                { num: 'bg-[#FFF4ED] text-[#A0632B]', bar: '#F4A261' },
+                { num: 'bg-gray-100 text-gray-500', bar: '#9CA3AF' },
+                { num: 'bg-orange-50 text-orange-700', bar: '#EA580C' },
+                { num: 'bg-blue-50 text-blue-600', bar: '#5B8DEF' },
+                { num: 'bg-[#EEF9ED] text-[#2D6A4F]', bar: '#2D6A4F' },
+              ][i] ?? { num: 'bg-gray-50 text-gray-400', bar: '#9CA3AF' };
+              return (
+                <div key={u.id} className="grid grid-cols-12 items-center px-1 py-2 rounded-xl hover:bg-gray-50 transition-colors group cursor-default">
+                  <span className={`col-span-1 w-5 h-5 rounded flex items-center justify-center text-[9px] font-black ${rc.num}`}>{i + 1}</span>
+                  <div className="col-span-6 pl-2 pr-1 min-w-0">
+                    <div className="text-[11px] font-bold text-[#1A2E22] truncate group-hover:text-[#2D6A4F] transition-colors">{u.nama_unit}</div>
+                    <div className="w-full bg-gray-100 rounded-full overflow-hidden mt-1" style={{ height: 3 }}>
+                      <div className="h-full rounded-full transition-all duration-700" style={{ width: `${(u.kg / (rankedUnits[0]?.kg || 1)) * 100}%`, background: rc.bar }} />
+                    </div>
                   </div>
-                  {/* Bar */}
-                  <div
-                    className={`w-full max-w-[42px] rounded-t-lg transition-all duration-500 relative ${
-                      item.projected
-                        ? 'bg-gradient-to-t from-gray-200 to-gray-300 border-2 border-dashed border-[#176B4D]'
-                        : item.active
-                        ? 'bg-gradient-to-t from-[#176B4D] to-[#2E9E74] shadow-md shadow-[#176B4D]/20'
-                        : 'bg-gradient-to-t from-[#8B6045]/60 to-[#8B6045] hover:from-[#176B4D] hover:to-[#2E9E74]'
-                    }`}
-                    style={{ height: `${item.pct}%` }}
-                  >
-                    <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[9px] font-bold text-[#57635A]">
-                      {item.kg}
-                    </span>
-                  </div>
-                  {/* Month Label */}
-                  <span className={`text-[11px] font-bold ${item.active ? 'text-[#176B4D]' : 'text-[#57635A]'}`}>
-                    {item.bln}
-                  </span>
+                  <span className="col-span-2 text-center text-[11px] font-black text-[#52645A]">{u.kg}</span>
+                  <span className="col-span-3 text-right text-[11px] font-extrabold text-[#2D6A4F]">{u.points}</span>
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
 
-          <div className="p-3 rounded-xl bg-[#F7F3EA] border border-[#176B4D]/10 flex items-center gap-2.5 text-xs text-[#57635A]">
-            <span className="material-symbols-outlined text-[#176B4D] text-lg shrink-0">insights</span>
-            <span>
-              <strong>Insight Analis:</strong> Terjadi kenaikan signifikan setoran pada <strong>Maret (+56%)</strong> seiring program pembersihan berkas ujian akhir semester. Proyeksi Juni diperkirakan mencapai 315 Kg.
-            </span>
-          </div>
+          {pendingLaporan > 0 && (
+            <div className="mt-3 p-3 rounded-2xl bg-amber-50 border border-amber-200 flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-sm text-amber-600" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[11px] font-extrabold text-amber-800">{pendingLaporan} Laporan Menunggu</div>
+                <div className="text-[10px] text-amber-600">Perlu tindakan segera</div>
+              </div>
+              <button onClick={() => setActiveRoute('/admin/laporan')} className="text-[10px] font-black text-amber-700 hover:underline shrink-0">Cek →</button>
+            </div>
+          )}
+
+          <button onClick={() => setActiveRoute('/leaderboard')} className="mt-4 w-full h-10 rounded-xl border-2 border-gray-100 hover:border-[#2D6A4F] text-sm font-bold text-gray-500 hover:text-[#2D6A4F] transition-all">
+            Lihat Papan Skor Penuh →
+          </button>
         </div>
+      </div>
 
-        {/* 3. Komposisi Kategori Sampah Kertas */}
-        <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#176B4D]/10 space-y-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-            <div className="min-w-0">
-              <h4 className="text-sm font-bold text-[#1C1C16] truncate">Komposisi Kategori Sampah Kertas</h4>
-              <p className="text-xs text-[#57635A] truncate">Distribusi jenis material kertas yang diserap kampus</p>
-            </div>
-            <span className="text-xs shrink-0 font-black text-[#176B4D]">Total 1.085 Kg</span>
-          </div>
+      {/* ═══ BOTTOM CHARTS ═══ */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-          {/* Multi-segment progress bar */}
-          <div className="w-full bg-gray-100 rounded-full h-4 overflow-hidden flex shadow-inner">
-            <div style={{ width: '44.7%' }} className="bg-[#176B4D] h-full" title="HVS (44.7%)" />
-            <div style={{ width: '35.9%' }} className="bg-[#8B6045] h-full" title="Kardus (35.9%)" />
-            <div style={{ width: '12.9%' }} className="bg-[#3A7CA5] h-full" title="Majalah (12.9%)" />
-            <div style={{ width: '6.5%' }} className="bg-[#D4A373] h-full" title="Campur (6.5%)" />
-          </div>
-
-          {/* 4 Category Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-            <div className="p-3 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-3 h-3 rounded-full bg-[#176B4D]" />
-                <div>
-                  <h5 className="font-bold text-xs text-[#1C1C16]">Kertas HVS & Arsip Kantor</h5>
-                  <span className="text-[10px] text-[#57635A]">Rp 1.500 / Kg</span>
-                </div>
-              </div>
-              <div className="text-right">
-                <strong className="text-xs text-[#176B4D]">485 Kg (44.7%)</strong>
-                <p className="text-[10px] text-[#57635A]">Rp 727.500</p>
-              </div>
-            </div>
-
-            <div className="p-3 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-3 h-3 rounded-full bg-[#8B6045]" />
-                <div>
-                  <h5 className="font-bold text-xs text-[#1C1C16]">Kardus Box Corrugated</h5>
-                  <span className="text-[10px] text-[#57635A]">Rp 1.300 / Kg</span>
-                </div>
-              </div>
-              <div className="text-right">
-                <strong className="text-xs text-[#8B6045]">390 Kg (35.9%)</strong>
-                <p className="text-[10px] text-[#57635A]">Rp 507.000</p>
-              </div>
-            </div>
-
-            <div className="p-3 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-3 h-3 rounded-full bg-[#3A7CA5]" />
-                <div>
-                  <h5 className="font-bold text-xs text-[#1C1C16]">Majalah, Koran & Pamflet</h5>
-                  <span className="text-[10px] text-[#57635A]">Rp 1.100 / Kg</span>
-                </div>
-              </div>
-              <div className="text-right">
-                <strong className="text-xs text-[#3A7CA5]">140 Kg (12.9%)</strong>
-                <p className="text-[10px] text-[#57635A]">Rp 154.000</p>
-              </div>
-            </div>
-
-            <div className="p-3 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-3 h-3 rounded-full bg-[#D4A373]" />
-                <div>
-                  <h5 className="font-bold text-xs text-[#1C1C16]">Campuran Kering Bersih</h5>
-                  <span className="text-[10px] text-[#57635A]">Rp 900 / Kg</span>
-                </div>
-              </div>
-              <div className="text-right">
-                <strong className="text-xs text-[#D4A373]">70 Kg (6.5%)</strong>
-                <p className="text-[10px] text-[#57635A]">Rp 63.000</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 4. Dashboard Peringkat Kampus Hijau & List Rincian Detail */}
-        <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#176B4D]/10 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2 border-b border-gray-100">
+        {/* Bar Chart */}
+        <div className="lg:col-span-2 bg-white border border-gray-100 rounded-3xl p-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5">
             <div>
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-amber-500 text-xl">emoji_events</span>
-                <h4 className="text-sm font-black text-[#1C1C16]">Dashboard Peringkat Kampus Hijau</h4>
-              </div>
-              <p className="text-xs text-[#57635A] mt-0.5">
-                Peringkat kontribusi penyaluran limbah kertas & Eco Points antar unit civitas
-              </p>
+              <h3 className="font-extrabold text-[#1A2E22] text-base">Traffic Analisis (Kg)</h3>
+              <p className="text-[11px] text-gray-400 font-medium">Serapan kertas bulanan semester genap</p>
             </div>
+            <div className="flex items-center gap-4 text-[11px] font-bold text-gray-500 shrink-0">
+              <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#2D6A4F]" />HVS</span>
+              <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#E76F51]" />Kardus</span>
+              <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#F4A261]" />Campur</span>
+            </div>
+          </div>
 
-            {/* Period Switcher (PRD Section 5.1) */}
-            <div className="flex items-center gap-1 bg-[#F7F3EA] p-1 rounded-xl text-xs self-start sm:self-auto shrink-0 flex-wrap">
-              {[
-                { key: 'mingguan', label: 'Mingguan' },
-                { key: 'bulanan', label: 'Bulanan' },
-                { key: 'semester', label: 'Akumulatif' }
-              ].map(p => (
-                <button
-                  key={p.key}
-                  type="button"
-                  onClick={() => setLeaderboardPeriod(p.key as any)}
-                  className={`px-2.5 py-1 rounded-lg font-bold transition-all text-[10px] cursor-pointer ${
-                    leaderboardPeriod === p.key
-                      ? 'bg-white text-[#176B4D] shadow-xs'
-                      : 'text-[#57635A] hover:text-[#1C1C16]'
-                  }`}
-                >
-                  {p.label}
-                </button>
+          <div className="relative ml-8">
+            <div className="absolute -left-8 top-0 bottom-8 flex flex-col justify-between text-[10px] font-bold text-gray-300 pointer-events-none">
+              {['320', '240', '160', '80'].map(v => <span key={v}>{v}</span>)}
+            </div>
+            <div className="border-l border-b border-gray-100 relative" style={{ height: 210 }}>
+              {[25, 50, 75].map(p => (
+                <div key={p} className="absolute w-full border-t border-dashed border-gray-100" style={{ bottom: `${p}%` }} />
               ))}
-            </div>
-          </div>
-
-          {/* VISUAL PODIUM 3 BESAR (Juara 1, 2, 3) */}
-          <div className="pt-5 pb-2 px-3 bg-gradient-to-b from-[#F9F6F0] to-[#EFECE3] rounded-2xl border border-gray-200/80">
-            <div className="flex items-end justify-center gap-2 sm:gap-4 max-w-sm mx-auto">
-              {/* JUARA 2 (Silver) */}
-              {allRankedUnits[1] && (
-                <div className="flex-1 flex flex-col items-center min-w-0">
-                  <div className="text-center space-y-1 mb-1.5 w-full px-1">
-                    <span className="text-lg">🥈</span>
-                    <div className="w-10 h-10 mx-auto rounded-xl bg-slate-200 text-slate-700 flex items-center justify-center font-black text-xs shadow-xs border border-slate-300">
-                      {allRankedUnits[1].inisial}
+              <div className="absolute inset-0 flex items-end justify-around px-4 pb-0 gap-3">
+                {[
+                  { m: 'Jan', hvs: 55, kds: 40, mix: 25 },
+                  { m: 'Feb', hvs: 85, kds: 65, mix: 35 },
+                  { m: 'Mar', hvs: 130, kds: 90, mix: 70 },
+                  { m: 'Apr', hvs: 110, kds: 80, mix: 50 },
+                  { m: 'Mei', hvs: 115, kds: 85, mix: 50 },
+                  { m: 'Jun', hvs: 145, kds: 100, mix: 65 },
+                ].map((d, idx) => (
+                  <div key={idx} className="flex flex-col items-center flex-1 h-full justify-end group">
+                    <div className="flex gap-1 items-end w-full justify-center" style={{ height: '88%' }}>
+                      <div className="flex-1 max-w-[12px] bg-[#E76F51] rounded-t-md hover:opacity-80 transition-all duration-200 cursor-pointer" style={{ height: `${(d.kds / 320) * 100}%` }} />
+                      <div className="flex-1 max-w-[12px] bg-[#2D6A4F] rounded-t-md hover:opacity-80 transition-all duration-200 cursor-pointer" style={{ height: `${(d.hvs / 320) * 100}%` }} />
+                      <div className="flex-1 max-w-[12px] bg-[#F4A261] rounded-t-md hover:opacity-80 transition-all duration-200 cursor-pointer" style={{ height: `${(d.mix / 320) * 100}%` }} />
                     </div>
-                    <div className="text-[10px] font-bold text-gray-800 truncate w-full">
-                      {allRankedUnits[1].nama_unit.replace(/^(Fakultas|Biro|Lembaga|Perpustakaan)\s+/i, '')}
-                    </div>
-                    <span className="text-[10px] font-black text-[#176B4D] block">
-                      {allRankedUnits[1].kg} Kg
-                    </span>
+                    <span className="text-[10px] font-bold text-gray-400 mt-2 mb-1">{d.m}</span>
                   </div>
-                  <div className="w-full bg-gradient-to-t from-slate-300 to-slate-200 rounded-t-xl h-16 flex items-center justify-center border-t-2 border-slate-400/80 shadow-xs">
-                    <span className="text-sm font-black text-slate-600">#2</span>
-                  </div>
-                </div>
-              )}
-
-              {/* JUARA 1 (Gold) */}
-              {allRankedUnits[0] && (
-                <div className="flex-1 flex flex-col items-center -mt-4 min-w-0">
-                  <div className="text-center space-y-1 mb-1.5 w-full px-1">
-                    <div className="inline-block relative">
-                      <span className="text-2xl animate-bounce block">👑</span>
-                      <span className="text-lg">🥇</span>
-                    </div>
-                    <div className="w-12 h-12 mx-auto rounded-xl bg-amber-400 text-amber-950 flex items-center justify-center font-black text-sm shadow-md border-2 border-amber-300 ring-2 ring-amber-200">
-                      {allRankedUnits[0].inisial}
-                    </div>
-                    <div className="text-[11px] font-black text-[#1C1C16] truncate w-full">
-                      {allRankedUnits[0].nama_unit.replace(/^(Fakultas|Biro|Lembaga|Perpustakaan)\s+/i, '')}
-                    </div>
-                    <span className="text-xs font-black text-amber-900 bg-amber-100 px-1.5 py-0.2 rounded-md inline-block">
-                      {allRankedUnits[0].kg} Kg
-                    </span>
-                  </div>
-                  <div className="w-full bg-gradient-to-t from-amber-400 to-amber-300 rounded-t-xl h-24 flex flex-col items-center justify-center border-t-2 border-amber-200 shadow-md">
-                    <span className="text-[10px] font-black text-amber-900 uppercase tracking-widest">JUARA</span>
-                    <span className="text-base font-black text-amber-950">#1</span>
-                  </div>
-                </div>
-              )}
-
-              {/* JUARA 3 (Bronze) */}
-              {allRankedUnits[2] && (
-                <div className="flex-1 flex flex-col items-center min-w-0">
-                  <div className="text-center space-y-1 mb-1.5 w-full px-1">
-                    <span className="text-lg">🥉</span>
-                    <div className="w-10 h-10 mx-auto rounded-xl bg-amber-700/20 text-amber-800 flex items-center justify-center font-black text-xs shadow-xs border border-amber-600/30">
-                      {allRankedUnits[2].inisial}
-                    </div>
-                    <div className="text-[10px] font-bold text-gray-800 truncate w-full">
-                      {allRankedUnits[2].nama_unit.replace(/^(Fakultas|Biro|Lembaga|Perpustakaan)\s+/i, '')}
-                    </div>
-                    <span className="text-[10px] font-black text-[#176B4D] block">
-                      {allRankedUnits[2].kg} Kg
-                    </span>
-                  </div>
-                  <div className="w-full bg-gradient-to-t from-amber-700/30 to-amber-700/20 rounded-t-xl h-12 flex items-center justify-center border-t-2 border-amber-600/40 shadow-xs">
-                    <span className="text-xs font-black text-amber-800">#3</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* LIST DETAIL PERINGKAT LENGKAP (#1 s/d #8) */}
-          <div className="space-y-2.5 pt-2">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-1 border-b border-gray-100 gap-2">
-              <div className="flex items-center gap-1.5 min-w-0">
-                <span className="material-symbols-outlined text-[#176B4D] text-sm">format_list_numbered</span>
-                <h5 className="text-xs font-black text-[#1C1C16]">
-                  Daftar Peringkat Lengkap & Rincian Detail ({filteredRankedUnits.length} Unit)
-                </h5>
-              </div>
-
-              {/* Filter Fakultas / Biro */}
-              <div className="flex items-center gap-1 bg-[#F1EEE5] p-0.5 rounded-lg text-[10px] flex-wrap">
-                {(['semua', 'fakultas', 'biro'] as const).map(f => (
-                  <button
-                    key={f}
-                    onClick={() => setLeaderboardFilter(f)}
-                    className={`px-2 py-0.5 rounded-md font-bold transition-all capitalize cursor-pointer whitespace-nowrap ${
-                      leaderboardFilter === f ? 'bg-white text-[#176B4D] shadow-xs' : 'text-[#57635A]'
-                    }`}
-                  >
-                    {f === 'semua' ? 'Semua' : f}
-                  </button>
                 ))}
               </div>
             </div>
+          </div>
 
-            <p className="text-[11px] text-[#57635A]">
-              Klik pada baris unit untuk membuka <strong>rincian komposisi material, dampak ekologis, dan kontak PIC</strong>.
+          <div className="mt-4 p-3.5 rounded-2xl bg-[#EEF9ED] border border-[#B7E4C7] flex items-start gap-3">
+            <span className="material-symbols-outlined text-[#2D6A4F] text-lg shrink-0 mt-0.5">insights</span>
+            <p className="text-[11px] text-[#1A4235] font-medium leading-relaxed">
+              <strong className="font-extrabold">Insight:</strong> Kenaikan signifikan di bulan <strong>Maret (+56%)</strong> seiring pembersihan berkas ujian akhir semester.
             </p>
-
-            {/* List of Units */}
-            <div className="space-y-2">
-              {filteredRankedUnits.map((unit) => {
-                const medals: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' };
-                const isExpanded = expandedUnitId === unit.id;
-
-                return (
-                  <div
-                    key={unit.id}
-                    className={`rounded-xl border transition-all overflow-hidden ${
-                      isExpanded
-                        ? 'border-[#176B4D]/40 bg-white shadow-md ring-1 ring-[#176B4D]/20'
-                        : unit.rank <= 3
-                        ? 'border-amber-200 bg-[#FFFDF9] hover:border-amber-300'
-                        : 'border-gray-200/80 bg-white hover:border-gray-300'
-                    }`}
-                  >
-                    {/* Main Row Header (Clickable to expand) */}
-                    <div
-                      onClick={() => setExpandedUnitId(isExpanded ? null : unit.id)}
-                      className="p-3 flex items-center justify-between gap-2.5 cursor-pointer select-none"
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <span className="text-sm font-black w-6 text-center shrink-0">
-                          {medals[unit.rank] || `#${unit.rank}`}
-                        </span>
-
-                        <div className={`w-9 h-9 rounded-lg flex items-center justify-center font-black text-xs shrink-0 ${
-                          unit.rank === 1
-                            ? 'bg-amber-400 text-amber-950 font-black'
-                            : unit.rank === 2
-                            ? 'bg-slate-300 text-slate-800'
-                            : unit.rank === 3
-                            ? 'bg-amber-700/20 text-amber-800'
-                            : 'bg-[#176B4D] text-white'
-                        }`}>
-                          {unit.inisial}
-                        </div>
-
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <h5 className="font-bold text-xs text-[#1C1C16] truncate">
-                              {unit.nama_unit}
-                            </h5>
-                            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-gray-100 text-[#57635A]">
-                              {unit.badge}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2 text-[10px] text-[#57635A] mt-0.5">
-                            <span>{unit.frekuensi}x Penyetoran</span>
-                            <span>•</span>
-                            <span className="text-[#176B4D] font-bold">{unit.kontribusiPct}% Kampus</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2.5 shrink-0">
-                        <div className="text-right">
-                          <span className="text-xs font-black text-[#176B4D] block">
-                            {unit.kg} Kg
-                          </span>
-                          <span className="text-[10px] font-bold text-[#8B6045]">
-                            {unit.points} Pts
-                          </span>
-                        </div>
-
-                        <span className={`material-symbols-outlined text-[#57635A] text-lg transition-transform duration-200 ${
-                          isExpanded ? 'rotate-180 text-[#176B4D]' : ''
-                        }`}>
-                          expand_more
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* EXPANDED ACCORDION: RINCIAN DETAIL UNIT */}
-                    {isExpanded && (
-                      <div className="px-3.5 pb-3.5 pt-2 border-t border-gray-100 bg-[#FAF8F5] space-y-3 animate-in slide-in-from-top-2 duration-150 text-xs">
-                        {/* 1. Rincian Komposisi Material Kertas */}
-                        <div className="p-3 bg-white rounded-xl border border-gray-200/70 space-y-2">
-                          <div className="flex items-center justify-between text-[11px]">
-                            <strong className="text-[#1C1C16] font-bold flex items-center gap-1">
-                              <span className="material-symbols-outlined text-sm text-[#176B4D]">donut_small</span>
-                              Rincian Material Terkumpul:
-                            </strong>
-                            <span className="text-[#57635A] font-semibold">{unit.kg} Kg total</span>
-                          </div>
-
-                          {/* Multi-color mini progress bar */}
-                          <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden flex shadow-inner">
-                            <div style={{ width: '45%' }} className="bg-[#176B4D] h-full" title="HVS 45%" />
-                            <div style={{ width: '35%' }} className="bg-[#8B6045] h-full" title="Kardus 35%" />
-                            <div style={{ width: '20%' }} className="bg-[#3A7CA5] h-full" title="Koran/Majalah 20%" />
-                          </div>
-
-                          <div className="grid grid-cols-3 gap-2 text-[10px] pt-1">
-                            <div className="p-1.5 rounded-lg bg-emerald-50/60 border border-emerald-100 text-center">
-                              <span className="text-emerald-800 font-bold block">{unit.hvsKg} Kg</span>
-                              <span className="text-gray-500">HVS & Arsip</span>
-                            </div>
-                            <div className="p-1.5 rounded-lg bg-amber-50/60 border border-amber-100 text-center">
-                              <span className="text-[#8B6045] font-bold block">{unit.kardusKg} Kg</span>
-                              <span className="text-gray-500">Kardus Box</span>
-                            </div>
-                            <div className="p-1.5 rounded-lg bg-sky-50/60 border border-sky-100 text-center">
-                              <span className="text-sky-800 font-bold block">{unit.campurKg} Kg</span>
-                              <span className="text-gray-500">Majalah/Koran</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* 2. Metrik Dampak Lingkungan Unit */}
-                        <div className="grid grid-cols-3 gap-2">
-                          <div className="p-2.5 rounded-xl bg-white border border-gray-200/70 text-center">
-                            <span className="material-symbols-outlined text-emerald-600 text-base">nature</span>
-                            <div className="text-sm font-black text-[#1C1C16]">{unit.pohonSaved}</div>
-                            <span className="text-[9px] text-[#57635A] block leading-tight">Pohon Terselamatkan</span>
-                          </div>
-
-                          <div className="p-2.5 rounded-xl bg-white border border-gray-200/70 text-center">
-                            <span className="material-symbols-outlined text-cyan-600 text-base">water_drop</span>
-                            <div className="text-sm font-black text-[#1C1C16]">{unit.airSaved.toLocaleString('id-ID')} L</div>
-                            <span className="text-[9px] text-[#57635A] block leading-tight">Air Bersih Terhemat</span>
-                          </div>
-
-                          <div className="p-2.5 rounded-xl bg-white border border-gray-200/70 text-center">
-                            <span className="material-symbols-outlined text-amber-600 text-base">co2</span>
-                            <div className="text-sm font-black text-[#1C1C16]">{unit.co2Saved} Kg</div>
-                            <span className="text-[9px] text-[#57635A] block leading-tight">Emisi Karbon Dicegah</span>
-                          </div>
-                        </div>
-
-                        {/* 3. Drop Point & PIC Contact */}
-                        <div className="p-3 bg-white rounded-xl border border-gray-200/70 space-y-2">
-                          <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-[#57635A]">Alokasi Drop Point:</span>
-                            <strong className="text-[#1C1C16]">{unit.tong_nama}</strong>
-                          </div>
-
-                          <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                            <div>
-                              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">
-                                Koordinator PIC
-                              </span>
-                              <strong className="text-xs text-[#1C1C16] block">{unit.pic_nama}</strong>
-                              <span className="text-[10px] text-[#57635A]">{unit.kontak_pic}</span>
-                            </div>
-
-                            <a
-                              href={`https://wa.me/${unit.kontak_pic.replace(/\D/g, '')}?text=Halo%20PIC%20${encodeURIComponent(unit.nama_unit)},%20selamat%20atas%20capaian%20peringkat%20${unit.rank}%20di%20Dashboard%20Kampus%20Hijau!`}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="px-3 py-1.5 rounded-lg bg-[#176B4D] hover:bg-[#005138] text-white font-bold text-[11px] flex items-center gap-1 shadow-xs transition-all cursor-pointer"
-                            >
-                              <span className="material-symbols-outlined text-sm">chat</span>
-                              <span>WA PIC</span>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
           </div>
         </div>
 
-        {/* 5. Dampak Lingkungan Kumulatif */}
-        <div className="bg-gradient-to-br from-[#176B4D] to-[#0E4632] rounded-2xl p-5 text-white shadow-lg space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-emerald-300 text-xl">forest</span>
-              <h4 className="font-black text-sm">Dampak Ekologis Sirkular Kampus Hijau</h4>
+        {/* Donut Chart */}
+        <div className="lg:col-span-1 bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col">
+          <div className="flex justify-between items-start mb-3">
+            <div>
+              <h3 className="font-extrabold text-[#1A2E22] text-base">Komposisi Kertas</h3>
+              <p className="text-[11px] text-gray-400 font-medium">Distribusi material semester ini</p>
             </div>
-            <span className="text-[10px] font-semibold text-emerald-200 bg-white/10 px-2 py-0.5 rounded-full backdrop-blur-xs">
-              Formula PRD Terverifikasi
-            </span>
+            <span className="text-[10px] font-bold text-gray-400">Today</span>
+          </div>
+          <div className="text-sm font-extrabold text-[#1A2E22] mb-4">
+            1.085 <span className="font-medium text-gray-400">Total Kg Terserap</span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-            <div className="p-3 rounded-xl bg-white/10 backdrop-blur-xs space-y-1">
-              <span className="material-symbols-outlined text-2xl text-emerald-300">nature</span>
-              <div className="text-xl font-black">{totalPohon}</div>
-              <div className="text-[10px] text-white/80">Pohon Terselamatkan</div>
-            </div>
-
-            <div className="p-3 rounded-xl bg-white/10 backdrop-blur-xs space-y-1">
-              <span className="material-symbols-outlined text-2xl text-cyan-300">water_drop</span>
-              <div className="text-xl font-black">{totalAirBersih.toLocaleString('id-ID')} L</div>
-              <div className="text-[10px] text-white/80">Air Bersih Terhemat</div>
-            </div>
-
-            <div className="p-3 rounded-xl bg-white/10 backdrop-blur-xs space-y-1">
-              <span className="material-symbols-outlined text-2xl text-amber-300">bolt</span>
-              <div className="text-xl font-black">{Math.round(totalKgTersalurkan * 4).toLocaleString('id-ID')} kWh</div>
-              <div className="text-[10px] text-white/80">Energi Listrik Terhemat</div>
-            </div>
-
-            <div className="p-3 rounded-xl bg-white/10 backdrop-blur-xs space-y-1">
-              <span className="material-symbols-outlined text-2xl text-emerald-200">co2</span>
-              <div className="text-xl font-black">{Math.round(totalKgTersalurkan * 1.3).toLocaleString('id-ID')} Kg</div>
-              <div className="text-[10px] text-white/80">Emisi Karbon Dicegah</div>
+          <div className="flex justify-center my-2">
+            <div className="relative" style={{ width: 160, height: 160 }}>
+              <svg width={160} height={160} viewBox="0 0 160 160" style={{ transform: 'rotate(-90deg)' }}>
+                <circle cx="80" cy="80" r="60" fill="none" stroke="#f3f4f6" strokeWidth="24" />
+                <circle cx="80" cy="80" r="60" fill="none" stroke="#2D6A4F" strokeWidth="24"
+                  strokeDasharray={`${0.447 * 2 * Math.PI * 60} ${2 * Math.PI * 60}`} />
+                <circle cx="80" cy="80" r="60" fill="none" stroke="#E76F51" strokeWidth="24"
+                  strokeDasharray={`${0.359 * 2 * Math.PI * 60} ${2 * Math.PI * 60}`}
+                  strokeDashoffset={`-${0.447 * 2 * Math.PI * 60}`} />
+                <circle cx="80" cy="80" r="60" fill="none" stroke="#F4A261" strokeWidth="24"
+                  strokeDasharray={`${0.194 * 2 * Math.PI * 60} ${2 * Math.PI * 60}`}
+                  strokeDashoffset={`-${(0.447 + 0.359) * 2 * Math.PI * 60}`} />
+              </svg>
+              {/* Center label — outside SVG so it doesn't rotate */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="text-2xl font-black text-[#1A2E22]">1.085</div>
+                <div className="text-[10px] text-gray-400 font-bold">Total Kg</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* 6. Rekomendasi Aksi Cerdas Admin */}
-        <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#176B4D]/10 space-y-3">
-          <h4 className="text-sm font-bold text-[#1C1C16] flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#176B4D] text-lg">lightbulb</span>
-            <span>Wawasan & Rekomendasi Pintar Logistik</span>
-          </h4>
-
-          <div className="space-y-2 text-xs">
-            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 flex items-start justify-between gap-3">
-              <div className="flex items-start gap-2.5">
-                <span className="material-symbols-outlined text-rose-600 text-lg shrink-0 mt-0.5">warning</span>
-                <div>
-                  <strong className="text-rose-900 block font-bold">Tong BAA-01 Penuh (120 Kg)</strong>
-                  <p className="text-rose-700 text-[11px] mt-0.5">
-                    Kapasitas maksimal telah tercapai. Segera konfirmasi jadwal penjemputan armada dengan PT Mandiri Daur Lestari.
-                  </p>
-                </div>
+          <div className="space-y-2 mt-3">
+            {[
+              { abbr: 'HVS', label: 'Kertas HVS & Office', kg: 485, bg: '#EEF9ED', text: '#1A4235' },
+              { abbr: 'KDS', label: 'Kardus Box', kg: 390, bg: '#FFF0EB', text: '#B04030' },
+              { abbr: 'MIX', label: 'Kertas Campur', kg: 210, bg: '#FFF7ED', text: '#C27D3A' },
+            ].map(cat => (
+              <div key={cat.abbr} className="flex items-center gap-3 hover:bg-gray-50 px-2 py-1.5 rounded-xl transition-colors cursor-default group">
+                <span className="w-9 h-6 rounded-md flex items-center justify-center text-[9px] font-black shrink-0" style={{ background: cat.bg, color: cat.text }}>{cat.abbr}</span>
+                <span className="flex-1 text-xs font-semibold text-gray-500 group-hover:text-[#1A2E22] transition-colors truncate">{cat.label}</span>
+                <span className="text-xs font-extrabold text-[#1A2E22] shrink-0">{cat.kg}</span>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setActionNotice('Panggilan konfirmasi logistik dikirimkan ke Dispatcher PT Mandiri Daur Lestari.');
-                  setTimeout(() => setActionNotice(null), 3500);
-                }}
-                className="px-2.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold text-[10px] shrink-0 shadow-xs transition-all cursor-pointer"
-              >
-                Panggil Armada
-              </button>
-            </div>
-
-            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start justify-between gap-3">
-              <div className="flex items-start gap-2.5">
-                <span className="material-symbols-outlined text-[#176B4D] text-lg shrink-0 mt-0.5">campaign</span>
-                <div>
-                  <strong className="text-emerald-900 block font-bold">Aktivasi Penyetoran Fakultas Teknik & Desain (FTD)</strong>
-                  <p className="text-emerald-700 text-[11px] mt-0.5">
-                    FTD memiliki 5 tong standby kosong. Kirim pengingat resmi program Paper Drive menjelang masa yudisium.
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setActionNotice('Pesan pengingat program Paper Drive terkirim ke WhatsApp PIC FTD.');
-                  setTimeout(() => setActionNotice(null), 3500);
-                }}
-                className="px-2.5 py-1.5 rounded-lg bg-[#176B4D] hover:bg-[#005138] text-white font-bold text-[10px] shrink-0 shadow-xs transition-all cursor-pointer"
-              >
-                Kirim Pengingat
-              </button>
-            </div>
+            ))}
           </div>
         </div>
       </div>

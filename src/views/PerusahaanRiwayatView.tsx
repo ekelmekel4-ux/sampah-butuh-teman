@@ -21,7 +21,7 @@ export const PerusahaanRiwayatView: React.FC = () => {
   return (
     <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
       {/* Bento Banner Akumulasi Mitra Industri */}
-      <div className="bg-gradient-to-br from-[#8B6045] to-[#633E25] text-white rounded-2xl p-4 shadow-md space-y-3">
+      <div className="bg-gradient-to-br from-[#C27D3A] to-[#633E25] text-white rounded-2xl p-4 shadow-md space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-2xl text-[#FFDBC8]">receipt_long</span>
@@ -62,7 +62,7 @@ export const PerusahaanRiwayatView: React.FC = () => {
         <button
           onClick={() => setFilterTab('semua')}
           className={`flex-1 py-1.5 rounded-lg text-center font-bold transition-all ${
-            filterTab === 'semua' ? 'bg-white text-[#176B4D] shadow-xs' : 'text-[#57635A]'
+            filterTab === 'semua' ? 'bg-white text-[#2D6A4F] shadow-xs' : 'text-[#52645A]'
           }`}
         >
           Semua ({matchings.length})
@@ -70,7 +70,7 @@ export const PerusahaanRiwayatView: React.FC = () => {
         <button
           onClick={() => setFilterTab('berjalan')}
           className={`flex-1 py-1.5 rounded-lg text-center font-semibold transition-all ${
-            filterTab === 'berjalan' ? 'bg-white text-[#176B4D] shadow-xs' : 'text-[#57635A]'
+            filterTab === 'berjalan' ? 'bg-white text-[#2D6A4F] shadow-xs' : 'text-[#52645A]'
           }`}
         >
           Sedang Berjalan ({activeTrx ? 1 : 0})
@@ -78,7 +78,7 @@ export const PerusahaanRiwayatView: React.FC = () => {
         <button
           onClick={() => setFilterTab('selesai')}
           className={`flex-1 py-1.5 rounded-lg text-center font-semibold transition-all ${
-            filterTab === 'selesai' ? 'bg-white text-[#176B4D] shadow-xs' : 'text-[#57635A]'
+            filterTab === 'selesai' ? 'bg-white text-[#2D6A4F] shadow-xs' : 'text-[#52645A]'
           }`}
         >
           Selesai ({completedTrxList.length})
@@ -87,21 +87,21 @@ export const PerusahaanRiwayatView: React.FC = () => {
 
       {/* Penjemputan Aktif Section */}
       {activeTrx && (filterTab === 'semua' || filterTab === 'berjalan') && (
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/15 space-y-3">
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/15 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#176B4D] animate-ping"></span>
-              <h3 className="text-sm font-bold text-[#1C1C16]">Penjemputan Aktif Hari Ini</h3>
+              <span className="w-2 h-2 rounded-full bg-[#2D6A4F] animate-ping"></span>
+              <h3 className="text-sm font-bold text-[#1A2E22]">Penjemputan Aktif Hari Ini</h3>
             </div>
             <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#9CF2B5] text-[#157140]">
               ETA ~8 mnt
             </span>
           </div>
 
-          <div className="p-3.5 bg-[#F7F3EA] rounded-xl space-y-2 border border-[#176B4D]/10">
+          <div className="p-3.5 bg-[#F7F3EA] rounded-xl space-y-2 border border-[#2D6A4F]/10">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-[#176B4D]">#{activeTrx.id}</span>
-              <span className="text-[11px] text-[#57635A] font-semibold">
+              <span className="font-bold text-[#2D6A4F]">#{activeTrx.id}</span>
+              <span className="text-[11px] text-[#52645A] font-semibold">
                 Truk {activeTrx.nopol_armada || 'B 9821 PQL'} ({activeTrx.driver_nama || 'Pak Joko'})
               </span>
             </div>
@@ -111,13 +111,13 @@ export const PerusahaanRiwayatView: React.FC = () => {
                 FTD
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="text-xs font-bold text-[#1C1C16]">
+                <h4 className="text-xs font-bold text-[#1A2E22]">
                   {activeTrx.jumlah_kg} Kg HVS Putih (Grade A+)
                 </h4>
-                <p className="text-[11px] text-[#57635A] mt-0.5">
+                <p className="text-[11px] text-[#52645A] mt-0.5">
                   {activeTrx.unit_nama} • Tong {activeTrx.tong_nama}
                 </p>
-                <span className="text-[10px] text-[#8B6045] font-semibold block mt-0.5">
+                <span className="text-[10px] text-[#C27D3A] font-semibold block mt-0.5">
                   📍 Drop Point Serbaguna (Pintu Barat)
                 </span>
               </div>
@@ -126,14 +126,14 @@ export const PerusahaanRiwayatView: React.FC = () => {
             <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-200/60">
               <button
                 onClick={() => setActiveModalTrx(activeTrx)}
-                className="py-2 px-3 rounded-lg bg-[#176B4D] hover:bg-[#005138] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition-all"
+                className="py-2 px-3 rounded-lg bg-[#2D6A4F] hover:bg-[#005138] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition-all"
               >
                 <span className="material-symbols-outlined text-sm">qr_code</span>
                 <span>Surat Jalan & QR</span>
               </button>
               <button
                 onClick={() => setShowNavMap(true)}
-                className="py-2 px-3 rounded-lg bg-white hover:bg-gray-50 text-[#57635A] border border-gray-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
+                className="py-2 px-3 rounded-lg bg-white hover:bg-gray-50 text-[#52645A] border border-gray-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
               >
                 <span className="material-symbols-outlined text-sm">navigation</span>
                 <span>Navigasi ke Tong</span>
@@ -144,13 +144,13 @@ export const PerusahaanRiwayatView: React.FC = () => {
       )}
 
       {/* Riwayat Transaksi Terverifikasi */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-3">
+      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#176B4D] text-lg">verified</span>
-            <h3 className="text-sm font-bold text-[#1C1C16]">Riwayat Transaksi Terverifikasi</h3>
+            <span className="material-symbols-outlined text-[#2D6A4F] text-lg">verified</span>
+            <h3 className="text-sm font-bold text-[#1A2E22]">Riwayat Transaksi Terverifikasi</h3>
           </div>
-          <span className="text-xs text-[#57635A]">
+          <span className="text-xs text-[#52645A]">
             {completedTrxList.length} Transaksi Selesai
           </span>
         </div>
@@ -169,16 +169,16 @@ export const PerusahaanRiwayatView: React.FC = () => {
                       ✓ Selesai
                     </span>
                   </div>
-                  <h4 className="text-xs font-bold text-[#1C1C16] mt-0.5">
+                  <h4 className="text-xs font-bold text-[#1A2E22] mt-0.5">
                     {trx.jenis_kertas}
                   </h4>
-                  <p className="text-[11px] text-[#57635A]">
+                  <p className="text-[11px] text-[#52645A]">
                     {trx.unit_nama} ({trx.tong_nama}) • {trx.tanggal_selesai || '18 Okt, 15:10 WIB'}
                   </p>
                 </div>
 
                 <div className="text-right shrink-0">
-                  <span className="text-xs font-bold text-[#8B6045] block">
+                  <span className="text-xs font-bold text-[#C27D3A] block">
                     Rp {trx.nilai_rupiah.toLocaleString('id-ID')}
                   </span>
                   <span className="text-[10px] text-[#005138] font-bold">
@@ -191,11 +191,11 @@ export const PerusahaanRiwayatView: React.FC = () => {
               {trx.foto_timbangan && (
                 <div className="p-2.5 rounded-lg bg-white border border-gray-100 space-y-2">
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-[#57635A] font-medium flex items-center gap-1">
-                      <span className="material-symbols-outlined text-xs text-[#176B4D]">scale</span>
+                    <span className="text-[#52645A] font-medium flex items-center gap-1">
+                      <span className="material-symbols-outlined text-xs text-[#2D6A4F]">scale</span>
                       Foto Timbangan Digital Nyata & Struk Fisik:
                     </span>
-                    <span className="text-[#8B6045] font-bold">Terverifikasi</span>
+                    <span className="text-[#C27D3A] font-bold">Terverifikasi</span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
@@ -224,8 +224,8 @@ export const PerusahaanRiwayatView: React.FC = () => {
 
                   {trx.komentar && (
                     <div className="flex items-center justify-between pt-1 border-t border-gray-100 text-[11px]">
-                      <span className="text-[#57635A] italic">"{trx.komentar}"</span>
-                      <span className="text-[#8B6045] font-bold flex items-center gap-0.5">
+                      <span className="text-[#52645A] italic">"{trx.komentar}"</span>
+                      <span className="text-[#C27D3A] font-bold flex items-center gap-0.5">
                         ★ {trx.rating}
                       </span>
                     </div>
@@ -240,11 +240,11 @@ export const PerusahaanRiwayatView: React.FC = () => {
       {/* Surat Jalan Digital Modal */}
       {activeModalTrx && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl animate-in zoom-in-95 border border-[#176B4D]/20">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl animate-in zoom-in-95 border border-[#2D6A4F]/20">
             <div className="flex items-center justify-between pb-2 border-b border-gray-100">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#176B4D]">description</span>
-                <h3 className="font-bold text-sm text-[#1C1C16]">Surat Jalan Pengambilan Resmi</h3>
+                <span className="material-symbols-outlined text-[#2D6A4F]">description</span>
+                <h3 className="font-bold text-sm text-[#1A2E22]">Surat Jalan Pengambilan Resmi</h3>
               </div>
               <button
                 onClick={() => setActiveModalTrx(null)}
@@ -260,63 +260,63 @@ export const PerusahaanRiwayatView: React.FC = () => {
                 <svg viewBox="0 0 100 100" className="w-full h-full">
                   <rect x="0" y="0" width="100" height="100" fill="white" />
                   {/* Outer corner squares */}
-                  <rect x="5" y="5" width="28" height="28" fill="#176B4D" />
+                  <rect x="5" y="5" width="28" height="28" fill="#2D6A4F" />
                   <rect x="9" y="9" width="20" height="20" fill="white" />
-                  <rect x="13" y="13" width="12" height="12" fill="#176B4D" />
+                  <rect x="13" y="13" width="12" height="12" fill="#2D6A4F" />
 
-                  <rect x="67" y="5" width="28" height="28" fill="#176B4D" />
+                  <rect x="67" y="5" width="28" height="28" fill="#2D6A4F" />
                   <rect x="71" y="9" width="20" height="20" fill="white" />
-                  <rect x="75" y="13" width="12" height="12" fill="#176B4D" />
+                  <rect x="75" y="13" width="12" height="12" fill="#2D6A4F" />
 
-                  <rect x="5" y="67" width="28" height="28" fill="#176B4D" />
+                  <rect x="5" y="67" width="28" height="28" fill="#2D6A4F" />
                   <rect x="9" y="71" width="20" height="20" fill="white" />
-                  <rect x="13" y="75" width="12" height="12" fill="#176B4D" />
+                  <rect x="13" y="75" width="12" height="12" fill="#2D6A4F" />
 
                   {/* Body data mock pattern */}
-                  <rect x="40" y="8" width="6" height="6" fill="#176B4D" />
-                  <rect x="52" y="8" width="6" height="6" fill="#176B4D" />
-                  <rect x="40" y="20" width="18" height="6" fill="#176B4D" />
-                  <rect x="40" y="32" width="6" height="18" fill="#176B4D" />
-                  <rect x="52" y="32" width="6" height="6" fill="#176B4D" />
-                  <rect x="64" y="44" width="28" height="6" fill="#176B4D" />
-                  <rect x="8" y="44" width="24" height="6" fill="#176B4D" />
-                  <rect x="40" y="60" width="18" height="6" fill="#176B4D" />
-                  <rect x="64" y="60" width="6" height="18" fill="#176B4D" />
-                  <rect x="76" y="75" width="16" height="16" fill="#176B4D" />
-                  <rect x="40" y="75" width="18" height="16" fill="#176B4D" />
+                  <rect x="40" y="8" width="6" height="6" fill="#2D6A4F" />
+                  <rect x="52" y="8" width="6" height="6" fill="#2D6A4F" />
+                  <rect x="40" y="20" width="18" height="6" fill="#2D6A4F" />
+                  <rect x="40" y="32" width="6" height="18" fill="#2D6A4F" />
+                  <rect x="52" y="32" width="6" height="6" fill="#2D6A4F" />
+                  <rect x="64" y="44" width="28" height="6" fill="#2D6A4F" />
+                  <rect x="8" y="44" width="24" height="6" fill="#2D6A4F" />
+                  <rect x="40" y="60" width="18" height="6" fill="#2D6A4F" />
+                  <rect x="64" y="60" width="6" height="18" fill="#2D6A4F" />
+                  <rect x="76" y="75" width="16" height="16" fill="#2D6A4F" />
+                  <rect x="40" y="75" width="18" height="16" fill="#2D6A4F" />
                 </svg>
               </div>
               <span className="text-xs font-extrabold text-[#005138] mt-2 tracking-wider">
                 {activeModalTrx.surat_jalan_kode || `#SJ-2024-${activeModalTrx.id}`}
               </span>
-              <span className="text-[10px] text-[#57635A]">
-                Pindai di Pos Jaga Pintu Barat / Timbangan Drop Point
+              <span className="text-[10px] text-[#52645A]">
+                Pindai di Pos Jaga Gerbang Barat Kampus UPJ / Timbangan Drop Point
               </span>
             </div>
 
             {/* Document metadata table */}
-            <div className="space-y-1.5 text-xs text-[#57635A]">
+            <div className="space-y-1.5 text-xs text-[#52645A]">
               <div className="flex justify-between">
                 <span>Unit Pengirim:</span>
-                <strong className="text-[#1C1C16]">{activeModalTrx.unit_nama}</strong>
+                <strong className="text-[#1A2E22]">{activeModalTrx.unit_nama}</strong>
               </div>
               <div className="flex justify-between">
                 <span>Tong Drop Point:</span>
-                <strong className="text-[#176B4D]">{activeModalTrx.tong_nama}</strong>
+                <strong className="text-[#2D6A4F]">{activeModalTrx.tong_nama}</strong>
               </div>
               <div className="flex justify-between">
                 <span>Total Muatan:</span>
-                <strong className="text-[#1C1C16]">{activeModalTrx.jumlah_kg} Kg</strong>
+                <strong className="text-[#1A2E22]">{activeModalTrx.jumlah_kg} Kg</strong>
               </div>
               <div className="flex justify-between">
                 <span>Driver & Armada:</span>
-                <strong className="text-[#1C1C16]">Pak Joko Susilo (B 9821 PQL)</strong>
+                <strong className="text-[#1A2E22]">Pak Joko Susilo (B 9821 PQL)</strong>
               </div>
             </div>
 
             <button
               onClick={() => setActiveModalTrx(null)}
-              className="w-full py-2.5 rounded-xl bg-[#176B4D] hover:bg-[#005138] text-white text-xs font-bold transition-all"
+              className="w-full py-2.5 rounded-xl bg-[#2D6A4F] hover:bg-[#005138] text-white text-xs font-bold transition-all"
             >
               Tutup Surat Jalan
             </button>
@@ -330,8 +330,8 @@ export const PerusahaanRiwayatView: React.FC = () => {
           <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl animate-in zoom-in-95">
             <div className="flex items-center justify-between pb-2 border-b border-gray-100">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#176B4D]">navigation</span>
-                <h3 className="font-bold text-sm text-[#1C1C16]">Rute Akses Drop Point</h3>
+                <span className="material-symbols-outlined text-[#2D6A4F]">navigation</span>
+                <h3 className="font-bold text-sm text-[#1A2E22]">Rute Akses Drop Point</h3>
               </div>
               <button
                 onClick={() => setShowNavMap(false)}
@@ -349,16 +349,16 @@ export const PerusahaanRiwayatView: React.FC = () => {
               />
             </div>
 
-            <div className="text-xs text-[#57635A] space-y-1">
-              <div className="font-bold text-[#1C1C16]">Petunjuk Akses Armada:</div>
-              <p className="leading-snug">1. Masuk lewat Gerbang Barat Jl. Lingkar Kampus.</p>
-              <p className="leading-snug">2. Ikuti marka hijau menuju Gedung Serbaguna Sayap Barat.</p>
-              <p className="leading-snug">3. Parkir di depan Ramp Muat Tong FTD-01.</p>
+            <div className="text-xs text-[#52645A] space-y-1">
+              <div className="font-bold text-[#1A2E22]">Petunjuk Akses Armada:</div>
+              <p className="leading-snug">1. Masuk lewat Gerbang Barat UPJ, Jl. Cendrawasih, Ciputat.</p>
+              <p className="leading-snug">2. Ikuti marka hijau menuju Gedung Serbaguna Kampus UPJ.</p>
+              <p className="leading-snug">3. Parkir di depan Ramp Muat sesuai nomor tong yang dijadwalkan.</p>
             </div>
 
             <button
               onClick={() => setShowNavMap(false)}
-              className="w-full py-2.5 rounded-xl bg-[#176B4D] hover:bg-[#005138] text-white text-xs font-bold transition-all"
+              className="w-full py-2.5 rounded-xl bg-[#2D6A4F] hover:bg-[#005138] text-white text-xs font-bold transition-all"
             >
               Kembali
             </button>

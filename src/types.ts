@@ -128,3 +128,27 @@ export interface EcoPointRecord {
   tanggal: string;
   keterangan: string;
 }
+
+export interface Saldo {
+  id: string;
+  owner_id: string;
+  owner_type: 'unit' | 'perusahaan';
+  owner_nama: string;
+  jumlah: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface RiwayatPembayaran {
+  id: string;
+  matching_transaksi_id: string;
+  dari_id: string;
+  dari_nama: string;
+  ke_id: string;
+  ke_nama: string;
+  jumlah: number;
+  jenis: 'pembayaran_kertas' | 'penarikan' | 'topup';
+  status: 'menunggu' | 'berhasil' | 'gagal';
+  catatan: string;
+  created_at?: string;
+}

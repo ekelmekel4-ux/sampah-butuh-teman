@@ -41,20 +41,20 @@ export const AdminLaporanView: React.FC = () => {
   };
 
   return (
-    <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
+    <div className="w-full max-w-5xl mx-auto space-y-4">
 
       {/* Header */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#176B4D]/10 space-y-3">
+      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-[10px] font-bold text-[#176B4D] uppercase tracking-wider block">
+            <span className="text-[10px] font-bold text-[#2D6A4F] uppercase tracking-wider block">
               Moderasi & Kontrol Kualitas
             </span>
-            <h1 className="text-base font-bold text-[#1C1C16]">Daftar Laporan / Flag</h1>
+            <h1 className="text-base font-bold text-[#1A2E22]">Daftar Laporan / Flag</h1>
           </div>
           <button
             onClick={() => setActiveRoute('/admin/dashboard')}
-            className="text-xs text-[#57635A] hover:text-[#176B4D] flex items-center gap-1 transition-colors"
+            className="text-xs text-[#52645A] hover:text-[#2D6A4F] flex items-center gap-1 transition-colors"
           >
             <span className="material-symbols-outlined text-sm">arrow_back</span>
             Dashboard
@@ -69,11 +69,11 @@ export const AdminLaporanView: React.FC = () => {
           </div>
           <div className="p-2.5 bg-[#9CF2B5]/20 rounded-xl text-center">
             <span className="text-lg font-extrabold text-[#157140] block">{selesaiCount}</span>
-            <span className="text-[10px] text-[#57635A]">Selesai</span>
+            <span className="text-[10px] text-[#52645A]">Selesai</span>
           </div>
           <div className="p-2.5 bg-[#F7F3EA] rounded-xl text-center">
-            <span className="text-lg font-extrabold text-[#176B4D] block">{laporanList.length}</span>
-            <span className="text-[10px] text-[#57635A]">Total</span>
+            <span className="text-lg font-extrabold text-[#2D6A4F] block">{laporanList.length}</span>
+            <span className="text-[10px] text-[#52645A]">Total</span>
           </div>
         </div>
       </div>
@@ -93,7 +93,7 @@ export const AdminLaporanView: React.FC = () => {
             key={f}
             onClick={() => setFilterStatus(f)}
             className={`flex-1 py-2 rounded-lg text-center font-bold transition-all relative ${
-              filterStatus === f ? 'bg-white text-[#176B4D] shadow-xs' : 'text-[#57635A]'
+              filterStatus === f ? 'bg-white text-[#2D6A4F] shadow-xs' : 'text-[#52645A]'
             }`}
           >
             {f === 'semua' ? `Semua (${laporanList.length})` :
@@ -144,7 +144,7 @@ export const AdminLaporanView: React.FC = () => {
                     </div>
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs font-extrabold text-[#1C1C16]">#{lap.id}</span>
+                        <span className="text-xs font-extrabold text-[#1A2E22]">#{lap.id}</span>
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                           isPending ? 'bg-[#FFDAD6] text-[#BA1A1A]' : 'bg-[#9CF2B5] text-[#157140]'
                         }`}>
@@ -154,10 +154,10 @@ export const AdminLaporanView: React.FC = () => {
                           {lap.level}
                         </span>
                       </div>
-                      <h3 className="text-xs font-bold text-[#1C1C16] mt-1">
+                      <h3 className="text-xs font-bold text-[#1A2E22] mt-1">
                         {lap.tong_nama}
                       </h3>
-                      <p className="text-[11px] text-[#57635A] mt-0.5">{lap.unit_nama}</p>
+                      <p className="text-[11px] text-[#52645A] mt-0.5">{lap.unit_nama}</p>
                     </div>
                   </div>
 
@@ -165,8 +165,8 @@ export const AdminLaporanView: React.FC = () => {
                     <span className="text-[10px] font-bold text-[#BA1A1A] bg-[#FFDAD6] px-2 py-0.5 rounded">
                       {lap.alasan}
                     </span>
-                    <span className="text-[10px] text-[#57635A]">{lap.tanggal}</span>
-                    <span className={`material-symbols-outlined text-sm text-[#57635A] transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
+                    <span className="text-[10px] text-[#52645A]">{lap.tanggal}</span>
+                    <span className={`material-symbols-outlined text-sm text-[#52645A] transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
                       expand_more
                     </span>
                   </div>
@@ -177,8 +177,8 @@ export const AdminLaporanView: React.FC = () => {
               {isExpanded && (
                 <div className="px-4 pb-4 space-y-3 border-t border-gray-100 pt-3">
                   {/* Pelapor */}
-                  <div className="text-[11px] text-[#57635A]">
-                    <strong className="text-[#1C1C16]">Pelapor:</strong> {lap.pelapor_nama}
+                  <div className="text-[11px] text-[#52645A]">
+                    <strong className="text-[#1A2E22]">Pelapor:</strong> {lap.pelapor_nama}
                   </div>
 
                   {/* Detail Masalah */}
@@ -218,7 +218,7 @@ export const AdminLaporanView: React.FC = () => {
 
                       <button
                         onClick={() => handleAssignVolunteer(lap.tong_nama)}
-                        className="py-2 px-2.5 rounded-xl bg-white border border-[#176B4D]/40 text-[#176B4D] text-[11px] font-semibold hover:bg-green-50 flex items-center justify-center gap-1 transition-all"
+                        className="py-2 px-2.5 rounded-xl bg-white border border-[#2D6A4F]/40 text-[#2D6A4F] text-[11px] font-semibold hover:bg-green-50 flex items-center justify-center gap-1 transition-all"
                       >
                         <span className="material-symbols-outlined text-sm">groups</span>
                         Tugaskan Relawan
@@ -226,7 +226,7 @@ export const AdminLaporanView: React.FC = () => {
 
                       <button
                         onClick={() => handleResolve(lap.id, lap.tong_nama)}
-                        className="py-2 px-2.5 rounded-xl bg-[#176B4D] hover:bg-[#005138] text-white text-[11px] font-bold flex items-center justify-center gap-1 shadow-xs transition-all"
+                        className="py-2 px-2.5 rounded-xl bg-[#2D6A4F] hover:bg-[#005138] text-white text-[11px] font-bold flex items-center justify-center gap-1 shadow-xs transition-all"
                       >
                         <span className="material-symbols-outlined text-sm">task_alt</span>
                         Selesaikan
@@ -250,10 +250,10 @@ export const AdminLaporanView: React.FC = () => {
 
       {/* Empty State */}
       {laporanList.length === 0 && (
-        <div className="bg-white rounded-2xl p-10 text-center space-y-3 border border-dashed border-[#176B4D]/20">
+        <div className="bg-white rounded-2xl p-10 text-center space-y-3 border border-dashed border-[#2D6A4F]/20">
           <span className="material-symbols-outlined text-5xl text-[#9CF2B5]">shield_check</span>
-          <h3 className="text-sm font-bold text-[#1C1C16]">Tidak Ada Laporan</h3>
-          <p className="text-xs text-[#57635A]">Drop point dalam kondisi bersih dan terawat.</p>
+          <h3 className="text-sm font-bold text-[#1A2E22]">Tidak Ada Laporan</h3>
+          <p className="text-xs text-[#52645A]">Drop point dalam kondisi bersih dan terawat.</p>
         </div>
       )}
     </div>

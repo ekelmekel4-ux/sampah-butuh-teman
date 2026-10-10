@@ -8,37 +8,36 @@ import {
   PermintaanKertas,
   MatchingTransaksi,
   LaporanMasalah,
-  KategoriKertas
+  KategoriKertas,
+  Saldo,
+  RiwayatPembayaran
 } from '../types';
 import {
-  INITIAL_USERS,
-  INITIAL_UNITS,
-  INITIAL_TONG,
-  INITIAL_LISTINGS,
-  INITIAL_PERMINTAAN,
-  INITIAL_MATCHINGS,
-  INITIAL_LAPORAN,
-  APP_BRAND
+  APP_BRAND,
+  HARGA_PER_KG,
+  HARGA_DEFAULT_PER_KG,
+  INITIAL_USERS
 } from '../data/initialData';
+import * as db from '../lib/database';
 
 export type AuthStep =
   | 'onboarding'
   | 'gate'
+  | 'login'
   | 'login-penyalur'
-  | 'register-penyalur'
   | 'login-penerima'
-  | 'register-penerima'
-  | 'login-admin';
+  | 'register-penyalur'
+  | 'register-penerima';
 
 interface AppContextType {
   role: UserRole;
-  currentUser: User;
+  currentUser: User | null;
   isLoggedIn: boolean;
   hasSeenOnboarding: boolean;
   authStep: AuthStep;
   completeOnboarding: () => void;
   setAuthStep: (step: AuthStep) => void;
-  login: (email: string, role: UserRole, password?: string) => { success: boolean; message?: string };
+  login: (email: string, password?: string) => Promise<{ success: boolean; message?: string }>;
   registerPenyalur: (data: {
     namaUnit: string;
     inisial: string;
@@ -47,13 +46,13 @@ interface AppContextType {
     email: string;
     kontak: string;
     lokasiDetail?: string;
-  }) => { success: boolean; message?: string };
+  }) => Promise<{ success: boolean; message?: string }>;
   registerPenerima: (data: {
     namaPt: string;
     nib: string;
     email: string;
     kontakDispatcher: string;
-  }) => { success: boolean; message?: string };
+  }) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   setRole: (role: UserRole) => void;
   units: UnitKampus[];
@@ -68,7 +67,6 @@ interface AppContextType {
   setSelectedMatchingId: (id: string | null) => void;
   selectedListingId: string | null;
   setSelectedListingId: (id: string | null) => void;
-  // Actions
   createListing: (data: {
     unitId: string;
     tongId?: string;
@@ -77,7 +75,7 @@ interface AppContextType {
     kategoriLabel: string;
     kondisi: string[];
     foto: string;
-  }) => ListingKertas;
+  }) => Promise<ListingKertas | null>;
   createPermintaan: (data: {
     jenisKertas: string[];
     jumlahKg: number;
@@ -85,12 +83,12 @@ interface AppContextType {
     syaratQc: string[];
     hariPickup: string[];
     waktuOperasional: string;
-  }) => PermintaanKertas;
-  schedulePickup: (matchingId: string, tanggal: string, jam: string) => void;
-  confirmPickup: (matchingId: string) => void;
-  confirmUnitPlaced: (listingId: string) => void;
-  emptyTong: (tongId: string) => void;
-  requestSecondTong: (unitId: string) => Tong;
+  }) => Promise<PermintaanKertas | null>;
+  schedulePickup: (matchingId: string, tanggal: string, jam: string) => Promise<void>;
+  confirmPickup: (matchingId: string) => Promise<void>;
+  confirmUnitPlaced: (listingId: string) => Promise<void>;
+  emptyTong: (tongId: string) => Promise<void>;
+  requestSecondTong: (unitId: string) => Promise<Tong | null>;
   addNewUnitAndTong: (data: {
     namaUnit: string;
     inisial: string;
@@ -99,131 +97,97 @@ interface AppContextType {
     kapasitasMax: number;
     picNama?: string;
     kontakPic?: string;
-  }) => { unit: UnitKampus; tong: Tong };
-  resolveLaporan: (id: string) => void;
+  }) => Promise<{ unit: UnitKampus; tong: Tong } | null>;
+  resolveLaporan: (id: string) => Promise<void>;
   submitLaporan: (data: {
     tongNama: string;
     unitNama: string;
     alasan: string;
     detail: string;
     level: 'kritis' | 'sedang';
-  }) => void;
+  }) => Promise<void>;
   resetDemoData: () => void;
-  // Stats
   totalKgTersalurkan: number;
   totalPohon: number;
   totalAirBersih: number;
+  saldoSekarang: number;
+  riwayatSaldo: RiwayatPembayaran[];
+  refreshData: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const STORAGE_KEYS = {
-  ROLE: 'sbt_current_role_v2',
-  IS_LOGGED_IN: 'sbt_logged_in_v2',
-  HAS_SEEN_ONBOARDING: 'sbt_seen_onboarding_v2',
-  CURRENT_USER: 'sbt_current_user_v2',
-  REGISTERED_USERS: 'sbt_registered_users_v2',
-  UNITS: 'sbt_units_v6',
-  TONG: 'sbt_tong_v6',
-  LISTINGS: 'sbt_listings_v6',
-  PERMINTAAN: 'sbt_permintaan_v6',
-  MATCHINGS: 'sbt_matchings_v6',
-  LAPORAN: 'sbt_laporan_v6'
+  ROLE: 'sbt_current_role_v3',
+  IS_LOGGED_IN: 'sbt_logged_in_v3',
+  HAS_SEEN_ONBOARDING: 'sbt_seen_onboarding_v3',
+  CURRENT_USER: 'sbt_current_user_v3',
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // 1. Onboarding & Auth State
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState<boolean>(() => {
     return localStorage.getItem(STORAGE_KEYS.HAS_SEEN_ONBOARDING) === 'true';
   });
-
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
     return localStorage.getItem(STORAGE_KEYS.IS_LOGGED_IN) === 'true';
   });
-
   const [authStep, setAuthStep] = useState<AuthStep>(() => {
     const seen = localStorage.getItem(STORAGE_KEYS.HAS_SEEN_ONBOARDING) === 'true';
     return seen ? 'gate' : 'onboarding';
   });
-
   const [role, setRoleState] = useState<UserRole>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.ROLE);
     return (saved as UserRole) || 'unit';
   });
-
-  const [registeredUsers, setRegisteredUsers] = useState<User[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.REGISTERED_USERS);
-    return saved ? JSON.parse(saved) : INITIAL_USERS;
-  });
-
-  const [currentUser, setCurrentUser] = useState<User>(() => {
+  const [currentUser, setCurrentUser] = useState<User | null>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
     if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        // fallback
-      }
+      try { return JSON.parse(saved); } catch (e) { }
     }
-    return INITIAL_USERS[0];
+    return null;
   });
-
   const [activeRoute, setActiveRoute] = useState<string>(() => {
     if (role === 'unit') return '/unit/beranda';
-    if (role === 'perusahaan') return '/perusahaan/matching';
+    if (role === 'perusahaan') return '/perusahaan/dashboard';
     return '/admin/dashboard';
   });
 
   const [selectedMatchingId, setSelectedMatchingId] = useState<string | null>(null);
   const [selectedListingId, setSelectedListingId] = useState<string | null>(null);
 
-  const [units, setUnits] = useState<UnitKampus[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.UNITS);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length >= 4 && !parsed.some(u => u.id === 'unit-bkl')) {
-          return parsed;
-        }
-      } catch (e) {}
+  const [units, setUnits] = useState<UnitKampus[]>([]);
+  const [tongList, setTongList] = useState<Tong[]>([]);
+  const [listings, setListings] = useState<ListingKertas[]>([]);
+  const [permintaanList, setPermintaanList] = useState<PermintaanKertas[]>([]);
+  const [matchings, setMatchings] = useState<MatchingTransaksi[]>([]);
+  const [laporanList, setLaporanList] = useState<LaporanMasalah[]>([]);
+  const [saldoSekarang, setSaldoSekarang] = useState<number>(0);
+  const [riwayatSaldo, setRiwayatSaldo] = useState<RiwayatPembayaran[]>([]);
+
+  const refreshData = async () => {
+    const data = await db.loadAllData();
+    setUnits(data.units);
+    setTongList(data.tongList);
+    setListings(data.listings);
+    setPermintaanList(data.permintaanList);
+    setMatchings(data.matchings);
+    setLaporanList(data.laporanList);
+
+    if (currentUser) {
+       const ownerId = currentUser.role === 'unit' ? currentUser.unit_id : currentUser.perusahaan_id;
+       if (ownerId) {
+          const s = await db.fetchSaldo(ownerId);
+          setSaldoSekarang(s?.jumlah || 0);
+          const r = await db.fetchRiwayatPembayaran(ownerId);
+          setRiwayatSaldo(r);
+       }
     }
-    return INITIAL_UNITS;
-  });
+  };
 
-  const [tongList, setTongList] = useState<Tong[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.TONG);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length >= 20 && parsed.some(t => t.id === 'tong-ftd-5')) {
-          return parsed;
-        }
-      } catch (e) {}
-    }
-    return INITIAL_TONG;
-  });
+  useEffect(() => {
+    refreshData();
+  }, [currentUser]);
 
-  const [listings, setListings] = useState<ListingKertas[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.LISTINGS);
-    return saved ? JSON.parse(saved) : INITIAL_LISTINGS;
-  });
-
-  const [permintaanList, setPermintaanList] = useState<PermintaanKertas[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.PERMINTAAN);
-    return saved ? JSON.parse(saved) : INITIAL_PERMINTAAN;
-  });
-
-  const [matchings, setMatchings] = useState<MatchingTransaksi[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.MATCHINGS);
-    return saved ? JSON.parse(saved) : INITIAL_MATCHINGS;
-  });
-
-  const [laporanList, setLaporanList] = useState<LaporanMasalah[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.LAPORAN);
-    return saved ? JSON.parse(saved) : INITIAL_LAPORAN;
-  });
-
-  // Sync state to local storage
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.ROLE, role);
   }, [role]);
@@ -237,69 +201,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [hasSeenOnboarding]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+    if (currentUser) {
+      localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+    }
   }, [currentUser]);
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.REGISTERED_USERS, JSON.stringify(registeredUsers));
-  }, [registeredUsers]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.UNITS, JSON.stringify(units));
-  }, [units]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.TONG, JSON.stringify(tongList));
-  }, [tongList]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.LISTINGS, JSON.stringify(listings));
-  }, [listings]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.PERMINTAAN, JSON.stringify(permintaanList));
-  }, [permintaanList]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.MATCHINGS, JSON.stringify(matchings));
-  }, [matchings]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.LAPORAN, JSON.stringify(laporanList));
-  }, [laporanList]);
-
-  // Auth Functions
   const completeOnboarding = () => {
     setHasSeenOnboarding(true);
-    localStorage.setItem(STORAGE_KEYS.HAS_SEEN_ONBOARDING, 'true');
     setAuthStep('gate');
   };
 
-  const login = (email: string, targetRole: UserRole, _password?: string) => {
+  const login = async (email: string, _password?: string) => {
     const cleanEmail = email.trim().toLowerCase();
-    
-    // Find matching user or fallback to initial template
-    let matchedUser = registeredUsers.find(
-      u => u.email.toLowerCase() === cleanEmail && u.role === targetRole
-    );
+    let user = await db.getProfileByEmail(cleanEmail);
 
-    // If not found in registeredUsers, check if matches any default demo role
-    if (!matchedUser) {
-      if (targetRole === 'admin' && (cleanEmail.includes('admin') || cleanEmail === 'admin.kampushijau@univ.ac.id')) {
-        matchedUser = INITIAL_USERS.find(u => u.role === 'admin');
-      } else if (targetRole === 'unit') {
-        // Fallback or create mock session for any campus email
-        matchedUser = {
-          id: `user-unit-${Date.now()}`,
-          nama: cleanEmail.split('@')[0].toUpperCase(),
-          email: cleanEmail,
-          role: 'unit',
-          kontak: '081234567890',
-          unit_id: units[0]?.id || 'unit-ftd',
-          avatar_url: APP_BRAND.avatarUrl
-        };
-      } else if (targetRole === 'perusahaan') {
-        matchedUser = {
+    if (!user) {
+      if (cleanEmail.includes('admin') || cleanEmail === 'admin.kampushijau@univ.ac.id') {
+         user = INITIAL_USERS.find(u => u.role === 'admin') || null;
+      } else if (cleanEmail.includes('pt') || cleanEmail.includes('perusahaan') || cleanEmail.includes('cv') || cleanEmail.includes('mitra')) {
+        user = {
           id: `user-perusahaan-${Date.now()}`,
           nama: cleanEmail.split('@')[0],
           email: cleanEmail,
@@ -308,46 +230,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           perusahaan_id: 'perusahaan-mdl',
           avatar_url: APP_BRAND.avatarUrl
         };
+      } else {
+        user = {
+          id: `user-unit-${Date.now()}`,
+          nama: cleanEmail.split('@')[0].toUpperCase(),
+          email: cleanEmail,
+          role: 'unit',
+          kontak: '081234567890',
+          unit_id: units[0]?.id || 'unit-ftd',
+          avatar_url: APP_BRAND.avatarUrl
+        };
       }
+      if (user) await db.upsertProfile(user);
     }
 
-    if (!matchedUser) {
-      return { success: false, message: 'Email tidak ditemukan untuk peran ini.' };
+    if (!user) {
+      return { success: false, message: 'Email tidak ditemukan.' };
     }
 
-    setCurrentUser(matchedUser);
-    setRoleState(targetRole);
+    setCurrentUser(user);
+    setRoleState(user.role);
     setIsLoggedIn(true);
 
-    if (targetRole === 'unit') {
-      setActiveRoute('/unit/beranda');
-    } else if (targetRole === 'perusahaan') {
-      setActiveRoute('/perusahaan/matching');
-    } else {
-      setActiveRoute('/admin/dashboard');
-    }
+    if (user.role === 'unit') setActiveRoute('/unit/beranda');
+    else if (user.role === 'perusahaan') setActiveRoute('/perusahaan/dashboard');
+    else setActiveRoute('/admin/dashboard');
 
     return { success: true };
   };
 
-  const registerPenyalur = ({
-    namaUnit,
-    inisial,
-    jenis,
-    picNama,
-    email,
-    kontak,
-    lokasiDetail = 'Gedung Utama Kampus'
-  }: {
-    namaUnit: string;
-    inisial: string;
-    jenis: 'fakultas' | 'biro' | 'prodi';
-    picNama: string;
-    email: string;
-    kontak: string;
-    lokasiDetail?: string;
-  }) => {
-    // 1. Create Unit & Tong
+  const registerPenyalur = async ({ namaUnit, inisial, jenis, picNama, email, kontak, lokasiDetail = 'Gedung Utama Kampus' }: any) => {
     const cleanInisial = inisial.toUpperCase().trim() || 'UNT';
     const unitId = `unit-${cleanInisial.toLowerCase()}-${Date.now().toString().slice(-4)}`;
     const tongId = `tong-${cleanInisial.toLowerCase()}-1`;
@@ -391,11 +303,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       avatar_url: APP_BRAND.avatarUrl
     };
 
-    setUnits(prev => [...prev, newUnit]);
-    setTongList(prev => [...prev, newTong]);
-    setRegisteredUsers(prev => [...prev, newUser]);
+    await db.upsertUnit(newUnit);
+    await db.upsertTong(newTong);
+    await db.upsertProfile(newUser);
+    await refreshData();
 
-    // Auto login
     setCurrentUser(newUser);
     setRoleState('unit');
     setIsLoggedIn(true);
@@ -404,17 +316,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return { success: true };
   };
 
-  const registerPenerima = ({
-    namaPt,
-    nib,
-    email,
-    kontakDispatcher
-  }: {
-    namaPt: string;
-    nib: string;
-    email: string;
-    kontakDispatcher: string;
-  }) => {
+  const registerPenerima = async ({ namaPt, nib, email, kontakDispatcher }: any) => {
     const perusahaanId = `perusahaan-${Date.now().toString().slice(-4)}`;
     const newUser: User = {
       id: `user-${perusahaanId}`,
@@ -426,299 +328,225 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       avatar_url: APP_BRAND.avatarUrl
     };
 
-    setRegisteredUsers(prev => [...prev, newUser]);
+    await db.upsertProfile(newUser);
+    await refreshData();
 
-    // Auto login
     setCurrentUser(newUser);
     setRoleState('perusahaan');
     setIsLoggedIn(true);
-    setActiveRoute('/perusahaan/matching');
+    setActiveRoute('/perusahaan/dashboard');
 
     return { success: true };
   };
 
   const logout = () => {
     setIsLoggedIn(false);
-    localStorage.removeItem(STORAGE_KEYS.IS_LOGGED_IN);
-    localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+    setCurrentUser(null);
     setAuthStep('gate');
   };
 
   const setRole = (newRole: UserRole) => {
     setRoleState(newRole);
-    if (newRole === 'unit') {
-      setActiveRoute('/unit/beranda');
-    } else if (newRole === 'perusahaan') {
-      setActiveRoute('/perusahaan/matching');
-    } else if (newRole === 'admin') {
-      setActiveRoute('/admin/dashboard');
-    }
+    if (newRole === 'unit') setActiveRoute('/unit/beranda');
+    else if (newRole === 'perusahaan') setActiveRoute('/perusahaan/dashboard');
+    else setActiveRoute('/admin/dashboard');
   };
 
-  // 1. Posting limbah kertas (Unit)
-  const createListing = ({
-    unitId,
-    tongId,
-    jumlahKg,
-    kategori,
-    kategoriLabel,
-    kondisi,
-    foto
-  }: {
-    unitId: string;
-    tongId?: string;
-    jumlahKg: number;
-    kategori: KategoriKertas;
-    kategoriLabel: string;
-    kondisi: string[];
-    foto: string;
-  }) => {
+  const createListing = async ({ unitId, tongId, jumlahKg, kategori, kategoriLabel, kondisi, foto }: any) => {
     const unit = units.find(u => u.id === unitId) || units[0];
     const tong = (tongId ? tongList.find(t => t.id === tongId) : null) || tongList.find(t => t.unit_id === unit.id) || tongList[0];
 
-    const newListingId = `list-${Date.now()}`;
     const newTongWeight = tong.berat_kg + jumlahKg;
     const isQuotaMet = newTongWeight >= 10;
 
-    const newListing: ListingKertas = {
-      id: newListingId,
-      unit_id: unit.id,
-      unit_nama: unit.nama_unit,
-      tong_id: tong.id,
-      tong_nama: tong.nama_tong,
-      jumlah_kg: jumlahKg,
-      kategori,
-      kategori_label: kategoriLabel,
-      kondisi,
-      foto: foto || 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80',
-      status: isQuotaMet ? 'siap_pickup' : 'menunggu_mitra',
-      tanggal_post: 'Baru saja'
-    };
+    const existingListing = listings.find(l => l.tong_id === tong.id && l.status !== 'sudah_diambil');
+    let resultingListing: ListingKertas;
 
-    setTongList(prev =>
-      prev.map(t =>
-        t.id === tong.id
-          ? {
-              ...t,
-              status: isQuotaMet ? 'siap_pickup' : 'terisi',
-              berat_kg: newTongWeight,
-              tipe_kertas: kategoriLabel,
-              catatan: isQuotaMet
-                ? `Siap dijemput mitra pabrik (kuota terpenuhi: ${newTongWeight} Kg)`
-                : `Terkumpul ${newTongWeight}/10 Kg. Kurang ${10 - newTongWeight} Kg lagi untuk siap dijemput.`
-            }
-          : t
-      )
-    );
+    if (existingListing) {
+      // Aggregate into existing listing
+      const updatedJumlahKg = existingListing.jumlah_kg + jumlahKg;
+      await db.updateListingFields(existingListing.id, {
+          jumlah_kg: updatedJumlahKg,
+          kategori_label: existingListing.kategori_label.includes(kategoriLabel) 
+              ? existingListing.kategori_label 
+              : existingListing.kategori_label + ', ' + kategoriLabel,
+          kondisi: [...new Set([...(existingListing.kondisi || []), ...kondisi])],
+          status: isQuotaMet ? 'siap_pickup' : 'menunggu_mitra'
+      });
+      resultingListing = { ...existingListing, jumlah_kg: updatedJumlahKg, status: isQuotaMet ? 'siap_pickup' : 'menunggu_mitra' };
 
-    // Update unit's overall contribution stats
-    setUnits(prev =>
-      prev.map(u =>
-        u.id === unit.id
-          ? {
-              ...u,
-              total_kg_tersalurkan: u.total_kg_tersalurkan + jumlahKg,
-              eco_points: u.eco_points + jumlahKg * 2
-            }
-          : u
-      )
-    );
+      if (existingListing.matching_id) {
+          const existingMatch = matchings.find(m => m.id === existingListing.matching_id);
+          if (existingMatch) {
+              await db.updateMatchingFields(existingMatch.id, {
+                  jumlah_kg: existingMatch.jumlah_kg + jumlahKg,
+                  jenis_kertas: existingMatch.jenis_kertas.includes(kategoriLabel)
+                      ? existingMatch.jenis_kertas
+                      : existingMatch.jenis_kertas + ', ' + kategoriLabel,
+                  nilai_rupiah: existingMatch.nilai_rupiah + (jumlahKg * (HARGA_PER_KG[kategori as KategoriKertas] ?? HARGA_DEFAULT_PER_KG)),
+                  eco_points: existingMatch.eco_points + (jumlahKg * 2),
+                  status: isQuotaMet ? 'menunggu_diambil' : existingMatch.status
+              });
+          }
+      }
+    } else {
+      // Create new listing
+      const newListingId = `list-${Date.now()}`;
+      const newListing: ListingKertas = {
+        id: newListingId,
+        unit_id: unit.id,
+        unit_nama: unit.nama_unit,
+        tong_id: tong.id,
+        tong_nama: tong.nama_tong,
+        jumlah_kg: jumlahKg,
+        kategori,
+        kategori_label: kategoriLabel,
+        kondisi,
+        foto: foto || 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80',
+        status: isQuotaMet ? 'siap_pickup' : 'menunggu_mitra',
+        tanggal_post: 'Baru saja'
+      };
 
-    // Create automatic matching entry if any active permintaan exists
-    const matchingReq = permintaanList[0];
-    const newTrxId = `trx-${Date.now().toString().slice(-6)}`;
-    const newMatch: MatchingTransaksi = {
-      id: newTrxId,
-      listing_kertas_id: newListingId,
-      permintaan_id: matchingReq?.id,
-      unit_id: unit.id,
-      unit_nama: unit.nama_unit,
-      tong_id: tong.id,
-      tong_nama: tong.nama_tong,
-      perusahaan_id: matchingReq?.perusahaan_id || 'perusahaan-mdl',
-      perusahaan_nama: matchingReq?.perusahaan_nama || 'PT Mandiri Daur Lestari',
-      jenis_kertas: `${jumlahKg} Kg ${kategoriLabel}`,
-      jumlah_kg: jumlahKg,
-      nilai_rupiah: jumlahKg * 1500,
-      eco_points: jumlahKg * 2,
-      skor_kecocokan: 96,
-      status: 'menunggu_diambil',
-      tanggal_jemput: 'Jadwal Otomatis Siap Dipilih',
-      jam_jemput: '13:00 - 16:00 WIB'
-    };
+      await db.upsertListing(newListing);
+      resultingListing = newListing;
 
-    newListing.matching_id = newTrxId;
+      const matchingReq = permintaanList[0];
+      if (matchingReq) {
+          const newTrxId = `trx-${Date.now().toString().slice(-6)}`;
+          const newMatch: MatchingTransaksi = {
+            id: newTrxId,
+            listing_kertas_id: newListingId,
+            permintaan_id: matchingReq.id,
+            unit_id: unit.id,
+            unit_nama: unit.nama_unit,
+            tong_id: tong.id,
+            tong_nama: tong.nama_tong,
+            perusahaan_id: matchingReq.perusahaan_id || 'perusahaan-mdl',
+            perusahaan_nama: matchingReq.perusahaan_nama || 'PT Mandiri Daur Lestari',
+            jenis_kertas: `${jumlahKg} Kg ${kategoriLabel}`,
+            jumlah_kg: jumlahKg,
+            nilai_rupiah: jumlahKg * (HARGA_PER_KG[kategori as KategoriKertas] ?? HARGA_DEFAULT_PER_KG),
+            eco_points: jumlahKg * 2,
+            skor_kecocokan: 96,
+            status: isQuotaMet ? 'menunggu_diambil' : 'menunggu_diambil',
+            tanggal_jemput: 'Jadwal Otomatis Siap Dipilih',
+            jam_jemput: '13:00 - 16:00 WIB'
+          };
+          await db.upsertMatching(newMatch);
+          await db.updateListingFields(newListingId, { matching_id: newTrxId });
+          resultingListing.matching_id = newTrxId;
+      }
+    }
 
-    setListings(prev => [newListing, ...prev]);
-    setMatchings(prev => [newMatch, ...prev]);
+    await db.updateTongFields(tong.id, {
+        status: isQuotaMet ? 'siap_pickup' : 'terisi',
+        berat_kg: newTongWeight,
+        tipe_kertas: kategoriLabel,
+        catatan: isQuotaMet
+          ? `Siap dijemput mitra pabrik (kuota terpenuhi: ${newTongWeight} Kg)`
+          : `Terkumpul ${newTongWeight}/10 Kg. Kurang ${10 - newTongWeight} Kg lagi untuk siap dijemput.`
+    });
+    await db.updateUnitFields(unit.id, {
+        total_kg_tersalurkan: unit.total_kg_tersalurkan + jumlahKg,
+        eco_points: unit.eco_points + jumlahKg * 2
+    } as any);
 
-    return newListing;
+    await refreshData();
+    return resultingListing;
   };
 
-  // 2. Buat Permintaan Pasokan Kertas (Perusahaan)
-  const createPermintaan = ({
-    jenisKertas,
-    jumlahKg,
-    toleransiKadarAir,
-    syaratQc,
-    hariPickup,
-    waktuOperasional
-  }: {
-    jenisKertas: string[];
-    jumlahKg: number;
-    toleransiKadarAir: number;
-    syaratQc: string[];
-    hariPickup: string[];
-    waktuOperasional: string;
-  }) => {
+  const createPermintaan = async (data: any) => {
     const perusahaanNama = currentUser?.role === 'perusahaan' ? currentUser.nama : 'PT Mandiri Daur Lestari';
     const newReq: PermintaanKertas = {
       id: `req-${Date.now()}`,
       perusahaan_id: currentUser?.perusahaan_id || 'perusahaan-mdl',
       perusahaan_nama: perusahaanNama,
-      jenis_kertas: jenisKertas,
-      jumlah_kg: jumlahKg,
-      toleransi_kadar_air: toleransiKadarAir,
-      syarat_qc: syaratQc,
-      hari_pickup: hariPickup,
-      waktu_operasional: waktuOperasional,
-      estimasi_dana_riset: jumlahKg * 1500,
-      estimasi_eco_points: jumlahKg * 2,
+      jenis_kertas: data.jenisKertas,
+      jumlah_kg: data.jumlahKg,
+      toleransi_kadar_air: data.toleransiKadarAir,
+      syarat_qc: data.syaratQc,
+      hari_pickup: data.hariPickup,
+      waktu_operasional: data.waktuOperasional,
+      estimasi_dana_riset: data.jumlahKg * HARGA_DEFAULT_PER_KG,
+      estimasi_eco_points: data.jumlahKg * 2,
       status_aktif: true,
       tanggal_dibuat: 'Hari ini'
     };
-
-    setPermintaanList(prev => [newReq, ...prev]);
+    await db.upsertPermintaan(newReq);
+    await refreshData();
     return newReq;
   };
 
-  // 3. Jadwalkan Pengambilan
-  const schedulePickup = (matchingId: string, tanggal: string, jam: string) => {
-    setMatchings(prev =>
-      prev.map(m =>
-        m.id === matchingId
-          ? {
-              ...m,
-              tanggal_jemput: tanggal,
-              jam_jemput: jam,
-              nopol_armada: 'B 9821 PQL',
-              driver_nama: 'Pak Joko Susilo',
-              surat_jalan_kode: `#SJ-${new Date().getFullYear()}-${m.id}`
-            }
-          : m
-      )
-    );
+  const schedulePickup = async (matchingId: string, tanggal: string, jam: string) => {
+    await db.updateMatchingFields(matchingId, {
+      tanggal_jemput: tanggal,
+      jam_jemput: jam,
+      nopol_armada: 'B 9821 PQL',
+      driver_nama: 'Pak Joko Susilo',
+      surat_jalan_kode: `#SJ-${new Date().getFullYear()}-${matchingId}`
+    });
+    await refreshData();
   };
 
-  // 4. Konfirmasi Selesai Diambil
-  const confirmPickup = (matchingId: string) => {
+  const confirmPickup = async (matchingId: string) => {
     const match = matchings.find(m => m.id === matchingId);
     if (!match) return;
 
-    setMatchings(prev =>
-      prev.map(m =>
-        m.id === matchingId
-          ? {
-              ...m,
-              status: 'sudah_diambil',
-              tanggal_selesai: 'Baru saja',
-              rating: 5.0,
-              komentar: 'Kertas bersih, rapi, dan terverifikasi di timbangan drop point.'
-            }
-          : m
-      )
-    );
+    await db.updateMatchingFields(matchingId, {
+      status: 'sudah_diambil',
+      tanggal_selesai: 'Baru saja',
+      rating: 5.0,
+      komentar: 'Kertas bersih, rapi, dan terverifikasi di timbangan drop point.'
+    });
 
-    setListings(prev =>
-      prev.map(l =>
-        l.id === match.listing_kertas_id || l.matching_id === matchingId
-          ? { ...l, status: 'sudah_diambil' }
-          : l
-      )
-    );
+    if (match.listing_kertas_id) {
+       await db.updateListingFields(match.listing_kertas_id, { status: 'sudah_diambil' });
+    }
+    
+    const tong = tongList.find(t => t.id === match.tong_id);
+    if (tong) {
+      await db.updateTongFields(tong.id, {
+        status: 'kosong',
+        berat_kg: Math.max(0, tong.berat_kg - match.jumlah_kg),
+        jadwal_pickup: undefined,
+        catatan: 'Baru saja diangkut oleh mitra pabrik'
+      });
+    }
 
-    setTongList(prev =>
-      prev.map(t =>
-        t.id === match.tong_id
-          ? {
-              ...t,
-              status: 'kosong',
-              berat_kg: Math.max(0, t.berat_kg - match.jumlah_kg),
-              jadwal_pickup: undefined,
-              catatan: 'Baru saja diangkut oleh mitra pabrik'
-            }
-          : t
-      )
-    );
-
-    setUnits(prev =>
-      prev.map(u =>
-        u.id === match.unit_id
-          ? {
-              ...u,
-              total_kg_tersalurkan: u.total_kg_tersalurkan + match.jumlah_kg,
-              eco_points: u.eco_points + match.eco_points
-            }
-          : u
-      )
-    );
+    const unit = units.find(u => u.id === match.unit_id);
+    if (unit) {
+       await db.updateUnitFields(unit.id, {
+         total_kg_tersalurkan: unit.total_kg_tersalurkan + match.jumlah_kg,
+         eco_points: unit.eco_points + match.eco_points
+       } as any);
+    }
+    
+    await db.processPayment(match);
+    await refreshData();
   };
 
-  // 5. Konfirmasi Kertas Sudah Ditaruh di Tong oleh Unit
-  const confirmUnitPlaced = (listingId: string) => {
-    setListings(prev =>
-      prev.map(l =>
-        l.id === listingId ? { ...l, status: 'siap_pickup' } : l
-      )
-    );
+  const confirmUnitPlaced = async (listingId: string) => {
+    await db.updateListingFields(listingId, { status: 'siap_pickup' });
+    await refreshData();
   };
 
-  // 5b. Pengosongan Tong saat Armada Mengambil Muatan (Reset ke 0 Kg)
-  const emptyTong = (tongId: string) => {
-    setTongList(prev =>
-      prev.map(t =>
-        t.id === tongId
-          ? {
-              ...t,
-              status: 'kosong',
-              berat_kg: 0,
-              catatan: 'Baru saja diangkut & dikosongkan oleh armada mitra pabrik'
-            }
-          : t
-      )
-    );
-
-    setListings(prev =>
-      prev.map(l =>
-        l.tong_id === tongId && l.status !== 'sudah_diambil'
-          ? { ...l, status: 'sudah_diambil' }
-          : l
-      )
-    );
-
-    setMatchings(prev =>
-      prev.map(m =>
-        m.tong_id === tongId && m.status !== 'sudah_diambil'
-          ? {
-              ...m,
-              status: 'sudah_diambil',
-              tanggal_selesai: 'Baru saja'
-            }
-          : m
-      )
-    );
+  const emptyTong = async (tongId: string) => {
+    await db.updateTongFields(tongId, {
+       status: 'kosong',
+       berat_kg: 0,
+       catatan: 'Baru saja diangkut & dikosongkan oleh armada mitra pabrik'
+    });
+    await db.updateListingsByTong(tongId, { status: 'sudah_diambil' });
+    await db.updateMatchingsByTong(tongId, { status: 'sudah_diambil', tanggal_selesai: 'Baru saja' });
+    await refreshData();
   };
 
-  // 5c. Permintaan / Pengaktifan Tong Cadangan (Tong No. 2 dst.)
-  const requestSecondTong = (unitId: string) => {
+  const requestSecondTong = async (unitId: string) => {
     const unit = units.find(u => u.id === unitId) || units[0];
     const unitTongs = tongList.filter(t => t.unit_id === unit.id);
-    
-    // Find next non-full tong in the unit's 5 tongs
     const available = unitTongs.find(t => t.berat_kg < t.kapasitas_max_kg);
     if (available) return available;
 
-    // Fallback: create tong No. 2 if not present
     const newTongId = `tong-${unit.inisial.toLowerCase()}-2`;
     const existing = tongList.find(t => t.id === newTongId);
     if (existing) return existing;
@@ -736,138 +564,84 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       tipe_kertas: 'Standby Siap Diisi',
       catatan: 'Wadah tong cadangan resmi diaktifkan karena Tong No. 1 penuh'
     };
-
-    setTongList(prev => [...prev, newTong]);
+    await db.upsertTong(newTong);
+    await refreshData();
     return newTong;
   };
 
-  // 6. Daftarkan Unit & Tong Baru (Admin)
-  const addNewUnitAndTong = ({
-    namaUnit,
-    inisial,
-    jenis,
-    lokasiDetail,
-    kapasitasMax,
-    picNama = 'Koordinator Unit',
-    kontakPic = '08123456789'
-  }: {
-    namaUnit: string;
-    inisial: string;
-    jenis: 'fakultas' | 'biro' | 'prodi';
-    lokasiDetail: string;
-    kapasitasMax: number;
-    picNama?: string;
-    kontakPic?: string;
-  }) => {
-    const cleanInisial = inisial.toUpperCase().trim() || 'UNT';
+  const addNewUnitAndTong = async (data: any) => {
+    const cleanInisial = data.inisial.toUpperCase().trim() || 'UNT';
     const unitId = `unit-${cleanInisial.toLowerCase()}-${Date.now()}`;
     const primaryTongId = `tong-${cleanInisial.toLowerCase()}-1`;
     const primaryNamaTong = `Tong ${cleanInisial} No. 1 (Slot ${cleanInisial} 1-5)`;
 
     const newUnit: UnitKampus = {
       id: unitId,
-      nama_unit: namaUnit,
+      nama_unit: data.namaUnit,
       inisial: cleanInisial,
-      jenis,
-      lokasi_detail: lokasiDetail,
-      pic_nama: picNama,
-      kontak_pic: kontakPic,
+      jenis: data.jenis,
+      lokasi_detail: data.lokasiDetail,
+      pic_nama: data.picNama || 'Koordinator Unit',
+      kontak_pic: data.kontakPic || '08123456789',
       tong_id: primaryTongId,
       tong_nama: primaryNamaTong,
       total_kg_tersalurkan: 0,
       eco_points: 0
     };
 
-    // Standardize 5 tongs per row for any newly registered unit
     const newTongs: Tong[] = [1, 2, 3, 4, 5].map(idx => ({
       id: `tong-${cleanInisial.toLowerCase()}-${idx}`,
       unit_id: unitId,
-      unit_nama: namaUnit,
+      unit_nama: data.namaUnit,
       nama_tong: `Tong ${cleanInisial} No. ${idx}`,
       nomor: `${cleanInisial}-0${idx}`,
       lokasi_spesifik: `Gedung Serbaguna - Sayap ${cleanInisial} • Kotak ${idx}`,
       status: 'kosong' as const,
       berat_kg: 0,
-      kapasitas_max_kg: kapasitasMax || 120,
+      kapasitas_max_kg: data.kapasitasMax || 120,
       tipe_kertas: 'Standby Siap Diisi',
       catatan: `Slot wadah #${idx} unit ${cleanInisial}`
     }));
 
-    setUnits(prev => [...prev, newUnit]);
-    setTongList(prev => [...prev, ...newTongs]);
-
+    await db.upsertUnit(newUnit);
+    await db.upsertTongBatch(newTongs);
+    await refreshData();
     return { unit: newUnit, tong: newTongs[0] };
   };
 
-  // 7. Laporan Masalah / Moderasi
-  const resolveLaporan = (id: string) => {
-    setLaporanList(prev =>
-      prev.map(l =>
-        l.id === id
-          ? {
-              ...l,
-              status: 'sudah_selesai',
-              level: 'selesai'
-            }
-          : l
-      )
-    );
+  const resolveLaporan = async (id: string) => {
+    await db.updateLaporanFields(id, { status: 'sudah_selesai', level: 'selesai' });
+    await refreshData();
   };
 
-  const submitLaporan = ({
-    tongNama,
-    unitNama,
-    alasan,
-    detail,
-    level
-  }: {
-    tongNama: string;
-    unitNama: string;
-    alasan: string;
-    detail: string;
-    level: 'kritis' | 'sedang';
-  }) => {
+  const submitLaporan = async (data: any) => {
+    if (!currentUser) return;
     const newLap: LaporanMasalah = {
       id: `flag-${Date.now().toString().slice(-4)}`,
-      tong_nama: tongNama,
-      unit_nama: unitNama,
+      tong_nama: data.tongNama,
+      unit_nama: data.unitNama,
       pelapor_id: currentUser.id,
       pelapor_nama: currentUser.nama,
-      alasan,
-      detail,
-      level,
+      alasan: data.alasan,
+      detail: data.detail,
+      level: data.level,
       status: 'menunggu_tindakan',
       tanggal: 'Baru saja'
     };
-    setLaporanList(prev => [newLap, ...prev]);
+    await db.upsertLaporan(newLap);
+    await refreshData();
   };
 
-  // Reset Demo
   const resetDemoData = () => {
-    localStorage.removeItem(STORAGE_KEYS.UNITS);
-    localStorage.removeItem(STORAGE_KEYS.TONG);
-    localStorage.removeItem(STORAGE_KEYS.LISTINGS);
-    localStorage.removeItem(STORAGE_KEYS.PERMINTAAN);
-    localStorage.removeItem(STORAGE_KEYS.MATCHINGS);
-    localStorage.removeItem(STORAGE_KEYS.LAPORAN);
-    localStorage.removeItem(STORAGE_KEYS.REGISTERED_USERS);
     localStorage.removeItem(STORAGE_KEYS.IS_LOGGED_IN);
     localStorage.removeItem(STORAGE_KEYS.HAS_SEEN_ONBOARDING);
     localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
-
-    setUnits(INITIAL_UNITS);
-    setTongList(INITIAL_TONG);
-    setListings(INITIAL_LISTINGS);
-    setPermintaanList(INITIAL_PERMINTAAN);
-    setMatchings(INITIAL_MATCHINGS);
-    setLaporanList(INITIAL_LAPORAN);
-    setRegisteredUsers(INITIAL_USERS);
     setIsLoggedIn(false);
     setHasSeenOnboarding(false);
     setAuthStep('onboarding');
+    setCurrentUser(null);
   };
 
-  // Calculations
   const totalKgTersalurkan = units.reduce((acc, curr) => acc + curr.total_kg_tersalurkan, 0);
   const totalPohon = Math.round((totalKgTersalurkan / 1000) * 17);
   const totalAirBersih = Math.round(totalKgTersalurkan * 26);
@@ -912,7 +686,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         resetDemoData,
         totalKgTersalurkan,
         totalPohon,
-        totalAirBersih
+        totalAirBersih,
+        saldoSekarang,
+        riwayatSaldo,
+        refreshData
       }}
     >
       {children}

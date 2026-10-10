@@ -1,18 +1,31 @@
-import { UnitKampus, Tong, ListingKertas, PermintaanKertas, MatchingTransaksi, LaporanMasalah, User } from '../types';
+import { UnitKampus, Tong, ListingKertas, PermintaanKertas, MatchingTransaksi, LaporanMasalah, User, KategoriKertas } from '../types';
 
 export const APP_BRAND = {
   name: 'Sampah Butuh Teman',
   tagline: 'Sampah yang menemukan temannya.',
-  subtitle: 'Platform Sirkular Sampah Kertas Terintegrasi Kampus',
-  logoUrl: 'https://lh3.googleusercontent.com/aida/AEtjO1UabS9bvIkz4USj6H8_38592dgm7VlaHnGmKVCLCEjyIkW8r9y9eZz3VTvF6bdUPziVvTOeZP0-eKIT-XAylnmQx66K-jPbaRHMJmB27E_9WvRZ2xo6p5ofL-K6U2L1zrMx4pnr6s724W_U_C9D3szvvSUww1eXx3nBQSn3xL-lZqYxhr0q-xkm-xuWHIjhq9zZrAE0a1fq2RPZU-2lS_JduADCycIPTUN7uWYbNk__ZJmmtW6Q_9PtOyw',
-  avatarUrl: 'https://lh3.googleusercontent.com/aida/AEtjO1WEdLkpj-nbbsYLqTeFwXcCLRWXKdvaza1OMw6UhmH2URuL2NTCUYOT-46cAsaKyJuyPwbKknYEaudeC09DqrtQipL2uvFR4eco58s1auK2nKA_pVzKksfTJgyM3X2UmTASUs73cL2qsTjZejtJXKDCKRH5bOFa2ccaV_hjW7Eb7RYu5ozEhOVbS2v0ohmiYFWIrnNtX7WMxKmxrgqk2I2ubIEy7EkuQuslKH9iZjOIG4jOFtn1hZM_NoBY',
+  subtitle: 'Platform Sirkular Sampah Kertas Terintegrasi Kampus UPJ',
+  logoUrl: '/logo-sbt.png',
+  avatarUrl: '/logo-sbt.png',
+  kampus: 'Universitas Pembangunan Jaya (UPJ)',
   dropPointUtama: {
-    nama: 'Drop Point Gedung Serbaguna Kampus Hijau',
-    lokasiSingkat: 'Gedung Serbaguna Kampus (Sayap Barat)',
-    deskripsi: 'Sentra logistik tunggal kampus terpusat berisi tong bernomor per unit. Dilengkapi ramp truk 6-roda & timbangan digital.',
+    nama: 'Drop Point Gedung Serbaguna Kampus UPJ',
+    lokasiSingkat: 'Gedung Serbaguna Kampus UPJ, Bintaro Jaya',
+    deskripsi: 'Sentra logistik tunggal Kampus UPJ — tong bernomor per unit, ramp truk 6-roda & timbangan digital terverifikasi.',
+    alamat: 'Jl. Cendrawasih No.60, Sawah Baru, Ciputat, Tangerang Selatan 15413',
     mapImg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDmviIiiVahgnvhO_El-huson9J5-9mLv6s0NQKjrLHCL5_VDkgxtYr-uWRy1XeDI3jI0NEmhvp80WPZYTmS4b7171z821fB_qByVHWOM6pE5LBP4bXbyCFeYnW0hvwAFNRCwn5pODD6p-aBUrM4ZvGEmaVYFRamzn0-FqR7i8-LkRYKr2sraGUSuU_CrVENPUpymUBvnY5IR9CRbhV4B3Do5vyR20weTyWCYQC848V84BjAmHKzQio1A'
   }
 };
+
+/** Harga pembelian kertas (Rp per kg) per kategori */
+export const HARGA_PER_KG: Record<KategoriKertas, number> = {
+  hvs: 2000,    // HVS / Arsip
+  kardus: 1500, // Kardus
+  koran: 1000,  // Koran / Majalah
+  campur: 800,  // Campuran
+};
+
+/** Harga default fallback jika kategori tidak diketahui */
+export const HARGA_DEFAULT_PER_KG = 1500;
 
 export const INITIAL_USERS: User[] = [
   {
@@ -22,6 +35,42 @@ export const INITIAL_USERS: User[] = [
     role: 'unit',
     kontak: '081234567890',
     unit_id: 'unit-ftd',
+    avatar_url: APP_BRAND.avatarUrl
+  },
+  {
+    id: 'user-unit-feb',
+    nama: 'Ibu Ratna Kumala, S.E.',
+    email: 'penyalur@feb.univ.ac.id',
+    role: 'unit',
+    kontak: '081398765432',
+    unit_id: 'unit-feb',
+    avatar_url: APP_BRAND.avatarUrl
+  },
+  {
+    id: 'user-unit-fikom',
+    nama: 'Ibu Annisa Pratiwi, M.I.Kom',
+    email: 'penyalur@fikom.univ.ac.id',
+    role: 'unit',
+    kontak: '081822334455',
+    unit_id: 'unit-fikom',
+    avatar_url: APP_BRAND.avatarUrl
+  },
+  {
+    id: 'user-unit-baa',
+    nama: 'Bpk. Bambang Sutrisno',
+    email: 'penyalur@baa.univ.ac.id',
+    role: 'unit',
+    kontak: '081512345678',
+    unit_id: 'unit-baa',
+    avatar_url: APP_BRAND.avatarUrl
+  },
+  {
+    id: 'user-unit-fk',
+    nama: 'dr. Wahyu Pratama, Sp.A',
+    email: 'penyalur@fk.univ.ac.id',
+    role: 'unit',
+    kontak: '081299887766',
+    unit_id: 'unit-fk',
     avatar_url: APP_BRAND.avatarUrl
   },
   {
