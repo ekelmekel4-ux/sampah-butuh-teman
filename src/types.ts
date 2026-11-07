@@ -23,6 +23,7 @@ export interface UnitKampus {
   tong_nama: string;
   total_kg_tersalurkan: number;
   eco_points: number;
+  saldo?: number;
 }
 
 export interface Tong {
@@ -90,6 +91,10 @@ export interface MatchingTransaksi {
   eco_points: number;
   skor_kecocokan: number;
   status: 'menunggu_diambil' | 'sudah_diambil';
+  status_pembayaran?: 'menunggu_pembayaran' | 'lunas';
+  metode_pembayaran?: string;
+  tanggal_bayar?: string;
+  nomor_referensi_bayar?: string;
   nopol_armada?: string;
   driver_nama?: string;
   tanggal_jemput?: string;
@@ -151,4 +156,16 @@ export interface RiwayatPembayaran {
   status: 'menunggu' | 'berhasil' | 'gagal';
   catatan: string;
   created_at?: string;
+}
+
+export interface AppNotification {
+  id: string;
+  target_role?: UserRole | 'all';
+  target_id?: string;
+  judul: string;
+  pesan: string;
+  tipe: 'pembayaran' | 'penjemputan' | 'tong' | 'sistem';
+  link?: string;
+  dibaca: boolean;
+  created_at: string;
 }

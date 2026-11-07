@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { APP_BRAND, HARGA_PER_KG } from '../data/initialData';
+import { MatchingTransaksi } from '../types';
+import { PaymentModal } from '../components/PaymentModal';
 
 /* --- Sparkline mini --- */
 const MiniBar: React.FC<{ value: number; max: number; color: string }> = ({ value, max, color }) => {
@@ -39,6 +41,7 @@ export const PerusahaanDashboardView: React.FC = () => {
   const [tabMode, setTabMode] = useState<TabMode>('saran');
   const [filterKategori, setFilterKategori] = useState<string>('semua');
   const [successCelebration, setSuccessCelebration] = useState<string | null>(null);
+  const [selectedPaymentMatch, setSelectedPaymentMatch] = useState<MatchingTransaksi | null>(null);
 
   const selesai = matchings.filter(m => m.status === 'sudah_diambil');
   const pending = matchings.filter(m => m.status === 'menunggu_diambil');
@@ -50,7 +53,7 @@ export const PerusahaanDashboardView: React.FC = () => {
 
   const statCards = [
     { label: 'Total Kertas Diterima', value: `${totalKg.toLocaleString('id-ID')} Kg`, sub: `${selesai.length} transaksi selesai`, icon: 'inventory_2', color: '#2D6A4F', bg: '#A4F3CC' },
-    { label: 'Total Nilai Transaksi', value: `Rp ${totalNilai.toLocaleString('id-ID')}`, sub: 'Berdasarkan berat × harga/kg', icon: 'payments', color: '#C27D3A', bg: '#FFDBC8' },
+    { label: 'Total Nilai Transaksi', value: `Rp ${totalNilai.toLocaleString('id-ID')}`, sub: 'Berdasarkan berat ï¿½ harga/kg', icon: 'payments', color: '#C27D3A', bg: '#FFDBC8' },
     { label: 'Menunggu Diambil', value: `${pending.length} Batch`, sub: `${pendingKg} Kg siap dijemput`, icon: 'local_shipping', color: '#157140', bg: '#9CF2B5' },
     { label: 'Listing Tersedia', value: `${availableListings.length}`, sub: 'Siap dicocokkan di sistem', icon: 'search', color: '#52645A', bg: '#F1EEE5' },
   ];
@@ -97,7 +100,7 @@ export const PerusahaanDashboardView: React.FC = () => {
         <div className="flex items-center gap-2 p-2.5 bg-white/10 rounded-xl backdrop-blur-sm relative">
           <span className="w-2 h-2 rounded-full bg-[#9CF2B5] animate-pulse shrink-0" />
           <span className="text-xs font-semibold text-white/90">
-            Sistem Matching Aktif — Drop Point{' '}
+            Sistem Matching Aktif ï¿½ Drop Point{' '}
             <span className="text-[#9CF2B5] font-bold">{APP_BRAND.dropPointUtama.lokasiSingkat}</span>
           </span>
         </div>
@@ -150,7 +153,7 @@ export const PerusahaanDashboardView: React.FC = () => {
             </span>
           </div>
         </div>
-        <div className="p-3 bg-[#F7F3EA] rounded-xl text-xs space-y-1">
+        <div className="p-3 bg-[#FAFAF7] rounded-xl text-xs space-y-1">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-[#52645A] gap-1">
             <span>Permintaan Aktif:</span>
             <strong className="text-[#1A2E22]">Min 100 kg/minggu (HVS/Arsip & Kardus)</strong>
@@ -196,14 +199,14 @@ export const PerusahaanDashboardView: React.FC = () => {
               <span className="text-[10px] font-bold text-[#157140] bg-[#9CF2B5] px-2 py-0.5 rounded-full">{pendingMatchings.length} Rekomendasi</span>
             </div>
             {pendingMatchings.length === 0 && (
-              <div className="p-4 bg-[#F7F3EA] rounded-xl text-center text-xs text-[#52645A] space-y-1">
+              <div className="p-4 bg-[#FAFAF7] rounded-xl text-center text-xs text-[#52645A] space-y-1">
                 <span className="material-symbols-outlined text-2xl text-gray-300 block">inbox</span>
                 <span>Belum ada rekomendasi saat ini. Coba jelajah listing manual di tab sebelah.</span>
               </div>
             )}
             <div className="space-y-3">
               {pendingMatchings.map((match, idx) => (
-                <div key={match.id} className={`p-3.5 rounded-xl border space-y-2.5 ${idx === 0 ? 'bg-[#F7F3EA] border-[#2D6A4F]/20' : 'bg-[#F7F3EA] border-gray-200'}`}>
+                <div key={match.id} className={`p-3.5 rounded-xl border space-y-2.5 ${idx === 0 ? 'bg-[#FAFAF7] border-[#2D6A4F]/20' : 'bg-[#FAFAF7] border-gray-200'}`}>
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                     <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${match.skor_kecocokan >= 95 ? 'bg-[#9CF2B5] text-[#157140]' : 'bg-[#A4F3CC] text-[#002114]'}`}>
                       <span className="material-symbols-outlined text-xs">verified</span>
@@ -254,23 +257,47 @@ export const PerusahaanDashboardView: React.FC = () => {
                   <span className="text-[10px] font-bold text-[#C27D3A] uppercase tracking-wider block">Jadwal Penjemputan Terkonfirmasi</span>
                   <h3 className="text-sm font-bold text-[#1A2E22]">Penjemputan Batch Hari Ini</h3>
                 </div>
-                <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${primaryMatch.status === 'sudah_diambil' ? 'bg-[#9CF2B5] text-[#157140]' : 'bg-[#FFDBC8] text-[#C27D3A]'}`}>
-                  {primaryMatch.status === 'sudah_diambil' ? '? Sudah Selesai Diambil' : '• Menunggu Diambil'}
-                </span>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${primaryMatch.status === 'sudah_diambil' ? 'bg-[#9CF2B5] text-[#157140]' : 'bg-[#FFDBC8] text-[#C27D3A]'}`}>
+                    {primaryMatch.status === 'sudah_diambil' ? 'âœ“ Sudah Diambil' : 'â€¢ Menunggu Diambil'}
+                  </span>
+                  <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${primaryMatch.status_pembayaran === 'lunas' ? 'bg-[#D8F3DC] text-[#005138]' : 'bg-[#FEF3C7] text-[#92400E]'}`}>
+                    {primaryMatch.status_pembayaran === 'lunas' ? 'âœ“ Lunas' : 'Belum Dibayar'}
+                  </span>
+                </div>
               </div>
-              <div className="p-3 bg-[#F7F3EA] rounded-xl space-y-2 text-xs">
+
+              <div className="p-3 bg-[#FAFAF7] rounded-xl space-y-2 text-xs">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
                   <span className="text-[#52645A] flex items-center gap-1.5"><span className="material-symbols-outlined text-base text-[#2D6A4F]">calendar_today</span>Tanggal & Jam:</span>
-                  <strong className="text-[#1A2E22]">{primaryMatch.tanggal_jemput || 'Kamis, 24 Oktober 2024'} • {primaryMatch.jam_jemput || '14:30 WIB'}</strong>
+                  <strong className="text-[#1A2E22]">{primaryMatch.tanggal_jemput || 'Kamis, 24 Oktober 2024'} â€¢ {primaryMatch.jam_jemput || '14:30 WIB'}</strong>
                 </div>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
                   <span className="text-[#52645A] flex items-center gap-1.5"><span className="material-symbols-outlined text-base text-[#C27D3A]">local_shipping</span>Armada & Pengemudi:</span>
                   <strong className="text-[#1A2E22]">{primaryMatch.nopol_armada || 'B 9821 PQL'} ({primaryMatch.driver_nama || 'Pak Joko Susilo'})</strong>
                 </div>
               </div>
+
+              {/* Tagihan & Salur Info */}
+              <div className="p-3 bg-[#E8F5E9]/50 border border-[#2D6A4F]/20 rounded-xl flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider font-extrabold text-[#52645A] block">
+                    Nilai Tagihan Penyaluran
+                  </span>
+                  <div className="text-base font-black text-[#174630]">
+                    Rp {primaryMatch.nilai_rupiah.toLocaleString('id-ID')}
+                    <span className="text-[11px] font-normal text-[#52645A] ml-1.5">({primaryMatch.jumlah_kg} Kg)</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] font-bold text-[#52645A] block">Penerima Kas:</span>
+                  <span className="text-xs font-extrabold text-[#2D6A4F]">{primaryMatch.unit_nama}</span>
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <span className="text-xs font-bold text-[#1A2E22] block">Alamat Drop Point Pengambilan:</span>
-                <div className="rounded-xl overflow-hidden border border-[#2D6A4F]/15 bg-[#F7F3EA]">
+                <div className="rounded-xl overflow-hidden border border-[#2D6A4F]/15 bg-[#FAFAF7]">
                   <div className="relative h-32 w-full bg-gray-100">
                     <img src={APP_BRAND.dropPointUtama.mapImg} alt="Denah Drop Point" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-2.5">
@@ -286,24 +313,51 @@ export const PerusahaanDashboardView: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="p-3 bg-[#F7F3EA] rounded-xl flex items-center gap-3">
+
+              <div className="p-3 bg-[#FAFAF7] rounded-xl flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-[#A4F3CC] flex items-center justify-center text-[#005138] font-bold text-sm">{primaryMatch.unit_id.slice(5, 8).toUpperCase()}</div>
                 <div className="flex-1 min-w-0">
                   <span className="text-[10px] text-[#52645A] uppercase tracking-wider block font-semibold">Rute & Posisi Tong</span>
                   <div className="text-xs font-bold text-[#1A2E22]">Ambil di: Tong "{primaryMatch.tong_nama}", {primaryMatch.jumlah_kg} Kg</div>
                 </div>
               </div>
-              {primaryMatch.status !== 'sudah_diambil' ? (
-                <button onClick={() => handleConfirmPickupClick(primaryMatch.id)} className="w-full py-3.5 px-4 rounded-xl bg-[#005138] hover:bg-[#2D6A4F] active:scale-[0.98] text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-md transition-all">
-                  <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>task_alt</span>
-                  <span>Konfirmasi: Kertas Sudah Diambil dari Tong</span>
-                </button>
-              ) : (
-                <div className="p-3 bg-[#9CF2B5]/30 border border-[#157140]/30 rounded-xl text-xs text-[#157140] font-bold text-center flex items-center justify-center gap-2">
-                  <span className="material-symbols-outlined text-base">verified</span>
-                  <span>Kertas telah berhasil diambil & diverifikasi!</span>
-                </div>
-              )}
+
+              {/* Action Buttons: Pembayaran & Konfirmasi */}
+              <div className="space-y-2 pt-1">
+                {primaryMatch.status_pembayaran !== 'lunas' ? (
+                  <button
+                    onClick={() => setSelectedPaymentMatch(primaryMatch)}
+                    className="w-full py-3.5 px-4 rounded-xl bg-[#174630] hover:bg-[#2D6A4F] active:scale-[0.98] text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-lg">payments</span>
+                    <span>Bayar ke Dompet Unit (Rp {primaryMatch.nilai_rupiah.toLocaleString('id-ID')})</span>
+                  </button>
+                ) : (
+                  <div className="p-3 bg-[#D8F3DC] border border-[#2D6A4F]/30 rounded-xl text-xs text-[#005138] font-bold flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-base">verified</span>
+                      <span>Pembayaran Lunas via {primaryMatch.metode_pembayaran || 'Transfer Dompet Kampus'}</span>
+                    </div>
+                    <button
+                      onClick={() => setSelectedPaymentMatch(primaryMatch)}
+                      className="text-[11px] font-extrabold underline text-[#005138] hover:text-[#174630] cursor-pointer"
+                    >
+                      Lihat Bukti Bayar
+                    </button>
+                  </div>
+                )}
+
+                {primaryMatch.status !== 'sudah_diambil' && (
+                  <button
+                    onClick={() => handleConfirmPickupClick(primaryMatch.id)}
+                    className="w-full py-2.5 px-4 rounded-xl border border-[#2D6A4F]/30 hover:bg-[#FAF8F5] active:scale-[0.98] text-[#174630] font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-base">task_alt</span>
+                    <span>Tandai: Kertas Sudah Diambil dari Tong</span>
+                  </button>
+                )}
+              </div>
+
               {successCelebration && (
                 <div className="p-3.5 bg-[#2D6A4F] text-white rounded-xl text-xs font-bold text-center animate-in zoom-in-95 space-y-1 shadow-lg">
                   <div className="flex items-center justify-center gap-1.5 text-[#A4F3CC]">
@@ -321,7 +375,7 @@ export const PerusahaanDashboardView: React.FC = () => {
       {/* TAB: JELAJAH MANUAL */}
       {tabMode === 'manual' && (
         <>
-          <div className="p-3 bg-[#F7F3EA] border border-[#2D6A4F]/15 rounded-xl text-xs text-[#52645A] flex items-start gap-2">
+          <div className="p-3 bg-[#FAFAF7] border border-[#2D6A4F]/15 rounded-xl text-xs text-[#52645A] flex items-start gap-2">
             <span className="material-symbols-outlined text-[#2D6A4F] text-base shrink-0 mt-0.5">info</span>
             <span>Mode Jelajah Manual: Anda bisa memilih listing kertas mana pun yang tersedia tanpa perlu menunggu saran dari sistem.</span>
           </div>
@@ -374,12 +428,12 @@ export const PerusahaanDashboardView: React.FC = () => {
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {listing.kondisi.slice(0, 2).map((k, i) => (
-                          <span key={i} className="text-[10px] bg-[#F7F3EA] text-[#52645A] px-2 py-0.5 rounded-full">{k.length > 30 ? k.slice(0, 30) + '...' : k}</span>
+                          <span key={i} className="text-[10px] bg-[#FAFAF7] text-[#52645A] px-2 py-0.5 rounded-full">{k.length > 30 ? k.slice(0, 30) + '...' : k}</span>
                         ))}
                         {listing.kondisi.length > 2 && <span className="text-[10px] text-[#2D6A4F] font-semibold">+{listing.kondisi.length - 2} lagi</span>}
                       </div>
                       <div className="grid grid-cols-2 gap-2 pt-1">
-                        <button onClick={() => handleLihatDetail(listing.id)} className="py-2.5 px-3 rounded-lg bg-[#F7F3EA] text-[#2D6A4F] text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-[#ECE8DF] transition-all border border-[#2D6A4F]/20">
+                        <button onClick={() => handleLihatDetail(listing.id)} className="py-2.5 px-3 rounded-lg bg-[#FAFAF7] text-[#2D6A4F] text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-[#ECE8DF] transition-all border border-[#2D6A4F]/20">
                           <span className="material-symbols-outlined text-sm">open_in_new</span>
                           <span>Lihat Detail</span>
                         </button>
@@ -422,7 +476,7 @@ export const PerusahaanDashboardView: React.FC = () => {
             </div>
           ))}
         </div>
-        <p className="text-[10px] text-[#52645A] italic">Harga ditetapkan per siklus. Nilai transaksi = berat timbangan × harga kategori.</p>
+        <p className="text-[10px] text-[#52645A] italic">Harga ditetapkan per siklus. Nilai transaksi = berat timbangan ï¿½ harga kategori.</p>
       </div>
 
       {/* Drop Point Info */}
@@ -447,6 +501,13 @@ export const PerusahaanDashboardView: React.FC = () => {
         </div>
       </div>
 
-    </div>
+      {selectedPaymentMatch && (
+        <PaymentModal
+          matching={selectedPaymentMatch}
+          isOpen={!!selectedPaymentMatch}
+          onClose={() => setSelectedPaymentMatch(null)}
+        />
+      )}
+      </div>
   );
 };

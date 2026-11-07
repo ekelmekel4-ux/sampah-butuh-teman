@@ -24,7 +24,7 @@ import { AdminUnitTongView } from './views/AdminUnitTongView';
 import { AdminLaporanView } from './views/AdminLaporanView';
 
 const MainContent: React.FC = () => {
-  const { isLoggedIn, hasSeenOnboarding, authStep, activeRoute, role } = useApp();
+  const { isLoggedIn, hasSeenOnboarding, authStep, activeRoute, role, toastNotification, hideToast } = useApp();
 
   // 1. Onboarding Screen (first time)
   if (!hasSeenOnboarding || authStep === 'onboarding') {
@@ -107,18 +107,42 @@ const MainContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7] text-[#1A2E22] font-sans antialiased flex flex-col selection:bg-[#2D6A4F]/20 selection:text-[#2D6A4F]">
-      {/* Top Fixed Header with role badge and logout */}
+    <div className="min-h-screen bg-[#FAFAF7] text-[#1A2E22] font-sans antialiased flex flex-col relative">
+      {/* Floating Global Toast Notification */}
+      {toastNotification && (
+        <div className="fixed top-16 inset-x-0 z-50 flex justify-center px-4 pointer-events-none animate-in slide-in-from-top-4 duration-300">
+          <div className="pointer-events-auto max-w-md w-full bg-[#174630] border border-[#52B788]/40 text-white rounded-2xl p-3.5 shadow-2xl flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-full bg-[#52B788]/20 text-[#A7F3D0] flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-lg">
+                  {toastNotification.type === 'error' ? 'error' : toastNotification.type === 'info' ? 'info' : 'payments'}
+                </span>
+              </div>
+              <p className="text-xs font-bold text-white/95 leading-snug">
+                {toastNotification.message}
+              </p>
+            </div>
+            <button
+              onClick={hideToast}
+              className="w-6 h-6 rounded-full hover:bg-white/10 text-white/70 hover:text-white flex items-center justify-center text-xs shrink-0 cursor-pointer"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Top Fixed Header */}
       <Navbar />
 
       {/* Main Page Area */}
-      <main className="flex-1 max-w-2xl w-full mx-auto px-3 sm:px-4 pt-20 pb-24">
+      <main className="flex-1 max-w-2xl w-full mx-auto px-3 sm:px-4 pt-14 pb-28">
         <div className="animate-in fade-in duration-200">
           {renderCurrentView()}
         </div>
       </main>
 
-      {/* Role-Specific Bottom Tab Navigation */}
+      {/* Bottom Tab Navigation */}
       <BottomNav />
     </div>
   );

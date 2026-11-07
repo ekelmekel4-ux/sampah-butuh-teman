@@ -1,3 +1,4 @@
+import { PaymentModal } from '../components/PaymentModal';
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { MatchingTransaksi } from '../types';
@@ -7,6 +8,7 @@ export const PerusahaanRiwayatView: React.FC = () => {
   const [filterTab, setFilterTab] = useState<'semua' | 'berjalan' | 'selesai'>('semua');
   const [activeModalTrx, setActiveModalTrx] = useState<MatchingTransaksi | null>(null);
   const [showNavMap, setShowNavMap] = useState<boolean>(false);
+  const [selectedPaymentMatch, setSelectedPaymentMatch] = useState<MatchingTransaksi | null>(null);
 
   const activeTrx = matchings.find(m => m.status === 'menunggu_diambil');
   const completedTrxList = matchings.filter(m => m.status === 'sudah_diambil');
@@ -98,7 +100,7 @@ export const PerusahaanRiwayatView: React.FC = () => {
             </span>
           </div>
 
-          <div className="p-3.5 bg-[#F7F3EA] rounded-xl space-y-2 border border-[#2D6A4F]/10">
+          <div className="p-3.5 bg-[#FAFAF7] rounded-xl space-y-2 border border-[#2D6A4F]/10">
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-[#2D6A4F]">#{activeTrx.id}</span>
               <span className="text-[11px] text-[#52645A] font-semibold">
@@ -159,14 +161,17 @@ export const PerusahaanRiwayatView: React.FC = () => {
           {completedTrxList.map(trx => (
             <div
               key={trx.id}
-              className="p-3.5 rounded-xl bg-[#F7F3EA] border border-gray-100 space-y-2.5"
+              className="p-3.5 rounded-xl bg-[#FAFAF7] border border-gray-100 space-y-2.5"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-extrabold text-[#005138]">#{trx.id}</span>
-                    <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-[#9CF2B5] text-[#157140]">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#9CF2B5] text-[#157140]">
                       ✓ Selesai
+                    </span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${trx.status_pembayaran === 'lunas' ? 'bg-[#D8F3DC] text-[#005138]' : 'bg-[#FEF3C7] text-[#92400E]'}`}>
+                      {trx.status_pembayaran === 'lunas' ? '✓ Lunas' : 'Belum Dibayar'}
                     </span>
                   </div>
                   <h4 className="text-xs font-bold text-[#1A2E22] mt-0.5">
@@ -232,6 +237,32 @@ export const PerusahaanRiwayatView: React.FC = () => {
                   )}
                 </div>
               )}
+
+              {/* Status Pembayaran & Tombol Bayar */}
+              <div className="pt-1 border-t border-gray-100">
+                {trx.status_pembayaran !== 'lunas' ? (
+                  <button
+                    onClick={() => setSelectedPaymentMatch(trx)}
+                    className="w-full py-2.5 px-3 rounded-xl bg-[#174630] hover:bg-[#2D6A4F] text-white text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-sm">payments</span>
+                    <span>Bayar Sekarang • Rp {trx.nilai_rupiah.toLocaleString('id-ID')}</span>
+                  </button>
+                ) : (
+                  <div className="flex items-center justify-between text-xs bg-white p-2.5 rounded-xl border border-[#2D6A4F]/15">
+                    <span className="text-[#005138] font-bold flex items-center gap-1.5 text-[11px]">
+                      <span className="material-symbols-outlined text-sm">check_circle</span>
+                      Lunas via {trx.metode_pembayaran || 'Transfer Dompet Kampus'}
+                    </span>
+                    <button
+                      onClick={() => setSelectedPaymentMatch(trx)}
+                      className="text-[#174630] font-extrabold text-[11px] underline hover:text-[#2D6A4F] cursor-pointer"
+                    >
+                      Lihat Bukti Bayar
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -255,7 +286,7 @@ export const PerusahaanRiwayatView: React.FC = () => {
             </div>
 
             {/* QR Visual */}
-            <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-[#F7F3EA] border border-gray-200">
+            <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-[#FAFAF7] border border-gray-200">
               <div className="w-36 h-36 bg-white p-2 rounded-xl shadow-xs border border-gray-200 flex items-center justify-center">
                 <svg viewBox="0 0 100 100" className="w-full h-full">
                   <rect x="0" y="0" width="100" height="100" fill="white" />
@@ -365,6 +396,13 @@ export const PerusahaanRiwayatView: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+      {selectedPaymentMatch && (
+        <PaymentModal
+          matching={selectedPaymentMatch}
+          isOpen={!!selectedPaymentMatch}
+          onClose={() => setSelectedPaymentMatch(null)}
+        />
+      )}
+      </div>
   );
 };

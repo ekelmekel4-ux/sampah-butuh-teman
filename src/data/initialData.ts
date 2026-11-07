@@ -1,4 +1,4 @@
-import { UnitKampus, Tong, ListingKertas, PermintaanKertas, MatchingTransaksi, LaporanMasalah, User, KategoriKertas } from '../types';
+import { UnitKampus, Tong, ListingKertas, PermintaanKertas, MatchingTransaksi, LaporanMasalah, User, KategoriKertas, RiwayatPembayaran, AppNotification } from '../types';
 
 export const APP_BRAND = {
   name: 'Sampah Butuh Teman',
@@ -104,7 +104,8 @@ export const INITIAL_UNITS: UnitKampus[] = [
     tong_id: 'tong-ftd-1',
     tong_nama: 'Tong FTD No. 1 (Slot FTD 1-5)',
     total_kg_tersalurkan: 0,
-    eco_points: 0
+    eco_points: 0,
+    saldo: 180000
   },
   {
     id: 'unit-feb',
@@ -578,6 +579,7 @@ export const INITIAL_MATCHINGS: MatchingTransaksi[] = [
     eco_points: 120,
     skor_kecocokan: 98,
     status: 'menunggu_diambil',
+    status_pembayaran: 'menunggu_pembayaran',
     nopol_armada: 'B 9821 PQL',
     driver_nama: 'Pak Joko Susilo',
     tanggal_jemput: 'Kamis, 24 Oktober 2024',
@@ -599,6 +601,10 @@ export const INITIAL_MATCHINGS: MatchingTransaksi[] = [
     eco_points: 110,
     skor_kecocokan: 92,
     status: 'sudah_diambil',
+    status_pembayaran: 'lunas',
+    metode_pembayaran: 'Transfer Dompet Kampus',
+    tanggal_bayar: '18 Okt 2024, 15:15 WIB',
+    nomor_referensi_bayar: 'PAY-2024-1018-001',
     nopol_armada: 'B 9821 PQL',
     driver_nama: 'Pak Joko Susilo',
     tanggal_jemput: '18 Okt 2024',
@@ -625,9 +631,78 @@ export const INITIAL_MATCHINGS: MatchingTransaksi[] = [
     eco_points: 160,
     skor_kecocokan: 95,
     status: 'sudah_diambil',
+    status_pembayaran: 'lunas',
+    metode_pembayaran: 'QRIS Sirkular',
+    tanggal_bayar: '11 Okt 2024, 14:05 WIB',
+    nomor_referensi_bayar: 'PAY-2024-1011-002',
     tanggal_selesai: '11 Okt, 14:00 WIB',
     rating: 4.8,
     komentar: 'Batch sortir B-3 terkonfirmasi sangat baik.'
+  }
+];
+
+export const INITIAL_RIWAYAT_PEMBAYARAN: RiwayatPembayaran[] = [
+  {
+    id: 'pay-2024-1018-001',
+    matching_transaksi_id: 'trx-2024-1018',
+    dari_id: 'perusahaan-mdl',
+    dari_nama: 'PT Mandiri Daur Lestari',
+    ke_id: 'unit-baa',
+    ke_nama: 'Biro Administrasi Akademik (BAA)',
+    jumlah: 82500,
+    jenis: 'pembayaran_kertas',
+    status: 'berhasil',
+    catatan: 'Pembayaran Kertas - 55 Kg Kardus Box BAA',
+    created_at: '2024-10-18T08:15:00Z',
+  },
+  {
+    id: 'pay-2024-1011-002',
+    matching_transaksi_id: 'trx-2024-1011',
+    dari_id: 'perusahaan-mdl',
+    dari_nama: 'PT Mandiri Daur Lestari',
+    ke_id: 'unit-feb',
+    ke_nama: 'Fakultas Ekonomi & Bisnis (FEB)',
+    jumlah: 120000,
+    jenis: 'pembayaran_kertas',
+    status: 'berhasil',
+    catatan: 'Pembayaran Kertas - 80 Kg Arsip FEB',
+    created_at: '2024-10-11T07:05:00Z',
+  },
+  {
+    id: 'pay-prev-ftd-003',
+    matching_transaksi_id: 'trx-prev-ftd',
+    dari_id: 'perusahaan-mdl',
+    dari_nama: 'PT Mandiri Daur Lestari',
+    ke_id: 'unit-ftd',
+    ke_nama: 'Fakultas Teknik & Desain (FTD)',
+    jumlah: 180000,
+    jenis: 'pembayaran_kertas',
+    status: 'berhasil',
+    catatan: 'Pembayaran Kertas - 120 Kg Arsip Skripsi FTD',
+    created_at: '2024-10-02T09:30:00Z',
+  }
+];
+
+export const INITIAL_NOTIFIKASI: AppNotification[] = [
+  {
+    id: 'notif-1',
+    target_role: 'all',
+    judul: 'Platform Siap Digunakan',
+    pesan: 'Sistem pembayaran digital & sirkularitas terintegrasi aktif.',
+    tipe: 'sistem',
+    dibaca: false,
+    created_at: '1 jam lalu',
+  },
+  {
+    id: 'notif-2',
+    target_role: 'unit',
+    target_id: 'unit-ftd',
+    judul: 'Jadwal Penjemputan Terkonfirmasi',
+    pesan: 'Armada PT Mandiri Daur Lestari (B 9821 PQL) dijadwalkan menjemput 60 Kg HVS.',
+    tipe: 'penjemputan',
+    link: '/unit/status',
+    dibaca: false,
+    created_at: '30 mnt lalu',
   }
 ];
 
