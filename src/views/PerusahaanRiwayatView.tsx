@@ -2,23 +2,21 @@ import { PaymentModal } from '../components/PaymentModal';
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { MatchingTransaksi } from '../types';
+import { APP_BRAND } from '../data/initialData';
 
 export const PerusahaanRiwayatView: React.FC = () => {
-  const { matchings } = useApp();
+  const { matchings, confirmPickup } = useApp();
   const [filterTab, setFilterTab] = useState<'semua' | 'berjalan' | 'selesai'>('semua');
   const [activeModalTrx, setActiveModalTrx] = useState<MatchingTransaksi | null>(null);
   const [showNavMap, setShowNavMap] = useState<boolean>(false);
   const [selectedPaymentMatch, setSelectedPaymentMatch] = useState<MatchingTransaksi | null>(null);
 
-  const activeTrx = matchings.find(m => m.status === 'menunggu_diambil');
+  const pendingMatchings = matchings.filter(m => m.status === 'menunggu_diambil');
   const completedTrxList = matchings.filter(m => m.status === 'sudah_diambil');
 
-  const filteredList =
-    filterTab === 'berjalan'
-      ? matchings.filter(m => m.status === 'menunggu_diambil')
-      : filterTab === 'selesai'
-      ? completedTrxList
-      : matchings;
+  const handleConfirmPickupClick = (matchingId: string) => {
+    confirmPickup(matchingId);
+  };
 
   return (
     <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
@@ -75,7 +73,7 @@ export const PerusahaanRiwayatView: React.FC = () => {
             filterTab === 'berjalan' ? 'bg-white text-[#2D6A4F] shadow-xs' : 'text-[#52645A]'
           }`}
         >
-          Sedang Berjalan ({activeTrx ? 1 : 0})
+          Sedang Berjalan ({pendingMatchings.length})
         </button>
         <button
           onClick={() => setFilterTab('selesai')}
@@ -87,61 +85,157 @@ export const PerusahaanRiwayatView: React.FC = () => {
         </button>
       </div>
 
-      {/* Penjemputan Aktif Section */}
-      {activeTrx && (filterTab === 'semua' || filterTab === 'berjalan') && (
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/15 space-y-3">
-          <div className="flex items-center justify-between">
+      {/* Jadwal Penjemputan Terkonfirmasi & Sedang Berjalan */}
+      {(filterTab === 'semua' || filterTab === 'berjalan') && pendingMatchings.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between px-1">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#2D6A4F] animate-ping"></span>
-              <h3 className="text-sm font-bold text-[#1A2E22]">Penjemputan Aktif Hari Ini</h3>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#D97706] animate-pulse" />
+              <h3 className="text-sm font-black text-[#1A2E22]">Jadwal Penjemputan Terkonfirmasi</h3>
             </div>
-            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#9CF2B5] text-[#157140]">
-              ETA ~8 mnt
+            <span className="text-xs font-bold text-[#D97706] bg-[#FEF3C7] px-2.5 py-0.5 rounded-full">
+              {pendingMatchings.length} Batch Aktif
             </span>
           </div>
 
-          <div className="p-3.5 bg-[#FAFAF7] rounded-xl space-y-2 border border-[#2D6A4F]/10">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-[#2D6A4F]">#{activeTrx.id}</span>
-              <span className="text-[11px] text-[#52645A] font-semibold">
-                Truk {activeTrx.nopol_armada || 'B 9821 PQL'} ({activeTrx.driver_nama || 'Pak Joko'})
-              </span>
-            </div>
-
-            <div className="flex items-start gap-3 pt-1">
-              <div className="w-10 h-10 rounded-lg bg-[#A4F3CC] flex items-center justify-center text-[#005138] font-bold text-sm shrink-0">
-                FTD
+          {pendingMatchings.map(trx => (
+            <div
+              key={trx.id}
+              className="bg-white rounded-[24px] p-5 shadow-sm border border-[#2D6A4F]/15 space-y-4 animate-in fade-in"
+            >
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-gray-100 pb-2.5 gap-2">
+                <div>
+                  <span className="text-[10px] font-mono font-bold text-[#2D6A4F] uppercase tracking-wider block">
+                    #{trx.id} {trx.surat_jalan_kode ? `• ${trx.surat_jalan_kode}` : ''}
+                  </span>
+                  <h4 className="text-sm font-black text-[#1A2E22]">{trx.jenis_kertas}</h4>
+                </div>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#FFDBC8] text-[#C27D3A]">
+                    • Menunggu Diambil
+                  </span>
+                  <span
+                    className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+                      trx.status_pembayaran === 'lunas'
+                        ? 'bg-[#D8F3DC] text-[#005138]'
+                        : 'bg-[#FEF3C7] text-[#92400E]'
+                    }`}
+                  >
+                    {trx.status_pembayaran === 'lunas' ? '✓ Lunas' : 'Belum Dibayar'}
+                  </span>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="text-xs font-bold text-[#1A2E22]">
-                  {activeTrx.jumlah_kg} Kg HVS Putih (Grade A+)
-                </h4>
-                <p className="text-[11px] text-[#52645A] mt-0.5">
-                  {activeTrx.unit_nama} • Tong {activeTrx.tong_nama}
-                </p>
-                <span className="text-[10px] text-[#C27D3A] font-semibold block mt-0.5">
-                  📍 Drop Point Serbaguna (Pintu Barat)
-                </span>
+
+              {/* Detail Jadwal & Driver */}
+              <div className="p-3.5 bg-[#FAFAF7] rounded-xl space-y-2 text-xs border border-gray-100">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
+                  <span className="text-[#52645A] flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-base text-[#2D6A4F]">calendar_today</span>
+                    Waktu Penjemputan:
+                  </span>
+                  <strong className="text-[#1A2E22]">
+                    {trx.tanggal_jemput || 'Kamis, 24 Oktober 2024'} • {trx.jam_jemput || '14:30 WIB'}
+                  </strong>
+                </div>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
+                  <span className="text-[#52645A] flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-base text-[#C27D3A]">local_shipping</span>
+                    Armada & Pengemudi:
+                  </span>
+                  <strong className="text-[#1A2E22]">
+                    {trx.nopol_armada || 'B 9821 PQL'} ({trx.driver_nama || 'Pak Joko Susilo'})
+                  </strong>
+                </div>
+              </div>
+
+              {/* Lokasi Drop Point & Tong */}
+              <div className="p-3 bg-[#FAFAF7] rounded-xl flex items-center gap-3 border border-gray-100">
+                <div className="w-10 h-10 rounded-lg bg-[#A4F3CC] flex items-center justify-center text-[#005138] font-black text-sm shrink-0">
+                  {trx.unit_id.slice(5, 8).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0 text-xs">
+                  <span className="text-[10px] text-[#52645A] uppercase tracking-wider block font-bold">
+                    Lokasi Penjemputan Kertas
+                  </span>
+                  <div className="font-black text-[#1A2E22] truncate">
+                    Tong "{trx.tong_nama}", {trx.unit_nama}
+                  </div>
+                  <span className="text-[10px] text-[#2D6A4F] block mt-0.5">
+                    Drop Point Gedung Serbaguna UPJ (Sayap Barat)
+                  </span>
+                </div>
+              </div>
+
+              {/* Tagihan & Salur Info */}
+              <div className="p-3 bg-[#E8F5E9]/50 border border-[#2D6A4F]/20 rounded-xl flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider font-extrabold text-[#52645A] block">
+                    Nilai Tagihan Penyaluran
+                  </span>
+                  <div className="text-base font-black text-[#174630]">
+                    Rp {trx.nilai_rupiah.toLocaleString('id-ID')}
+                    <span className="text-[11px] font-normal text-[#52645A] ml-1.5">({trx.jumlah_kg} Kg)</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] font-bold text-[#52645A] block">Penerima Kas:</span>
+                  <span className="text-xs font-extrabold text-[#2D6A4F]">{trx.unit_nama}</span>
+                </div>
+              </div>
+
+              {/* Action Buttons: Pembayaran & Konfirmasi */}
+              <div className="space-y-2 pt-1">
+                {trx.status_pembayaran !== 'lunas' ? (
+                  <button
+                    onClick={() => setSelectedPaymentMatch(trx)}
+                    className="w-full py-3.5 px-4 rounded-xl bg-[#174630] hover:bg-[#2D6A4F] active:scale-[0.98] text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-lg">payments</span>
+                    <span>Bayar ke Dompet Unit (Rp {trx.nilai_rupiah.toLocaleString('id-ID')})</span>
+                  </button>
+                ) : (
+                  <div className="p-3 bg-[#D8F3DC] border border-[#2D6A4F]/30 rounded-xl text-xs text-[#005138] font-bold flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-base">verified</span>
+                      <span>Pembayaran Lunas via {trx.metode_pembayaran || 'Transfer Dompet Kampus'}</span>
+                    </div>
+                    <button
+                      onClick={() => setSelectedPaymentMatch(trx)}
+                      className="text-[11px] font-extrabold underline text-[#005138] hover:text-[#174630] cursor-pointer"
+                    >
+                      Lihat Bukti Bayar
+                    </button>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                  <button
+                    onClick={() => setActiveModalTrx(trx)}
+                    className="py-2.5 px-3 rounded-xl border border-gray-200 hover:bg-[#F7F8F5] text-[#52645A] text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-sm">qr_code</span>
+                    <span>Surat Jalan & QR</span>
+                  </button>
+                  <button
+                    onClick={() => handleConfirmPickupClick(trx.id)}
+                    className="py-2.5 px-3 rounded-xl bg-[#2D6A4F] hover:bg-[#005138] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-sm">task_alt</span>
+                    <span>Kertas Sudah Diambil</span>
+                  </button>
+                </div>
               </div>
             </div>
+          ))}
+        </div>
+      )}
 
-            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-200/60">
-              <button
-                onClick={() => setActiveModalTrx(activeTrx)}
-                className="py-2 px-3 rounded-lg bg-[#2D6A4F] hover:bg-[#005138] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition-all"
-              >
-                <span className="material-symbols-outlined text-sm">qr_code</span>
-                <span>Surat Jalan & QR</span>
-              </button>
-              <button
-                onClick={() => setShowNavMap(true)}
-                className="py-2 px-3 rounded-lg bg-white hover:bg-gray-50 text-[#52645A] border border-gray-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
-              >
-                <span className="material-symbols-outlined text-sm">navigation</span>
-                <span>Navigasi ke Tong</span>
-              </button>
-            </div>
-          </div>
+      {/* Jika tab berjalan dipilih tapi tidak ada batch aktif */}
+      {filterTab === 'berjalan' && pendingMatchings.length === 0 && (
+        <div className="bg-white rounded-2xl p-8 text-center text-xs text-[#52645A] border border-[#2D6A4F]/10 space-y-2">
+          <span className="material-symbols-outlined text-3xl text-gray-300">event_busy</span>
+          <p className="font-bold text-[#1A2E22]">Tidak Ada Jadwal Penjemputan Aktif</p>
+          <p>Silakan buat jadwal penjemputan baru melalui halaman Pasokan.</p>
         </div>
       )}
 

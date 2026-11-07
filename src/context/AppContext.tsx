@@ -93,7 +93,7 @@ interface AppContextType {
     hariPickup: string[];
     waktuOperasional: string;
   }) => Promise<PermintaanKertas | null>;
-  schedulePickup: (matchingId: string, tanggal: string, jam: string) => Promise<void>;
+  schedulePickup: (matchingId: string, tanggal: string, jam: string, nopol?: string, driver?: string) => Promise<void>;
   confirmPickup: (matchingId: string) => Promise<void>;
   confirmUnitPlaced: (listingId: string) => Promise<void>;
   emptyTong: (tongId: string) => Promise<void>;
@@ -620,15 +620,67 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return newReq;
   };
 
-  const schedulePickup = async (matchingId: string, tanggal: string, jam: string) => {
-    await db.updateMatchingFields(matchingId, {
-      tanggal_jemput: tanggal,
-      jam_jemput: jam,
-      nopol_armada: 'B 9821 PQL',
-      driver_nama: 'Pak Joko Susilo',
-      surat_jalan_kode: `#SJ-${new Date().getFullYear()}-${matchingId}`
+  const schedulePickup = async (
+    matchingId: string,
+    tanggal: string,
+    jam: string,
+    nopol: string = 'B 9821 PQL',
+    driver: string = 'Pak Joko Susilo'
+  ) => {
+    const suratJalan = `#SJ-${new Date().getFullYear()}-${matchingId}`;
+
+    setMatchings(prev => {
+      const next = prev.map(m => {
+        if (m.id === matchingId) {
+          return {
+            ...m,
+            tanggal_jemput: tanggal,
+            jam_jemput: jam,
+            nopol_armada: nopol,
+            driver_nama: driver,
+            surat_jalan_kode: suratJalan,
+            status: 'menunggu_diambil' as const,
+          };
+        }
+        return m;
+      });
+      localStorage.setItem(STORAGE_KEYS.MATCHINGS, JSON.stringify(next));
+      return next;
     });
-    await refreshData();
+
+    const match = matchings.find(m => m.id === matchingId);
+    if (match) {
+      const unitNotif: AppNotification = {
+        id: `notif-${Date.now()}-sch`,
+        target_role: 'unit',
+        target_id: match.unit_id,
+        judul: 'Jadwal Penjemputan Terkonfirmasi!',
+        pesan: `${match.perusahaan_nama} telah menjadwalkan penjemputan ${match.jenis_kertas} pada ${tanggal}, ${jam}.`,
+        tipe: 'penjemputan',
+        link: '/unit/status',
+        dibaca: false,
+        created_at: 'Baru saja',
+      };
+      setNotifications(prev => {
+        const next = [unitNotif, ...prev];
+        localStorage.setItem(STORAGE_KEYS.NOTIFIKASI, JSON.stringify(next));
+        return next;
+      });
+    }
+
+    showToast(`Jadwal penjemputan (${tanggal}, ${jam}) berhasil dikonfirmasi!`, 'success');
+
+    try {
+      await db.updateMatchingFields(matchingId, {
+        tanggal_jemput: tanggal,
+        jam_jemput: jam,
+        nopol_armada: nopol,
+        driver_nama: driver,
+        surat_jalan_kode: suratJalan,
+      });
+    } catch (e) {
+      console.warn('[schedulePickup] Supabase sync deferred (offline):', e);
+    }
   };
 
   const confirmPickup = async (matchingId: string) => {

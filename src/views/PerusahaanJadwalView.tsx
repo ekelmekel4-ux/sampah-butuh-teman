@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { APP_BRAND } from '../data/initialData';
+import { PaymentModal } from '../components/PaymentModal';
 
 export const PerusahaanJadwalView: React.FC = () => {
   const {
@@ -18,9 +19,17 @@ export const PerusahaanJadwalView: React.FC = () => {
 
   const [tanggal, setTanggal] = useState<string>(todayStr);
   const [jam, setJam] = useState<string>('14:00');
-  const [armadaId, setArmadaId] = useState<string>('');
+  const [armadaId, setArmadaId] = useState<string>('1');
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  const armadaMap: Record<string, { nopol: string; driver: string }> = {
+    '1': { nopol: 'B 9821 PQL', driver: 'Pak Joko Susilo' },
+    '2': { nopol: 'D 8122 XZ', driver: 'Kang Maman' },
+  };
+
+  const selectedArmada = armadaMap[armadaId] || armadaMap['1'];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,12 +52,8 @@ export const PerusahaanJadwalView: React.FC = () => {
     });
     const jamWib = `${jam} WIB`;
 
-    schedulePickup(matching.id, formatted, jamWib);
+    schedulePickup(matching.id, formatted, jamWib, selectedArmada.nopol, selectedArmada.driver);
     setSubmitted(true);
-
-    setTimeout(() => {
-      setActiveRoute('/perusahaan/riwayat');
-    }, 2000);
   };
 
   if (!matching) {
@@ -62,7 +67,7 @@ export const PerusahaanJadwalView: React.FC = () => {
           </p>
           <button
             onClick={() => setActiveRoute('/perusahaan/matching')}
-            className="mt-2 px-4 py-2.5 rounded-xl bg-[#2D6A4F] text-white text-sm font-bold hover:bg-[#005138] transition-all"
+            className="mt-2 px-4 py-2.5 rounded-xl bg-[#2D6A4F] text-white text-sm font-bold hover:bg-[#005138] transition-all cursor-pointer"
           >
             Kembali ke Matching
           </button>
@@ -72,21 +77,21 @@ export const PerusahaanJadwalView: React.FC = () => {
   }
 
   return (
-    <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
+    <div className="w-full pb-20 max-w-xl mx-auto space-y-4 font-sans text-[#1A2E22]">
 
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#2D6A4F] to-[#005138] text-white rounded-2xl p-4 shadow-md space-y-1">
+      <div className="bg-[#174630] text-white rounded-[24px] p-5 shadow-md space-y-1 border border-[#52B788]/30">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-xl text-[#9CF2B5]">event_available</span>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CF2B5]">
-            Jadwal Pengambilan
+          <span className="material-symbols-outlined text-xl text-[#A7F3D0]">event_available</span>
+          <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#A7F3D0]">
+            Jadwal Pengambilan Kertas
           </span>
         </div>
-        <h1 className="text-lg font-extrabold leading-tight">
+        <h1 className="text-lg font-black tracking-tight leading-tight">
           Pilih Tanggal & Jam Pengambilan
         </h1>
         <p className="text-xs text-white/80">
-          Setelah dijadwalkan, armada Anda tinggal datang ke nomor tong yang tertera.
+          Setelah jadwal ditetapkan, armada Anda tinggal datang ke tong yang tertera dan Anda dapat melanjutkan pembayaran ke dompet unit.
         </p>
       </div>
 
@@ -97,18 +102,18 @@ export const PerusahaanJadwalView: React.FC = () => {
           Detail Kertas yang Akan Diambil
         </h2>
 
-        <div className="p-3 bg-[#F7F3EA] rounded-xl space-y-2 text-xs">
+        <div className="p-3 bg-[#FAFAF7] rounded-xl space-y-2 text-xs">
           <div className="flex justify-between">
             <span className="text-[#52645A]">ID Transaksi:</span>
             <strong className="text-[#2D6A4F] font-mono">#{matching.id}</strong>
           </div>
           <div className="flex justify-between">
-            <span className="text-[#52645A]">Unit Asal:</span>
+            <span className="text-[#52645A]">Unit Penyalur:</span>
             <strong className="text-[#1A2E22]">{matching.unit_nama}</strong>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-[#52645A]">Nomor Tong:</span>
-            <span className="font-extrabold text-[#C27D3A] bg-[#FFDBC8] px-2.5 py-0.5 rounded-full text-[11px]">
+            <span className="font-extrabold text-[#174630] bg-[#D8F3DC] px-2.5 py-0.5 rounded-full text-[11px]">
               {matching.tong_nama}
             </span>
           </div>
@@ -116,9 +121,11 @@ export const PerusahaanJadwalView: React.FC = () => {
             <span className="text-[#52645A]">Jenis & Berat:</span>
             <strong className="text-[#1A2E22]">{matching.jenis_kertas}</strong>
           </div>
-          <div className="flex justify-between">
-            <span className="text-[#52645A]">Nilai Estimasi:</span>
-            <strong className="text-[#C27D3A]">Rp {matching.nilai_rupiah.toLocaleString('id-ID')}</strong>
+          <div className="flex justify-between border-t border-gray-100 pt-1.5">
+            <span className="text-[#52645A]">Nilai Pembayaran:</span>
+            <strong className="text-[#174630] text-sm font-black">
+              Rp {matching.nilai_rupiah.toLocaleString('id-ID')}
+            </strong>
           </div>
         </div>
       </div>
@@ -147,10 +154,10 @@ export const PerusahaanJadwalView: React.FC = () => {
         </div>
       </div>
 
-      {/* Form Jadwal */}
+      {/* Form Jadwal vs Success State */}
       {!submitted ? (
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-4">
-          <h2 className="text-sm font-bold text-[#1A2E22] flex items-center gap-2">
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-5 shadow-sm border border-[#2D6A4F]/10 space-y-4">
+          <h2 className="text-sm font-black text-[#1A2E22] flex items-center gap-2">
             <span className="material-symbols-outlined text-base text-[#2D6A4F]">calendar_month</span>
             Atur Jadwal Kedatangan Armada
           </h2>
@@ -176,7 +183,7 @@ export const PerusahaanJadwalView: React.FC = () => {
                 min={todayStr}
                 onChange={e => setTanggal(e.target.value)}
                 required
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-[#F7F3EA] outline-none focus:border-[#2D6A4F] focus:ring-1 focus:ring-[#2D6A4F]/20 text-sm font-semibold text-[#1A2E22] transition-all"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-[#FAFAF7] outline-none focus:border-[#2D6A4F] focus:ring-1 focus:ring-[#2D6A4F]/20 text-sm font-semibold text-[#1A2E22] transition-all"
               />
             </div>
           </div>
@@ -197,23 +204,12 @@ export const PerusahaanJadwalView: React.FC = () => {
                 max="16:00"
                 onChange={e => setJam(e.target.value)}
                 required
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-[#F7F3EA] outline-none focus:border-[#2D6A4F] focus:ring-1 focus:ring-[#2D6A4F]/20 text-sm font-semibold text-[#1A2E22] transition-all"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-[#FAFAF7] outline-none focus:border-[#2D6A4F] focus:ring-1 focus:ring-[#2D6A4F]/20 text-sm font-semibold text-[#1A2E22] transition-all"
               />
             </div>
             <p className="text-[10px] text-[#52645A]">
               Jam operasional drop point: 08:00 — 16:00 WIB (Senin–Jumat)
             </p>
-          </div>
-
-          {/* Info Tong */}
-          <div className="p-3 bg-[#A4F3CC]/20 border border-[#2D6A4F]/20 rounded-xl flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#A4F3CC] flex items-center justify-center text-[#005138] font-extrabold text-sm shrink-0">
-              {matching.unit_id.slice(5, 8).toUpperCase()}
-            </div>
-            <div className="text-xs">
-              <span className="block font-bold text-[#1A2E22]">Tuju langsung ke: {matching.tong_nama}</span>
-              <span className="text-[#52645A]">Posisi tong ditandai dengan label unit pada denah drop point</span>
-            </div>
           </div>
 
           {/* Armada Info & Selection */}
@@ -229,9 +225,8 @@ export const PerusahaanJadwalView: React.FC = () => {
                 value={armadaId}
                 onChange={e => setArmadaId(e.target.value)}
                 required
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-[#F7F3EA] outline-none focus:border-[#2D6A4F] focus:ring-1 focus:ring-[#2D6A4F]/20 text-sm font-semibold text-[#1A2E22] transition-all appearance-none"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-[#FAFAF7] outline-none focus:border-[#2D6A4F] focus:ring-1 focus:ring-[#2D6A4F]/20 text-sm font-semibold text-[#1A2E22] transition-all appearance-none"
               >
-                <option value="">Pilih armada dari profil...</option>
                 <option value="1">B 9821 PQL (Pak Joko Susilo)</option>
                 <option value="2">D 8122 XZ (Kang Maman)</option>
               </select>
@@ -239,13 +234,13 @@ export const PerusahaanJadwalView: React.FC = () => {
                 expand_more
               </span>
             </div>
-            <p className="text-[10px] text-[#52645A]">Data diambil dari pengaturan Profil Perusahaan.</p>
+            <p className="text-[10px] text-[#52645A]">Data diambil dari pengaturan Armada Perusahaan.</p>
           </div>
 
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-3.5 px-4 rounded-xl bg-[#005138] hover:bg-[#2D6A4F] active:scale-[0.98] text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-md transition-all"
+            className="w-full py-3.5 px-4 rounded-xl bg-[#174630] hover:bg-[#2D6A4F] active:scale-[0.98] text-white font-black text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
           >
             <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
               event_available
@@ -256,35 +251,87 @@ export const PerusahaanJadwalView: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveRoute('/perusahaan/matching')}
-            className="w-full py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-[#52645A] font-semibold text-sm transition-all"
+            className="w-full py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-[#52645A] font-semibold text-xs transition-all cursor-pointer"
           >
             Batal, Kembali ke Matching
           </button>
         </form>
       ) : (
-        /* Success State */
-        <div className="bg-[#2D6A4F] text-white rounded-2xl p-5 shadow-lg space-y-3 animate-in zoom-in-95">
-          <div className="flex items-center justify-center gap-2">
-            <span className="material-symbols-outlined text-3xl text-[#9CF2B5]" style={{ fontVariationSettings: "'FILL' 1" }}>
+        /* Actionable Success State with Direct Payment Option */
+        <div className="bg-white border border-[#2D6A4F]/20 rounded-[28px] p-6 shadow-xl space-y-4 animate-in zoom-in-95">
+          <div className="w-14 h-14 mx-auto rounded-full bg-[#D8F3DC] text-[#174630] flex items-center justify-center shadow-inner">
+            <span className="material-symbols-outlined text-[32px]" style={{ fontVariationSettings: "'FILL' 1" }}>
               task_alt
             </span>
           </div>
+
           <div className="text-center space-y-1">
-            <h3 className="text-base font-extrabold">Jadwal Berhasil Dibuat!</h3>
-            <p className="text-xs text-white/80">
-              Armada Anda dijadwalkan pada{' '}
-              <strong className="text-[#9CF2B5]">
-                {new Date(tanggal).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' })}, {jam} WIB
-              </strong>
-            </p>
-            <p className="text-xs text-white/70 mt-1">
-              Tuju <strong className="text-white">{matching.tong_nama}</strong> saat tiba di drop point.
+            <span className="text-[10px] font-black uppercase tracking-wider text-[#005138] bg-[#D8F3DC] px-2.5 py-0.5 rounded-full">
+              Jadwal Terkonfirmasi
+            </span>
+            <h3 className="text-base font-black text-[#174630] pt-1">
+              Jadwal Penjemputan Berhasil Dibuat!
+            </h3>
+            <p className="text-xs text-[#52645A] max-w-sm mx-auto leading-relaxed">
+              Jadwal kini aktif dan dapat Anda pantau di <strong>Tab Riwayat</strong>. Anda bisa langsung melakukan pembayaran ke dompet unit sekarang atau membayarnya nanti di Tab Riwayat.
             </p>
           </div>
-          <div className="text-center text-xs text-[#9CF2B5] font-semibold animate-pulse">
-            Mengalihkan ke Riwayat Transaksi...
+
+          {/* Ringkasan Konfirmasi */}
+          <div className="p-4 rounded-2xl bg-[#F7F8F5] border border-[#E0E5E2] space-y-2 text-xs">
+            <div className="flex justify-between items-center">
+              <span className="text-[#52645A]">Waktu Penjemputan:</span>
+              <strong className="text-[#1A2E22]">
+                {new Date(tanggal).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' })}, {jam} WIB
+              </strong>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-[#52645A]">Armada & Driver:</span>
+              <strong className="text-[#1A2E22]">{selectedArmada.nopol} ({selectedArmada.driver})</strong>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-[#52645A]">Unit Penyalur:</span>
+              <strong className="text-[#174630]">{matching.unit_nama}</strong>
+            </div>
+            <div className="flex justify-between items-center pt-2 border-t border-[#E0E5E2]">
+              <span className="text-[#52645A] font-bold">Total Pembayaran:</span>
+              <strong className="text-base font-black text-[#174630]">
+                Rp {matching.nilai_rupiah.toLocaleString('id-ID')}
+              </strong>
+            </div>
+          </div>
+
+          {/* Action Buttons: Bayar Sekarang vs Lihat di Riwayat */}
+          <div className="space-y-2 pt-1">
+            <button
+              onClick={() => setShowPaymentModal(true)}
+              className="w-full py-3.5 px-4 rounded-xl bg-[#174630] hover:bg-[#2D6A4F] active:scale-[0.98] text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-lg">payments</span>
+              <span>Bayar Sekarang ke Dompet Unit (Rp {matching.nilai_rupiah.toLocaleString('id-ID')})</span>
+            </button>
+
+            <button
+              onClick={() => setActiveRoute('/perusahaan/riwayat')}
+              className="w-full py-2.5 px-4 rounded-xl border border-[#2D6A4F]/25 text-[#174630] hover:bg-[#F7F8F5] font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-base">receipt_long</span>
+              <span>Lihat di Tab Riwayat Penjemputan</span>
+            </button>
           </div>
         </div>
+      )}
+
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <PaymentModal
+          matching={matching}
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          onSuccess={() => {
+            setActiveRoute('/perusahaan/riwayat');
+          }}
+        />
       )}
     </div>
   );
