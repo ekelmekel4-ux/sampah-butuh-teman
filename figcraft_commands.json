@@ -1,0 +1,7534 @@
+[
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "01 - Splash Screen",
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Logo Circle",
+      "parent": 2,
+      "x": 145,
+      "y": 300,
+      "width": 100,
+      "height": 100,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 50
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 2,
+      "x": 175,
+      "y": 330,
+      "text": "🌱",
+      "props": {
+        "fontSize": 40,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 2,
+      "x": 92,
+      "y": 430,
+      "text": "Sampah Butuh Teman",
+      "props": {
+        "fontSize": 22,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 2,
+      "x": 88,
+      "y": 462,
+      "text": "Sampah yang menemukan temannya.",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#A4F3CC"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 2,
+      "x": 98,
+      "y": 730,
+      "text": "Platform Sirkular Kertas Kampus UPJ",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#89D6B1"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "02 - Onboarding 1: Siklus Sirkular",
+      "x": 420,
+      "y": 0,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Illustration Box",
+      "parent": 8,
+      "x": 20,
+      "y": 100,
+      "width": 350,
+      "height": 320,
+      "props": {
+        "fills": [
+          "#E8F5EE"
+        ],
+        "cornerRadius": 20,
+        "strokes": [
+          "#C8D5CC"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 8,
+      "x": 140,
+      "y": 230,
+      "text": "📦 ⇄ 🌱",
+      "props": {
+        "fontSize": 36,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 8,
+      "x": 20,
+      "y": 460,
+      "text": "Model Pre-Order Bebas Mismatch",
+      "props": {
+        "fontSize": 20,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 8,
+      "x": 20,
+      "y": 494,
+      "text": "Kertas kampus dikumpulkan terstruktur per unit.",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 8,
+      "x": 20,
+      "y": 516,
+      "text": "Mitra industri hanya menjemput saat kuota tercapai.",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Dots Indicator",
+      "parent": 8,
+      "x": 175,
+      "y": 680,
+      "width": 40,
+      "height": 8,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 4
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Next Btn",
+      "parent": 8,
+      "x": 20,
+      "y": 720,
+      "width": 350,
+      "height": 50,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 12
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 8,
+      "x": 156,
+      "y": 736,
+      "text": "Lanjutkan →",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "03 - Onboarding 2: Tong Bernomor",
+      "x": 840,
+      "y": 0,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Illustration Box",
+      "parent": 17,
+      "x": 20,
+      "y": 100,
+      "width": 350,
+      "height": 320,
+      "props": {
+        "fills": [
+          "#FEF3C7"
+        ],
+        "cornerRadius": 20,
+        "strokes": [
+          "#FDE68A"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 17,
+      "x": 140,
+      "y": 230,
+      "text": "🏛️ ⇄ 🚛",
+      "props": {
+        "fontSize": 36,
+        "fills": [
+          "#D97706"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 17,
+      "x": 20,
+      "y": 460,
+      "text": "Alokasi Tong Bernomor Per Unit",
+      "props": {
+        "fontSize": 20,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 17,
+      "x": 20,
+      "y": 494,
+      "text": "Tiap fakultas (FTD, FEB, dll) memiliki tong khusus.",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 17,
+      "x": 20,
+      "y": 516,
+      "text": "Terpantau sensor kapasitas dan jadwal angkut pasti.",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Next Btn",
+      "parent": 17,
+      "x": 20,
+      "y": 720,
+      "width": 350,
+      "height": 50,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 12
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 17,
+      "x": 156,
+      "y": 736,
+      "text": "Lanjutkan →",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "04 - Onboarding 3: Kas & Poin",
+      "x": 1260,
+      "y": 0,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Illustration Box",
+      "parent": 25,
+      "x": 20,
+      "y": 100,
+      "width": 350,
+      "height": 320,
+      "props": {
+        "fills": [
+          "#E8F5EE"
+        ],
+        "cornerRadius": 20,
+        "strokes": [
+          "#C8D5CC"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 25,
+      "x": 145,
+      "y": 230,
+      "text": "💰 + 🏅",
+      "props": {
+        "fontSize": 36,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 25,
+      "x": 20,
+      "y": 460,
+      "text": "Kas Masuk Otomatis & Eco-Points",
+      "props": {
+        "fontSize": 20,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 25,
+      "x": 20,
+      "y": 494,
+      "text": "Hasil penimbangan kertas langsung cair ke kas unit.",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 25,
+      "x": 20,
+      "y": 516,
+      "text": "Dapatkan juga poin sirkular untuk ditukar reward.",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Start Btn",
+      "parent": 25,
+      "x": 20,
+      "y": 720,
+      "width": 350,
+      "height": 50,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 12
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 25,
+      "x": 140,
+      "y": 736,
+      "text": "Mulai Sekarang →",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "05 - Pilih Peran (Auth Gate)",
+      "x": 1680,
+      "y": 0,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 33,
+      "x": 20,
+      "y": 50,
+      "text": "Selamat Datang di SBT",
+      "props": {
+        "fontSize": 22,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 33,
+      "x": 20,
+      "y": 78,
+      "text": "Pilih peran Anda untuk melanjutkan:",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Role Penyalur Card",
+      "parent": 33,
+      "x": 20,
+      "y": 120,
+      "width": 350,
+      "height": 110,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 16,
+        "strokes": [
+          "#176B4D"
+        ],
+        "strokeWeight": 2
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 33,
+      "x": 36,
+      "y": 140,
+      "text": "🏫 Unit Kampus (Penyalur)",
+      "props": {
+        "fontSize": 15,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 33,
+      "x": 36,
+      "y": 164,
+      "text": "Fakultas, prodi, dan unit kerja UPJ.",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 33,
+      "x": 36,
+      "y": 184,
+      "text": "Setor kertas, pantau tong, & terima kas.",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Role Mitra Card",
+      "parent": 33,
+      "x": 20,
+      "y": 246,
+      "width": 350,
+      "height": 110,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 16,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 33,
+      "x": 36,
+      "y": 266,
+      "text": "🏢 Mitra Industri (Penerima)",
+      "props": {
+        "fontSize": 15,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 33,
+      "x": 36,
+      "y": 290,
+      "text": "Pabrik, vendor daur ulang & pengepul.",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 33,
+      "x": 36,
+      "y": 310,
+      "text": "Ambil pasokan kertas terverifikasi.",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Role Admin Card",
+      "parent": 33,
+      "x": 20,
+      "y": 372,
+      "width": 350,
+      "height": 110,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 16,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 33,
+      "x": 36,
+      "y": 392,
+      "text": "🛡️ Pengelola Kampus (Admin)",
+      "props": {
+        "fontSize": 15,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 33,
+      "x": 36,
+      "y": 416,
+      "text": "Tim pengelola lingkungan & logistik UPJ.",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 33,
+      "x": 36,
+      "y": 436,
+      "text": "Pusat kendali, verifikasi, & analitik.",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "06 - Layar Login Akun",
+      "x": 2100,
+      "y": 0,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 48,
+      "x": 20,
+      "y": 60,
+      "text": "Masuk ke Akun",
+      "props": {
+        "fontSize": 22,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 48,
+      "x": 20,
+      "y": 88,
+      "text": "Gunakan email resmi institusi atau akun mitra",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 48,
+      "x": 20,
+      "y": 140,
+      "text": "EMAIL",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Input Email",
+      "parent": 48,
+      "x": 20,
+      "y": 156,
+      "width": 350,
+      "height": 46,
+      "props": {
+        "fills": [
+          "#EEEEF0"
+        ],
+        "cornerRadius": 10
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 48,
+      "x": 34,
+      "y": 171,
+      "text": "penyalur@ft.univ.ac.id",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 48,
+      "x": 20,
+      "y": 220,
+      "text": "PASSWORD",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Input Pass",
+      "parent": 48,
+      "x": 20,
+      "y": 236,
+      "width": 350,
+      "height": 46,
+      "props": {
+        "fills": [
+          "#EEEEF0"
+        ],
+        "cornerRadius": 10
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 48,
+      "x": 34,
+      "y": 251,
+      "text": "••••••••••••",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Btn Login",
+      "parent": 48,
+      "x": 20,
+      "y": 304,
+      "width": 350,
+      "height": 50,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 12
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 48,
+      "x": 134,
+      "y": 320,
+      "text": "Masuk Sekarang →",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Demo Box",
+      "parent": 48,
+      "x": 20,
+      "y": 420,
+      "width": 350,
+      "height": 160,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 14,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 48,
+      "x": 34,
+      "y": 436,
+      "text": "AKUN DEMO CEPAT (SATU KLIK):",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Btn Demo Unit",
+      "parent": 48,
+      "x": 34,
+      "y": 456,
+      "width": 322,
+      "height": 32,
+      "props": {
+        "fills": [
+          "#E8F5EE"
+        ],
+        "cornerRadius": 8
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 48,
+      "x": 92,
+      "y": 465,
+      "text": "Masuk sebagai FTD UPJ (Unit)",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Btn Demo Mitra",
+      "parent": 48,
+      "x": 34,
+      "y": 496,
+      "width": 322,
+      "height": 32,
+      "props": {
+        "fills": [
+          "#EEEEF0"
+        ],
+        "cornerRadius": 8
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 48,
+      "x": 74,
+      "y": 505,
+      "text": "Masuk sebagai PT Daur Lestari (Mitra)",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Btn Demo Admin",
+      "parent": 48,
+      "x": 34,
+      "y": 536,
+      "width": 322,
+      "height": 32,
+      "props": {
+        "fills": [
+          "#EEEEF0"
+        ],
+        "cornerRadius": 8
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 48,
+      "x": 82,
+      "y": 545,
+      "text": "Masuk sebagai Admin Pengelola UPJ",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "07 - Unit Beranda",
+      "x": 0,
+      "y": 920,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Header Background",
+      "parent": 67,
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 70,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Avatar FTD",
+      "parent": 67,
+      "x": 20,
+      "y": 18,
+      "width": 36,
+      "height": 36,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 18
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 28,
+      "y": 28,
+      "text": "FTD",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 66,
+      "y": 19,
+      "text": "Fakultas Teknik & Desain",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 66,
+      "y": 36,
+      "text": "Universitas Pembangunan Jaya",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Saldo Card Container",
+      "parent": 67,
+      "x": 20,
+      "y": 86,
+      "width": 350,
+      "height": 96,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 16
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 36,
+      "y": 104,
+      "text": "SALDO KAS DAUR ULANG",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#A4F3CC"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 36,
+      "y": 122,
+      "text": "Rp 450.000",
+      "props": {
+        "fontSize": 24,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 245,
+      "y": 127,
+      "text": "120 Eco-Points",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#D8F3DC"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Mascot Card",
+      "parent": 67,
+      "x": 20,
+      "y": 196,
+      "width": 350,
+      "height": 106,
+      "props": {
+        "fills": [
+          "#E8F5EE"
+        ],
+        "cornerRadius": 16,
+        "strokes": [
+          "#C8D5CC"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 48,
+      "y": 228,
+      "text": "🌱",
+      "props": {
+        "fontSize": 20,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 96,
+      "y": 216,
+      "text": "Halo Teman Sirkular FTD!",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 96,
+      "y": 240,
+      "text": "Pilah rapi tugas & maket sebelum tong penuh!",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Status Tong Card",
+      "parent": 67,
+      "x": 20,
+      "y": 316,
+      "width": 350,
+      "height": 160,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 16,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 36,
+      "y": 340,
+      "text": "Tong Gedung B Lt. 2 (Studio Desain)",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Badge Waspada",
+      "parent": 67,
+      "x": 270,
+      "y": 336,
+      "width": 85,
+      "height": 22,
+      "props": {
+        "fills": [
+          "#FEF3C7"
+        ],
+        "cornerRadius": 11
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 278,
+      "y": 341,
+      "text": "Waspada 85%",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#D97706"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Progress Track",
+      "parent": 67,
+      "x": 36,
+      "y": 374,
+      "width": 318,
+      "height": 10,
+      "props": {
+        "fills": [
+          "#EEEEF0"
+        ],
+        "cornerRadius": 5
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Progress Fill",
+      "parent": 67,
+      "x": 36,
+      "y": 374,
+      "width": 270,
+      "height": 10,
+      "props": {
+        "fills": [
+          "#D97706"
+        ],
+        "cornerRadius": 5
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 36,
+      "y": 396,
+      "text": "Kapasitas terisi: 42.5 / 50 Kg (Sisa Kuota: 7.5 Kg)",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "CTA Setor Kertas",
+      "parent": 67,
+      "x": 20,
+      "y": 494,
+      "width": 350,
+      "height": 52,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 12
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 124,
+      "y": 511,
+      "text": "Setor Kertas Sekarang",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bottom Navigation Bar",
+      "parent": 67,
+      "x": 0,
+      "y": 770,
+      "width": 390,
+      "height": 74,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Active Indicator - Beranda",
+      "parent": 67,
+      "x": 33,
+      "y": 782,
+      "width": 64,
+      "height": 32,
+      "props": {
+        "fills": [
+          "#E8F5EE"
+        ],
+        "cornerRadius": 16
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 35,
+      "y": 791,
+      "text": "● Beranda",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 170,
+      "y": 791,
+      "text": "Status Tong",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 67,
+      "x": 300,
+      "y": 791,
+      "text": "Peringkat",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "08 - Unit Setor Kertas",
+      "x": 420,
+      "y": 920,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Nav Header",
+      "parent": 95,
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 60,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 95,
+      "x": 20,
+      "y": 22,
+      "text": "← Setor Sampah Kertas",
+      "props": {
+        "fontSize": 15,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Tong Box",
+      "parent": 95,
+      "x": 20,
+      "y": 80,
+      "width": 350,
+      "height": 50,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 10,
+        "strokes": [
+          "#C8D5CC"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 95,
+      "x": 34,
+      "y": 96,
+      "text": "Tong Gedung B Lt. 2 (Studio Arsitektur)",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Kat HVS Selected",
+      "parent": 95,
+      "x": 20,
+      "y": 150,
+      "width": 170,
+      "height": 70,
+      "props": {
+        "fills": [
+          "#E8F5EE"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#176B4D"
+        ],
+        "strokeWeight": 2
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 95,
+      "x": 32,
+      "y": 174,
+      "text": "HVS Putih ✓ (Rp 2.000)",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Kat Kardus",
+      "parent": 95,
+      "x": 200,
+      "y": 150,
+      "width": 170,
+      "height": 70,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 95,
+      "x": 212,
+      "y": 174,
+      "text": "Kardus (Rp 1.500)",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Stepper Box",
+      "parent": 95,
+      "x": 20,
+      "y": 240,
+      "width": 350,
+      "height": 80,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 95,
+      "x": 160,
+      "y": 270,
+      "text": "12.5 Kg",
+      "props": {
+        "fontSize": 24,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Kalkulator Saldo Card",
+      "parent": 95,
+      "x": 20,
+      "y": 340,
+      "width": 350,
+      "height": 80,
+      "props": {
+        "fills": [
+          "#E8F5EE"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#C8D5CC"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 95,
+      "x": 34,
+      "y": 372,
+      "text": "Kas Masuk: + Rp 25.000 (+12 Pts)",
+      "props": {
+        "fontSize": 16,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Submit Setor",
+      "parent": 95,
+      "x": 20,
+      "y": 440,
+      "width": 350,
+      "height": 50,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 12
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 95,
+      "x": 92,
+      "y": 456,
+      "text": "Konfirmasi & Masukkan ke Tong →",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "09 - Unit Status Tong",
+      "x": 840,
+      "y": 920,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Header Nav",
+      "parent": 110,
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 60,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 110,
+      "x": 20,
+      "y": 22,
+      "text": "Status Tong Kampus",
+      "props": {
+        "fontSize": 16,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Tong FTD Gedung B Lt. 2",
+      "parent": 110,
+      "x": 20,
+      "y": 80,
+      "width": 350,
+      "height": 96,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 14,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 110,
+      "x": 36,
+      "y": 98,
+      "text": "Tong FTD Gedung B Lt. 2",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 110,
+      "x": 280,
+      "y": 98,
+      "text": "Kritis 92%",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#C0392B"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Fill",
+      "parent": 110,
+      "x": 36,
+      "y": 128,
+      "width": 293,
+      "height": 8,
+      "props": {
+        "fills": [
+          "#C0392B"
+        ],
+        "cornerRadius": 4
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Tong FEB Gedung A Lt. 1",
+      "parent": 110,
+      "x": 20,
+      "y": 190,
+      "width": 350,
+      "height": 96,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 14,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 110,
+      "x": 36,
+      "y": 208,
+      "text": "Tong FEB Gedung A Lt. 1",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 110,
+      "x": 280,
+      "y": 208,
+      "text": "Waspada 78%",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#D97706"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Fill",
+      "parent": 110,
+      "x": 36,
+      "y": 238,
+      "width": 248,
+      "height": 8,
+      "props": {
+        "fills": [
+          "#D97706"
+        ],
+        "cornerRadius": 4
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Tong Perpustakaan Lt. 2",
+      "parent": 110,
+      "x": 20,
+      "y": 300,
+      "width": 350,
+      "height": 96,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 14,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 110,
+      "x": 36,
+      "y": 318,
+      "text": "Tong Perpustakaan Lt. 2",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 110,
+      "x": 280,
+      "y": 318,
+      "text": "Aman 45%",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#1B7A4E"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Fill",
+      "parent": 110,
+      "x": 36,
+      "y": 348,
+      "width": 143,
+      "height": 8,
+      "props": {
+        "fills": [
+          "#1B7A4E"
+        ],
+        "cornerRadius": 4
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Tong Rektorat UPJ Lt. 3",
+      "parent": 110,
+      "x": 20,
+      "y": 410,
+      "width": 350,
+      "height": 96,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 14,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 110,
+      "x": 36,
+      "y": 428,
+      "text": "Tong Rektorat UPJ Lt. 3",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 110,
+      "x": 280,
+      "y": 428,
+      "text": "Aman 30%",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#1B7A4E"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Fill",
+      "parent": 110,
+      "x": 36,
+      "y": 458,
+      "width": 95,
+      "height": 8,
+      "props": {
+        "fills": [
+          "#1B7A4E"
+        ],
+        "cornerRadius": 4
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bottom Navigation Bar",
+      "parent": 110,
+      "x": 0,
+      "y": 770,
+      "width": 390,
+      "height": 74,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 110,
+      "x": 40,
+      "y": 791,
+      "text": "Beranda",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Active Indicator - Status Tong",
+      "parent": 110,
+      "x": 163,
+      "y": 782,
+      "width": 64,
+      "height": 32,
+      "props": {
+        "fills": [
+          "#E8F5EE"
+        ],
+        "cornerRadius": 16
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 110,
+      "x": 165,
+      "y": 791,
+      "text": "● Status Tong",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 110,
+      "x": 300,
+      "y": 791,
+      "text": "Peringkat",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "10 - Unit Dompet & Poin",
+      "x": 1260,
+      "y": 920,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Header Nav",
+      "parent": 134,
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 60,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 20,
+      "y": 22,
+      "text": "Dompet Kas & Poin",
+      "props": {
+        "fontSize": 16,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Kas Box",
+      "parent": 134,
+      "x": 20,
+      "y": 80,
+      "width": 350,
+      "height": 110,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 16
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 36,
+      "y": 98,
+      "text": "SALDO KAS TERSEDIA",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#A4F3CC"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 36,
+      "y": 120,
+      "text": "Rp 450.000",
+      "props": {
+        "fontSize": 26,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Btn Tarik",
+      "parent": 134,
+      "x": 36,
+      "y": 154,
+      "width": 140,
+      "height": 26,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 6
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 54,
+      "y": 160,
+      "text": "Tarik ke Rek BNI",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 20,
+      "y": 216,
+      "text": "RIWAYAT PENJUALAN TERAKHIR",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Mutasi 0",
+      "parent": 134,
+      "x": 20,
+      "y": 236,
+      "width": 350,
+      "height": 54,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 10,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 34,
+      "y": 250,
+      "text": "Setor 12.5 kg HVS (PT Daur Lestari)",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 34,
+      "y": 268,
+      "text": "24 Okt 2024",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 270,
+      "y": 254,
+      "text": "+Rp 25.000",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Mutasi 1",
+      "parent": 134,
+      "x": 20,
+      "y": 300,
+      "width": 350,
+      "height": 54,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 10,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 34,
+      "y": 314,
+      "text": "Setor 20 kg Kardus (CV Mandiri)",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 34,
+      "y": 332,
+      "text": "20 Okt 2024",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 270,
+      "y": 318,
+      "text": "+Rp 30.000",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Mutasi 2",
+      "parent": 134,
+      "x": 20,
+      "y": 364,
+      "width": 350,
+      "height": 54,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 10,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 34,
+      "y": 378,
+      "text": "Pencairan ke Kas FTD BNI",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 34,
+      "y": 396,
+      "text": "15 Okt 2024",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 270,
+      "y": 382,
+      "text": "-Rp 300.000",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#C0392B"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bottom Navigation Bar",
+      "parent": 134,
+      "x": 0,
+      "y": 770,
+      "width": 390,
+      "height": 74,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Active Indicator - Beranda",
+      "parent": 134,
+      "x": 33,
+      "y": 782,
+      "width": 64,
+      "height": 32,
+      "props": {
+        "fills": [
+          "#E8F5EE"
+        ],
+        "cornerRadius": 16
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 35,
+      "y": 791,
+      "text": "● Beranda",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 170,
+      "y": 791,
+      "text": "Status Tong",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 134,
+      "x": 300,
+      "y": 791,
+      "text": "Peringkat",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "11 - Papan Peringkat Kampus",
+      "x": 1680,
+      "y": 920,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Header Nav",
+      "parent": 160,
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 60,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 160,
+      "x": 20,
+      "y": 22,
+      "text": "Papan Peringkat Sirkular",
+      "props": {
+        "fontSize": 16,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Podium Container",
+      "parent": 160,
+      "x": 20,
+      "y": 80,
+      "width": 350,
+      "height": 160,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 16,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 160,
+      "x": 120,
+      "y": 110,
+      "text": "👑 🥇 FIKOM (480 Kg)",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#D97706"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 160,
+      "x": 80,
+      "y": 150,
+      "text": "🥈 FTD UPJ (415 Kg) - Unit Anda",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 160,
+      "x": 125,
+      "y": 190,
+      "text": "🥉 FEB UPJ (340 Kg)",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#8B6045"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Eco Impact Card",
+      "parent": 160,
+      "x": 20,
+      "y": 260,
+      "width": 350,
+      "height": 70,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 14
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 160,
+      "x": 44,
+      "y": 290,
+      "text": "1.850 Kg Terkumpul = 31 Pohon Terselamatkan",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bottom Navigation Bar",
+      "parent": 160,
+      "x": 0,
+      "y": 770,
+      "width": 390,
+      "height": 74,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 160,
+      "x": 40,
+      "y": 791,
+      "text": "Beranda",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 160,
+      "x": 170,
+      "y": 791,
+      "text": "Status Tong",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Active Indicator - Peringkat",
+      "parent": 160,
+      "x": 293,
+      "y": 782,
+      "width": 64,
+      "height": 32,
+      "props": {
+        "fills": [
+          "#E8F5EE"
+        ],
+        "cornerRadius": 16
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 160,
+      "x": 295,
+      "y": 791,
+      "text": "● Peringkat",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "12 - Pasokan Mitra Industri",
+      "x": 0,
+      "y": 1840,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Header Nav",
+      "parent": 174,
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 60,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 174,
+      "x": 20,
+      "y": 22,
+      "text": "PT Daur Kertas Lestari",
+      "props": {
+        "fontSize": 15,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Banner Kuota",
+      "parent": 174,
+      "x": 20,
+      "y": 76,
+      "width": 350,
+      "height": 90,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 14
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 174,
+      "x": 36,
+      "y": 110,
+      "text": "850 Kg Pasokan Siap Jemput di UPJ",
+      "props": {
+        "fontSize": 18,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 174,
+      "x": 36,
+      "y": 136,
+      "text": "Nilai: Rp 1.375.000",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#A4F3CC"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Card HVS",
+      "parent": 174,
+      "x": 20,
+      "y": 180,
+      "width": 350,
+      "height": 100,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 174,
+      "x": 36,
+      "y": 200,
+      "text": "Kertas HVS & Arsip: 320 Kg",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 174,
+      "x": 36,
+      "y": 224,
+      "text": "Rp 640.000 • FTD Gedung B",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Btn Ambil",
+      "parent": 174,
+      "x": 36,
+      "y": 246,
+      "width": 318,
+      "height": 26,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 6
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 174,
+      "x": 108,
+      "y": 252,
+      "text": "Jadwalkan Penjemputan Truk →",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bottom Navigation Bar",
+      "parent": 174,
+      "x": 0,
+      "y": 770,
+      "width": 390,
+      "height": 74,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Active Indicator - Pasokan",
+      "parent": 174,
+      "x": 33,
+      "y": 782,
+      "width": 64,
+      "height": 32,
+      "props": {
+        "fills": [
+          "#E8F5EE"
+        ],
+        "cornerRadius": 16
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 174,
+      "x": 35,
+      "y": 791,
+      "text": "● Pasokan",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 174,
+      "x": 170,
+      "y": 791,
+      "text": "Kebutuhan",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 174,
+      "x": 300,
+      "y": 791,
+      "text": "Riwayat",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "13 - Jadwal Armada Truk",
+      "x": 420,
+      "y": 1840,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Header Nav",
+      "parent": 190,
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 60,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 190,
+      "x": 20,
+      "y": 22,
+      "text": "← Detail Penjemputan",
+      "props": {
+        "fontSize": 15,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Detail Box",
+      "parent": 190,
+      "x": 20,
+      "y": 80,
+      "width": 350,
+      "height": 170,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 14,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 190,
+      "x": 36,
+      "y": 98,
+      "text": "STATUS: MENUNGGU PENJEMPUTAN",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#D97706"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 190,
+      "x": 36,
+      "y": 120,
+      "text": "Kamis, 24 Okt 2024 • 14:30 WIB",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 190,
+      "x": 36,
+      "y": 146,
+      "text": "Armada: B 9821 PQL (Truk 6-Roda)",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 190,
+      "x": 36,
+      "y": 168,
+      "text": "Driver: Joko Susilo (0812-9876-5432)",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 190,
+      "x": 36,
+      "y": 190,
+      "text": "Lokasi: Gerbang Barat Kampus UPJ",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "14 - Permintaan Pabrik Baru",
+      "x": 840,
+      "y": 1840,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Header Nav",
+      "parent": 199,
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 60,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 199,
+      "x": 20,
+      "y": 22,
+      "text": "Posting Kebutuhan Kertas",
+      "props": {
+        "fontSize": 15,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 199,
+      "x": 20,
+      "y": 80,
+      "text": "TARGET TONASE BULAN INI",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Input Tonase",
+      "parent": 199,
+      "x": 20,
+      "y": 96,
+      "width": 350,
+      "height": 46,
+      "props": {
+        "fills": [
+          "#EEEEF0"
+        ],
+        "cornerRadius": 10
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 199,
+      "x": 34,
+      "y": 111,
+      "text": "500 Kg Kertas HVS Bersih",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Btn Buat",
+      "parent": 199,
+      "x": 20,
+      "y": 160,
+      "width": 350,
+      "height": 48,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 12
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 199,
+      "x": 100,
+      "y": 175,
+      "text": "Publikasikan ke Kampus UPJ →",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "15 - Riwayat & Nota Industri",
+      "x": 1260,
+      "y": 1840,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Header Nav",
+      "parent": 207,
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 60,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 207,
+      "x": 20,
+      "y": 22,
+      "text": "Riwayat Serah Terima",
+      "props": {
+        "fontSize": 16,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Surat Jalan #SBT-2024-001",
+      "parent": 207,
+      "x": 20,
+      "y": 80,
+      "width": 350,
+      "height": 72,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 207,
+      "x": 34,
+      "y": 96,
+      "text": "Surat Jalan #SBT-2024-001",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 207,
+      "x": 34,
+      "y": 116,
+      "text": "320 Kg HVS (FTD)",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 207,
+      "x": 265,
+      "y": 106,
+      "text": "Rp 640.000",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Surat Jalan #SBT-2024-002",
+      "parent": 207,
+      "x": 20,
+      "y": 164,
+      "width": 350,
+      "height": 72,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 207,
+      "x": 34,
+      "y": 180,
+      "text": "Surat Jalan #SBT-2024-002",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 207,
+      "x": 34,
+      "y": 200,
+      "text": "410 Kg Kardus (FEB)",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 207,
+      "x": 265,
+      "y": 190,
+      "text": "Rp 615.000",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "16 - Admin Dashboard Kendali",
+      "x": 0,
+      "y": 2760,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Header Nav",
+      "parent": 218,
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 60,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 20,
+      "y": 22,
+      "text": "Pusat Kendali Sirkular",
+      "props": {
+        "fontSize": 16,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 310,
+      "y": 24,
+      "text": "Admin UPJ",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#C0392B"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "KPI TOTAL TERKUMPUL",
+      "parent": 218,
+      "x": 20,
+      "y": 76,
+      "width": 170,
+      "height": 68,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 34,
+      "y": 88,
+      "text": "TOTAL TERKUMPUL",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 34,
+      "y": 108,
+      "text": "1.850 Kg",
+      "props": {
+        "fontSize": 16,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "KPI NILAI TRANSAKSI",
+      "parent": 218,
+      "x": 200,
+      "y": 76,
+      "width": 170,
+      "height": 68,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 214,
+      "y": 88,
+      "text": "NILAI TRANSAKSI",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 214,
+      "y": 108,
+      "text": "Rp 3.25 Jt",
+      "props": {
+        "fontSize": 16,
+        "fills": [
+          "#D97706"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "KPI TONG KRITIS",
+      "parent": 218,
+      "x": 20,
+      "y": 154,
+      "width": 170,
+      "height": 68,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 34,
+      "y": 166,
+      "text": "TONG KRITIS",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 34,
+      "y": 186,
+      "text": "2 Tong",
+      "props": {
+        "fontSize": 16,
+        "fills": [
+          "#C0392B"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "KPI MITRA PENGOLAH",
+      "parent": 218,
+      "x": 200,
+      "y": 154,
+      "width": 170,
+      "height": 68,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 214,
+      "y": 166,
+      "text": "MITRA PENGOLAH",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 214,
+      "y": 186,
+      "text": "4 Industri",
+      "props": {
+        "fontSize": 16,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Verifikasi Card",
+      "parent": 218,
+      "x": 20,
+      "y": 250,
+      "width": 350,
+      "height": 110,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 14,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 36,
+      "y": 268,
+      "text": "Truk PT Daur Lestari (B 9821 PQL)",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 36,
+      "y": 288,
+      "text": "Muatan 320 Kg HVS siap diverifikasi",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Btn Verif",
+      "parent": 218,
+      "x": 36,
+      "y": 312,
+      "width": 318,
+      "height": 30,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 6
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 110,
+      "y": 320,
+      "text": "Verifikasi Timbangan Digital ✓",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bottom Navigation Bar",
+      "parent": 218,
+      "x": 0,
+      "y": 770,
+      "width": 390,
+      "height": 74,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Active Indicator - Dashboard",
+      "parent": 218,
+      "x": 33,
+      "y": 782,
+      "width": 64,
+      "height": 32,
+      "props": {
+        "fills": [
+          "#E8F5EE"
+        ],
+        "cornerRadius": 16
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 35,
+      "y": 791,
+      "text": "● Dashboard",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 170,
+      "y": 791,
+      "text": "Unit & Tong",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 218,
+      "x": 300,
+      "y": 791,
+      "text": "Laporan",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "17 - Admin Kelola Unit & Tong",
+      "x": 420,
+      "y": 2760,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Header Nav",
+      "parent": 244,
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 60,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 244,
+      "x": 20,
+      "y": 22,
+      "text": "Kelola Unit & Tong UPJ",
+      "props": {
+        "fontSize": 16,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Fakultas Teknik & Desain (FTD)",
+      "parent": 244,
+      "x": 20,
+      "y": 80,
+      "width": 350,
+      "height": 68,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 244,
+      "x": 34,
+      "y": 94,
+      "text": "Fakultas Teknik & Desain (FTD)",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 244,
+      "x": 34,
+      "y": 116,
+      "text": "2 Tong Aktif • Kas: Rp 450.000",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Fakultas Ekonomi & Bisnis (FEB)",
+      "parent": 244,
+      "x": 20,
+      "y": 160,
+      "width": 350,
+      "height": 68,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 244,
+      "x": 34,
+      "y": 174,
+      "text": "Fakultas Ekonomi & Bisnis (FEB)",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 244,
+      "x": 34,
+      "y": 196,
+      "text": "2 Tong Aktif • Kas: Rp 320.000",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Biro Administrasi Rektorat",
+      "parent": 244,
+      "x": 20,
+      "y": 240,
+      "width": 350,
+      "height": 68,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 244,
+      "x": 34,
+      "y": 254,
+      "text": "Biro Administrasi Rektorat",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 244,
+      "x": 34,
+      "y": 276,
+      "text": "1 Tong Aktif • Kas: Rp 180.000",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Perpustakaan Pusat",
+      "parent": 244,
+      "x": 20,
+      "y": 320,
+      "width": 350,
+      "height": 68,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 244,
+      "x": 34,
+      "y": 334,
+      "text": "Perpustakaan Pusat",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 244,
+      "x": 34,
+      "y": 356,
+      "text": "1 Tong Aktif • Kas: Rp 210.000",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "18 - Admin Laporan & Flag",
+      "x": 840,
+      "y": 2760,
+      "width": 390,
+      "height": 844,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Header Nav",
+      "parent": 259,
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 60,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 259,
+      "x": 20,
+      "y": 22,
+      "text": "Laporan & Flag Kendala",
+      "props": {
+        "fontSize": 16,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Tong FTD Gedung B Penuh Meluap",
+      "parent": 259,
+      "x": 20,
+      "y": 80,
+      "width": 350,
+      "height": 74,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 259,
+      "x": 34,
+      "y": 94,
+      "text": "Tong FTD Gedung B Penuh Meluap",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 259,
+      "x": 34,
+      "y": 114,
+      "text": "Kapasitas 92% butuh angkut",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 259,
+      "x": 34,
+      "y": 132,
+      "text": "Prioritas Tinggi",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#C0392B"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Tutup Tong Perpustakaan Macet",
+      "parent": 259,
+      "x": 20,
+      "y": 166,
+      "width": 350,
+      "height": 74,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 259,
+      "x": 34,
+      "y": 180,
+      "text": "Tutup Tong Perpustakaan Macet",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 259,
+      "x": 34,
+      "y": 200,
+      "text": "Sensor macet di 45%",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 259,
+      "x": 34,
+      "y": 218,
+      "text": "Sedang Ditangani",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#D97706"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Ada Plastik di Tong FEB Lt. 1",
+      "parent": 259,
+      "x": 20,
+      "y": 252,
+      "width": 350,
+      "height": 74,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 12,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 259,
+      "x": 34,
+      "y": 266,
+      "text": "Ada Plastik di Tong FEB Lt. 1",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 259,
+      "x": 34,
+      "y": 286,
+      "text": "Telah dibersihkan petugas",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 259,
+      "x": 34,
+      "y": 304,
+      "text": "Terselesaikan",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#1B7A4E"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "19 - Master Desktop Dashboard (Web)",
+      "x": 2600,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Sidebar Background",
+      "parent": 274,
+      "x": 0,
+      "y": 0,
+      "width": 240,
+      "height": 960,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Logo Circle",
+      "parent": 274,
+      "x": 24,
+      "y": 24,
+      "width": 32,
+      "height": 32,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 16
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 31,
+      "y": 32,
+      "text": "🌱",
+      "props": {
+        "fontSize": 16,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 64,
+      "y": 24,
+      "text": "Sampah Butuh Teman",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 64,
+      "y": 40,
+      "text": "Sirkular Kampus UPJ",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Active Nav Pill",
+      "parent": 274,
+      "x": 16,
+      "y": 90,
+      "width": 208,
+      "height": 38,
+      "props": {
+        "fills": [
+          "#E8F5EE"
+        ],
+        "cornerRadius": 10
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 32,
+      "y": 101,
+      "text": "● Dashboard",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 32,
+      "y": 147,
+      "text": "Katalog Pasokan",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 32,
+      "y": 193,
+      "text": "Monitoring Tong",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 32,
+      "y": 239,
+      "text": "Verifikasi Armada",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 32,
+      "y": 285,
+      "text": "Papan Peringkat",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 32,
+      "y": 331,
+      "text": "Dompet & Kas Unit",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 32,
+      "y": 377,
+      "text": "Laporan Kendala",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 32,
+      "y": 423,
+      "text": "Pengaturan Sistem",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Search Bar",
+      "parent": 274,
+      "x": 270,
+      "y": 20,
+      "width": 440,
+      "height": 40,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 20,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 290,
+      "y": 32,
+      "text": "🔍 Cari unit fakultas, nomor tong, atau armada...",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Date Filter",
+      "parent": 274,
+      "x": 960,
+      "y": 22,
+      "width": 170,
+      "height": 36,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 18,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 976,
+      "y": 32,
+      "text": "📅 Rabu, 4 Nov 2026 ▾",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Notif Btn",
+      "parent": 274,
+      "x": 1145,
+      "y": 22,
+      "width": 36,
+      "height": 36,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 18,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1155,
+      "y": 31,
+      "text": "🔔",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Profile Pill",
+      "parent": 274,
+      "x": 1195,
+      "y": 22,
+      "width": 215,
+      "height": 36,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 18,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Profile Avatar",
+      "parent": 274,
+      "x": 1200,
+      "y": 26,
+      "width": 28,
+      "height": 28,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 14
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1206,
+      "y": 33,
+      "text": "HS",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1236,
+      "y": 32,
+      "text": "Dr. Hendra (Admin UPJ) ▾",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 270,
+      "y": 80,
+      "text": "Selamat Pagi, Tim Sirkular UPJ! ☀️",
+      "props": {
+        "fontSize": 22,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 270,
+      "y": 108,
+      "text": "Berikut ringkasan operasional daur ulang kertas dan logistik kampus hari ini.",
+      "props": {
+        "fontSize": 12,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "KPI Card Total Kertas Terkumpul",
+      "parent": 274,
+      "x": 270,
+      "y": 136,
+      "width": 270,
+      "height": 100,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 16,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 288,
+      "y": 152,
+      "text": "⚖️",
+      "props": {
+        "fontSize": 18,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 316,
+      "y": 154,
+      "text": "Total Kertas Terkumpul",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 288,
+      "y": 180,
+      "text": "1.850 Kg",
+      "props": {
+        "fontSize": 20,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Delta Pill",
+      "parent": 274,
+      "x": 288,
+      "y": 208,
+      "width": 56,
+      "height": 18,
+      "props": {
+        "fills": [
+          "#D1FAE5"
+        ],
+        "cornerRadius": 9
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 294,
+      "y": 211,
+      "text": "↑ 18%",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#1B7A4E"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 350,
+      "y": 211,
+      "text": "vs bulan lalu",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "KPI Card Nilai Transaksi Sirkular",
+      "parent": 274,
+      "x": 555,
+      "y": 136,
+      "width": 270,
+      "height": 100,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 16,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 573,
+      "y": 152,
+      "text": "💰",
+      "props": {
+        "fontSize": 18,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 601,
+      "y": 154,
+      "text": "Nilai Transaksi Sirkular",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 573,
+      "y": 180,
+      "text": "Rp 3.250.000",
+      "props": {
+        "fontSize": 20,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Delta Pill",
+      "parent": 274,
+      "x": 573,
+      "y": 208,
+      "width": 56,
+      "height": 18,
+      "props": {
+        "fills": [
+          "#D1FAE5"
+        ],
+        "cornerRadius": 9
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 579,
+      "y": 211,
+      "text": "↑ 12%",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#1B7A4E"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 635,
+      "y": 211,
+      "text": "masuk kas unit",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "KPI Card Status Tong Terpantau",
+      "parent": 274,
+      "x": 840,
+      "y": 136,
+      "width": 270,
+      "height": 100,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 16,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 858,
+      "y": 152,
+      "text": "📦",
+      "props": {
+        "fontSize": 18,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 886,
+      "y": 154,
+      "text": "Status Tong Terpantau",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 858,
+      "y": 180,
+      "text": "6 Titik UPJ",
+      "props": {
+        "fontSize": 20,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Delta Pill",
+      "parent": 274,
+      "x": 858,
+      "y": 208,
+      "width": 56,
+      "height": 18,
+      "props": {
+        "fills": [
+          "#FEF3C7"
+        ],
+        "cornerRadius": 9
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 864,
+      "y": 211,
+      "text": "2 Kritis",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#D97706"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 920,
+      "y": 211,
+      "text": "perlu jemput",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "KPI Card Dampak Lingkungan",
+      "parent": 274,
+      "x": 1125,
+      "y": 136,
+      "width": 270,
+      "height": 100,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 16,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1143,
+      "y": 152,
+      "text": "🌱",
+      "props": {
+        "fontSize": 18,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1171,
+      "y": 154,
+      "text": "Dampak Lingkungan",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1143,
+      "y": 180,
+      "text": "31 Pohon",
+      "props": {
+        "fontSize": 20,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Delta Pill",
+      "parent": 274,
+      "x": 1143,
+      "y": 208,
+      "width": 56,
+      "height": 18,
+      "props": {
+        "fills": [
+          "#D1FAE5"
+        ],
+        "cornerRadius": 9
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1149,
+      "y": 211,
+      "text": "2.4T CO₂",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#1B7A4E"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1205,
+      "y": 211,
+      "text": "jejak ditekan",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Chart Container",
+      "parent": 274,
+      "x": 270,
+      "y": 252,
+      "width": 730,
+      "height": 260,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 16,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 292,
+      "y": 270,
+      "text": "Tren Pengumpulan Kertas Kampus (Kg)",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 292,
+      "y": 290,
+      "text": "Total akumulasi per bulan seluruh unit",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 890,
+      "y": 272,
+      "text": "6 Bulan Terakhir ▾",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Chart Gridline 1",
+      "parent": 274,
+      "x": 330,
+      "y": 320,
+      "width": 640,
+      "height": 1,
+      "props": {
+        "fills": [
+          "#F0F3F1"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Chart Gridline 2",
+      "parent": 274,
+      "x": 330,
+      "y": 360,
+      "width": 640,
+      "height": 1,
+      "props": {
+        "fills": [
+          "#F0F3F1"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Chart Gridline 3",
+      "parent": 274,
+      "x": 330,
+      "y": 400,
+      "width": 640,
+      "height": 1,
+      "props": {
+        "fills": [
+          "#F0F3F1"
+        ]
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Chart Gridline 4",
+      "parent": 274,
+      "x": 330,
+      "y": 440,
+      "width": 640,
+      "height": 1,
+      "props": {
+        "fills": [
+          "#F0F3F1"
+        ]
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 285,
+      "y": 314,
+      "text": "400 kg",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 285,
+      "y": 354,
+      "text": "300 kg",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 285,
+      "y": 394,
+      "text": "200 kg",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 285,
+      "y": 434,
+      "text": "100 kg",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Mei",
+      "parent": 274,
+      "x": 370,
+      "y": 390,
+      "width": 36,
+      "height": 60,
+      "props": {
+        "fills": [
+          "#A4F3CC"
+        ],
+        "cornerRadius": 6
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 378,
+      "y": 458,
+      "text": "Mei",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 376,
+      "y": 375,
+      "text": "210",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Jun",
+      "parent": 274,
+      "x": 475,
+      "y": 370,
+      "width": 36,
+      "height": 80,
+      "props": {
+        "fills": [
+          "#A4F3CC"
+        ],
+        "cornerRadius": 6
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 483,
+      "y": 458,
+      "text": "Jun",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 481,
+      "y": 355,
+      "text": "260",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Jul",
+      "parent": 274,
+      "x": 580,
+      "y": 350,
+      "width": 36,
+      "height": 100,
+      "props": {
+        "fills": [
+          "#A4F3CC"
+        ],
+        "cornerRadius": 6
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 588,
+      "y": 458,
+      "text": "Jul",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 586,
+      "y": 335,
+      "text": "310",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Agu",
+      "parent": 274,
+      "x": 685,
+      "y": 360,
+      "width": 36,
+      "height": 90,
+      "props": {
+        "fills": [
+          "#A4F3CC"
+        ],
+        "cornerRadius": 6
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 693,
+      "y": 458,
+      "text": "Agu",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 691,
+      "y": 345,
+      "text": "285",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Sep",
+      "parent": 274,
+      "x": 790,
+      "y": 325,
+      "width": 36,
+      "height": 125,
+      "props": {
+        "fills": [
+          "#A4F3CC"
+        ],
+        "cornerRadius": 6
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 798,
+      "y": 458,
+      "text": "Sep",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 796,
+      "y": 310,
+      "text": "365",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Okt",
+      "parent": 274,
+      "x": 895,
+      "y": 310,
+      "width": 36,
+      "height": 140,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 6
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 903,
+      "y": 458,
+      "text": "Okt",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 901,
+      "y": 295,
+      "text": "420",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Donut Container",
+      "parent": 274,
+      "x": 1025,
+      "y": 252,
+      "width": 385,
+      "height": 260,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 16,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1045,
+      "y": 270,
+      "text": "Komposisi Jenis Kertas",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1045,
+      "y": 290,
+      "text": "Persentase perolehan berdasarkan grade",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Donut Outer Ring",
+      "parent": 274,
+      "x": 1060,
+      "y": 320,
+      "width": 100,
+      "height": 100,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 50
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Donut Inner Cut",
+      "parent": 274,
+      "x": 1080,
+      "y": 340,
+      "width": 60,
+      "height": 60,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 30
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1092,
+      "y": 360,
+      "text": "1.85T",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Dot",
+      "parent": 274,
+      "x": 1180,
+      "y": 324,
+      "width": 10,
+      "height": 10,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 5
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1198,
+      "y": 320,
+      "text": "HVS & Arsip",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1300,
+      "y": 320,
+      "text": "45% (832 Kg)",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Dot",
+      "parent": 274,
+      "x": 1180,
+      "y": 350,
+      "width": 10,
+      "height": 10,
+      "props": {
+        "fills": [
+          "#D97706"
+        ],
+        "cornerRadius": 5
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1198,
+      "y": 346,
+      "text": "Kardus & Karton",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1300,
+      "y": 346,
+      "text": "30% (555 Kg)",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Dot",
+      "parent": 274,
+      "x": 1180,
+      "y": 376,
+      "width": 10,
+      "height": 10,
+      "props": {
+        "fills": [
+          "#52A66F"
+        ],
+        "cornerRadius": 5
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1198,
+      "y": 372,
+      "text": "Koran & Tabloid",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1300,
+      "y": 372,
+      "text": "15% (277 Kg)",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Dot",
+      "parent": 274,
+      "x": 1180,
+      "y": 402,
+      "width": 10,
+      "height": 10,
+      "props": {
+        "fills": [
+          "#8A9E94"
+        ],
+        "cornerRadius": 5
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1198,
+      "y": 398,
+      "text": "Kertas Campuran",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1300,
+      "y": 398,
+      "text": "10% (185 Kg)",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Table Container",
+      "parent": 274,
+      "x": 270,
+      "y": 530,
+      "width": 730,
+      "height": 280,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 16,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 292,
+      "y": 550,
+      "text": "Log Penjemputan Armada & Verifikasi Timbangan",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 885,
+      "y": 552,
+      "text": "Lihat Semua (24) →",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "TH Row",
+      "parent": 274,
+      "x": 292,
+      "y": 580,
+      "width": 686,
+      "height": 28,
+      "props": {
+        "fills": [
+          "#F7F8F5"
+        ],
+        "cornerRadius": 6
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 304,
+      "y": 588,
+      "text": "TANGGAL",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 375,
+      "y": 588,
+      "text": "UNIT KAMPUS",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 500,
+      "y": 588,
+      "text": "KATEGORI",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 620,
+      "y": 588,
+      "text": "BERAT",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 710,
+      "y": 588,
+      "text": "NILAI KAS",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 830,
+      "y": 588,
+      "text": "STATUS",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 304,
+      "y": 620,
+      "text": "4 Nov",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 375,
+      "y": 620,
+      "text": "FTD Gedung B",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 500,
+      "y": 620,
+      "text": "HVS Putih",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 620,
+      "y": 620,
+      "text": "320 Kg",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 710,
+      "y": 620,
+      "text": "Rp 640.000",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Status Pill",
+      "parent": 274,
+      "x": 825,
+      "y": 616,
+      "width": 85,
+      "height": 20,
+      "props": {
+        "fills": [
+          "#D1FAE5"
+        ],
+        "cornerRadius": 10
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 835,
+      "y": 620,
+      "text": "Terverifikasi",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#1B7A4E"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 304,
+      "y": 662,
+      "text": "3 Nov",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 375,
+      "y": 662,
+      "text": "FEB Gedung A",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 500,
+      "y": 662,
+      "text": "Kardus Box",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 620,
+      "y": 662,
+      "text": "410 Kg",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 710,
+      "y": 662,
+      "text": "Rp 615.000",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Status Pill",
+      "parent": 274,
+      "x": 825,
+      "y": 658,
+      "width": 85,
+      "height": 20,
+      "props": {
+        "fills": [
+          "#D1FAE5"
+        ],
+        "cornerRadius": 10
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 835,
+      "y": 662,
+      "text": "Terverifikasi",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#1B7A4E"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 304,
+      "y": 704,
+      "text": "2 Nov",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 375,
+      "y": 704,
+      "text": "Perpustakaan",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 500,
+      "y": 704,
+      "text": "Koran/Tabloid",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 620,
+      "y": 704,
+      "text": "120 Kg",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 710,
+      "y": 704,
+      "text": "Rp 120.000",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Status Pill",
+      "parent": 274,
+      "x": 825,
+      "y": 700,
+      "width": 85,
+      "height": 20,
+      "props": {
+        "fills": [
+          "#D1FAE5"
+        ],
+        "cornerRadius": 10
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 835,
+      "y": 704,
+      "text": "Terverifikasi",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#1B7A4E"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 304,
+      "y": 746,
+      "text": "1 Nov",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#8A9E94"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 375,
+      "y": 746,
+      "text": "Rektorat UPJ",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 500,
+      "y": 746,
+      "text": "Arsip Kantor",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 620,
+      "y": 746,
+      "text": "85 Kg",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 710,
+      "y": 746,
+      "text": "Rp 170.000",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Status Pill",
+      "parent": 274,
+      "x": 825,
+      "y": 742,
+      "width": 85,
+      "height": 20,
+      "props": {
+        "fills": [
+          "#D1FAE5"
+        ],
+        "cornerRadius": 10
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 835,
+      "y": 746,
+      "text": "Terverifikasi",
+      "props": {
+        "fontSize": 9,
+        "fills": [
+          "#1B7A4E"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Tong Monitor Container",
+      "parent": 274,
+      "x": 1025,
+      "y": 530,
+      "width": 385,
+      "height": 280,
+      "props": {
+        "fills": [
+          "#FFFFFF"
+        ],
+        "cornerRadius": 16,
+        "strokes": [
+          "#E0E5E2"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1045,
+      "y": 550,
+      "text": "Status Kapasitas Tong UPJ",
+      "props": {
+        "fontSize": 14,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1315,
+      "y": 552,
+      "text": "Kelola Sensor →",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1045,
+      "y": 586,
+      "text": "Tong FTD Gedung B Lt. 2",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1250,
+      "y": 586,
+      "text": "Kritis (46/50 kg)",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#C0392B"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Track",
+      "parent": 274,
+      "x": 1045,
+      "y": 604,
+      "width": 345,
+      "height": 8,
+      "props": {
+        "fills": [
+          "#EEEEF0"
+        ],
+        "cornerRadius": 4
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Value",
+      "parent": 274,
+      "x": 1045,
+      "y": 604,
+      "width": 310,
+      "height": 8,
+      "props": {
+        "fills": [
+          "#C0392B"
+        ],
+        "cornerRadius": 4
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1045,
+      "y": 640,
+      "text": "Tong FEB Gedung A Lt. 1",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1250,
+      "y": 640,
+      "text": "Waspada (39/50 kg)",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#D97706"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Track",
+      "parent": 274,
+      "x": 1045,
+      "y": 658,
+      "width": 345,
+      "height": 8,
+      "props": {
+        "fills": [
+          "#EEEEF0"
+        ],
+        "cornerRadius": 4
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Value",
+      "parent": 274,
+      "x": 1045,
+      "y": 658,
+      "width": 260,
+      "height": 8,
+      "props": {
+        "fills": [
+          "#D97706"
+        ],
+        "cornerRadius": 4
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1045,
+      "y": 694,
+      "text": "Tong Perpustakaan Lt. 2",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1250,
+      "y": 694,
+      "text": "Aman (22.5/50 kg)",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#1B7A4E"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Track",
+      "parent": 274,
+      "x": 1045,
+      "y": 712,
+      "width": 345,
+      "height": 8,
+      "props": {
+        "fills": [
+          "#EEEEF0"
+        ],
+        "cornerRadius": 4
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Value",
+      "parent": 274,
+      "x": 1045,
+      "y": 712,
+      "width": 150,
+      "height": 8,
+      "props": {
+        "fills": [
+          "#1B7A4E"
+        ],
+        "cornerRadius": 4
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1045,
+      "y": 748,
+      "text": "Tong Rektorat Lt. 3",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#141E18"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1250,
+      "y": 748,
+      "text": "Aman (15/50 kg)",
+      "props": {
+        "fontSize": 10,
+        "fills": [
+          "#1B7A4E"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Track",
+      "parent": 274,
+      "x": 1045,
+      "y": 766,
+      "width": 345,
+      "height": 8,
+      "props": {
+        "fills": [
+          "#EEEEF0"
+        ],
+        "cornerRadius": 4
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bar Value",
+      "parent": 274,
+      "x": 1045,
+      "y": 766,
+      "width": 100,
+      "height": 8,
+      "props": {
+        "fills": [
+          "#1B7A4E"
+        ],
+        "cornerRadius": 4
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Bottom Banner",
+      "parent": 274,
+      "x": 270,
+      "y": 830,
+      "width": 1140,
+      "height": 60,
+      "props": {
+        "fills": [
+          "#E8F5EE"
+        ],
+        "cornerRadius": 14,
+        "strokes": [
+          "#C8D5CC"
+        ],
+        "strokeWeight": 1
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 290,
+      "y": 846,
+      "text": "🌱",
+      "props": {
+        "fontSize": 24,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 330,
+      "y": 844,
+      "text": "Target Daur Ulang Kampus UPJ Tercapai 85% Bulan Ini!",
+      "props": {
+        "fontSize": 13,
+        "fills": [
+          "#176B4D"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 330,
+      "y": 864,
+      "text": "Penjemputan armada truk berikutnya: Hari ini pukul 14:30 WIB melalui Gerbang Barat UPJ.",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#4A5C52"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "rectangle",
+      "name": "Banner Action Btn",
+      "parent": 274,
+      "x": 1220,
+      "y": 842,
+      "width": 170,
+      "height": 36,
+      "props": {
+        "fills": [
+          "#176B4D"
+        ],
+        "cornerRadius": 8
+      }
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "parent": 274,
+      "x": 1238,
+      "y": 852,
+      "text": "Lihat Rincian Armada →",
+      "props": {
+        "fontSize": 11,
+        "fills": [
+          "#FFFFFF"
+        ],
+        "fontFamily": "Plus Jakarta Sans"
+      }
+    }
+  }
+]
