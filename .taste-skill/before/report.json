@@ -1,0 +1,2773 @@
+{
+ "url": "http://localhost:3001/__preview-admin.html",
+ "at": "2026-11-06T05:12:35.131Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    0.88
+   ],
+   "motion": {
+    "elements": 42,
+    "css": 7,
+    "transitions": 18,
+    "scripted": 17,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 900,
+     "screens": 1,
+     "words": 430,
+     "img": 6,
+     "video": 0,
+     "canvas": 0,
+     "svg": 4,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 5,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "mina.png",
+      "moni.png",
+      "4239.png",
+      "4239.png",
+      "4239.png"
+     ],
+     "blendText": 0,
+     "sideScrollers": 2,
+     "brokenImages": [],
+     "emoji": [
+      "☀",
+      "✨",
+      "🌱",
+      "✓"
+     ],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Sampah Butuh Teman",
+     "words": 3,
+     "chars": 18,
+     "lines": 2,
+     "size": 13,
+     "vw": 0.9,
+     "font": "-apple-system",
+     "weight": 800,
+     "tracking": -0.02,
+     "leading": 1.25,
+     "top": 14,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Sampah Butuh Teman",
+     "words": 3,
+     "lines": 2,
+     "size": 13,
+     "font": "-apple-system"
+    },
+    "headings": [
+     {
+      "text": "Monitoring Sirkularitas & Limbah Kertas",
+      "words": 5,
+      "chars": 39,
+      "lines": 2,
+      "size": 30,
+      "vw": 2.1,
+      "font": "-apple-system",
+      "weight": 900,
+      "tracking": -0.025,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.31,
+      "top": 314,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "2.380",
+      "words": 1,
+      "chars": 5,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "-apple-system",
+      "weight": 900,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.05,
+      "top": 672,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "3.332.000",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "-apple-system",
+      "weight": 900,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.1,
+      "top": 672,
+      "tag": "span",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 3,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 1,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "-apple-system",
+       "share": 0.9,
+       "mono": false
+      },
+      {
+       "family": "Material Symbols Outlined",
+       "share": 0.09,
+       "mono": true
+      },
+      {
+       "family": "Helvetica Neue",
+       "share": 0.01,
+       "mono": false
+      }
+     ],
+     "familyCount": 3,
+     "sizes": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      17,
+      18,
+      20,
+      24,
+      30
+     ],
+     "sizeCount": 11,
+     "notLoaded": [],
+     "body": {
+      "font": "-apple-system",
+      "size": 11,
+      "leading": 1.33,
+      "weight": 500,
+      "tracking": 0,
+      "contrast": 6.7
+     },
+     "measureChars": 59,
+     "max": {
+      "size": 30,
+      "vw": 2.1,
+      "font": "-apple-system",
+      "text": "Monitoring Sirkularitas & Limbah Kertas"
+     },
+     "monoShare": 0.09,
+     "monoProseShare": 0.09,
+     "monoFamilies": [
+      "Material Symbols Outlined"
+     ],
+     "monoSamples": [
+      "analytics",
+      "inventory_2",
+      "flag",
+      "logout",
+      "menu",
+      "inventory_2"
+     ],
+     "microLabels": 15,
+     "microLabelShare": 0.087,
+     "microSamples": [
+      "Admin Portal",
+      "Menu Utama",
+      "PUSAT KOMANDO SIRKULARITAS • KAMPUS UPJ",
+      "Total Tersalurkan",
+      "Nilai Sirkularitas",
+      "Capaian Semester"
+     ],
+     "upperShare": 0.09,
+     "centerShare": 0.12,
+     "smallText": 60
+    },
+    "eyebrows": [
+     {
+      "text": "PUSAT KOMANDO SIRKULARITAS • KAMPUS UPJ",
+      "above": "Monitoring Sirkularitas & Limbah Kertas",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": true,
+      "size": 11,
+      "top": 275
+     },
+     {
+      "text": "Total Tersalurkan",
+      "above": "2.380",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": false,
+      "size": 10,
+      "top": 638
+     },
+     {
+      "text": "Nilai Sirkularitas",
+      "above": "3.332.000",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": false,
+      "size": 10,
+      "top": 638
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#fafaf7",
+     "bodyBgHsl": {
+      "h": 60,
+      "s": 0.23,
+      "l": 0.97
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f7f8f5",
+       "top": 0,
+       "hsl": {
+        "h": 80,
+        "s": 0.18,
+        "l": 0.97
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 1737,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#4a5c52",
+       "share": 0.35
+      },
+      {
+       "color": "#141e18",
+       "share": 0.17
+      },
+      {
+       "color": "#2d6a4f",
+       "share": 0.15
+      },
+      {
+       "color": "#8a9e94",
+       "share": 0.12
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.06
+      }
+     ],
+     "button": {
+      "bg": "#ffffff",
+      "hsl": {
+       "h": 0,
+       "s": 0,
+       "l": 1
+      },
+      "fg": "#141e18"
+     },
+     "lowContrast": [
+      {
+       "text": "Mitra",
+       "ratio": 2.5,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#52b788",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "Admin Portal",
+       "ratio": 2.8,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#8a9e94",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "Menu Utama",
+       "ratio": 2.8,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#8a9e94",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "arrow_forward",
+       "ratio": 2.8,
+       "need": 3,
+       "size": 24,
+       "fg": "#8a9e94",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "arrow_forward",
+       "ratio": 2.8,
+       "need": 3,
+       "size": 24,
+       "fg": "#8a9e94",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "arrow_forward",
+       "ratio": 2.8,
+       "need": 3,
+       "size": 24,
+       "fg": "#8a9e94",
+       "bg": "#ffffff"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 9,
+     "inHero": 4,
+     "radius": 12,
+     "height": 78,
+     "withShadow": 5,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "analytics Dashboard",
+      "inventory_2 Kelola Unit & Tong Atur kuot",
+      "flag Laporan & Sengketa Tinjau kontamina",
+      "emoji_events Papan Skor Sirkularitas Per"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 20,
+     "shadowOverlay": 0,
+     "shadowSamples": [
+      "aside.fixed.lg:static → rgba(20, 30, 24, 0.06) 0px 1px 2px 0px",
+      "button.w-full.flex → rgba(20, 30, 24, 0.06) 0px 1px 2px 0px",
+      "span.inline-flex.items-center → rgba(20, 30, 24, 0.06) 0px 1px 2px 0px",
+      "div.absolute.inset-x-0 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0"
+     ],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 8,
+     "hairlineSamples": [
+      "aside.fixed.lg:static 256px",
+      "div.h-20.flex 255px",
+      "div.p-4.border-t 255px",
+      "header.h-20.bg-white 1184px",
+      "div.flex.items-center 690px"
+     ],
+     "outlinedBoxes": 12,
+     "dashed": 0,
+     "blurred": 1,
+     "roundedBoxes": 14,
+     "boxRadius": 16,
+     "squareMedia": 5,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 4,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 611
+      }
+     ]
+    },
+    "heroMedia": [
+     {
+      "type": "svg",
+      "ratio": 0.22
+     },
+     {
+      "type": "img",
+      "ratio": 0.1
+     }
+    ],
+    "nav": {
+     "links": 0,
+     "fixed": false,
+     "height": 80,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "material symbols outlined"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 900,
+    "margins": {
+     "left": 16,
+     "right": 33
+    },
+    "sections": [
+     {
+      "sel": "div.w-full.relative",
+      "tag": "div",
+      "top": 195,
+      "height": 302,
+      "words": 34,
+      "media": 2,
+      "middle": 0,
+      "heading": {
+       "text": "Monitoring Sirkularitas & Limbah Kertas",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 289,
+      "right": 0,
+      "textLeft": 324,
+      "textRight": 744,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.grid.grid-cols-1",
+      "tag": "div",
+      "top": 611,
+      "height": 179,
+      "words": 56,
+      "media": 0,
+      "middle": 68,
+      "heading": {
+       "text": "2.380",
+       "size": 30,
+       "tag": "span"
+      },
+      "left": 309,
+      "right": 53,
+      "textLeft": 309,
+      "textRight": 53,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.grid.grid-cols-1",
+      "tag": "div",
+      "top": 814,
+      "height": 415,
+      "words": 29,
+      "media": 2,
+      "middle": 70,
+      "heading": {
+       "text": "Tren Volume Pengumpulan Kertas",
+       "size": 13,
+       "tag": "h2"
+      },
+      "left": 313,
+      "right": 127,
+      "textLeft": 313,
+      "textRight": 127,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.grid.grid-cols-1",
+      "tag": "div",
+      "top": 1253,
+      "height": 460,
+      "words": 0,
+      "media": 3,
+      "middle": 0,
+      "heading": null,
+      "left": 675,
+      "right": 0,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.bg-white.rounded-2xl",
+      "tag": "div",
+      "top": 1737,
+      "height": 380,
+      "words": 0,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 1268,
+      "right": 57,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Sampah Butuh Teman",
+      "size": 13,
+      "top": 14,
+      "firstScreen": true
+     },
+     {
+      "text": "Selamat Pagi, Tim Pengelola!",
+      "size": 24,
+      "top": 120,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 324,
+      "n": 2
+     },
+     {
+      "x": 344,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 3,
+    "bodySize": 11,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.1,
+    "voidBox": {
+     "x": 0,
+     "y": 300,
+     "w": 240,
+     "h": 540
+    }
+   },
+   "app": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "dark": false,
+    "ground": "#fafaf7",
+    "sidebar": {
+     "w": 256,
+     "tag": "aside",
+     "links": 4,
+     "share": 0.18
+    },
+    "topbar": {
+     "h": 80
+    },
+    "canvas": {
+     "left": 32,
+     "right": -25
+    },
+    "hero": {
+     "text": "Sampah Butuh Teman",
+     "words": 3,
+     "chars": 18,
+     "lines": 2,
+     "size": 13,
+     "vw": 0.9,
+     "font": "-apple-system",
+     "weight": 800,
+     "tracking": -0.02,
+     "leading": 1.25,
+     "top": 14,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 1,
+    "layout": {
+     "panels": 14,
+     "firstScreen": 11,
+     "ragged": [],
+     "voids": [
+      {
+       "gap": 91,
+       "at": 1414,
+       "panel": "Setor vs Salur Mitra"
+      },
+      {
+       "gap": 67,
+       "at": 890,
+       "panel": "Tren Volume Pengumpulan Kertas"
+      }
+     ]
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 19,
+     "radii": [
+      [
+       16,
+       12
+      ],
+      [
+       0,
+       5
+      ],
+      [
+       12,
+       2
+      ]
+     ],
+     "heavyBorders": 0,
+     "borderSamples": [],
+     "heavyShadows": 0,
+     "softShadows": 13,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 1,
+     "hues": 1,
+     "samples": [
+      {
+       "hue": 45,
+       "size": 40,
+       "radius": "12px"
+      }
+     ]
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 8,
+     "tabularShare": 0.5,
+     "kpiMax": 30
+    },
+    "rows": {
+     "count": 5,
+     "median": 49
+    },
+    "chartHues": 3,
+    "placeholders": [],
+    "type": {
+     "under13": 0.72,
+     "tiny": 34,
+     "tinySamples": [
+      "Admin Portal 10px",
+      "Menu Utama 10px",
+      "Total Tersalurkan 10px",
+      "Nilai Sirkularitas 10px"
+     ],
+     "sizes": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      17,
+      18,
+      20,
+      24,
+      30
+     ]
+    },
+    "title": {
+     "text": "Sampah\nButuh Teman",
+     "size": 13,
+     "top": 14
+    },
+    "colourShare": 0.113
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    0.86
+   ],
+   "motion": {
+    "elements": 42,
+    "css": 7,
+    "transitions": 18,
+    "scripted": 17,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 1024,
+     "screens": 1,
+     "words": 430,
+     "img": 6,
+     "video": 0,
+     "canvas": 0,
+     "svg": 4,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 5,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "mina.png",
+      "moni.png",
+      "4239.png",
+      "4239.png",
+      "4239.png"
+     ],
+     "blendText": 0,
+     "sideScrollers": 2,
+     "brokenImages": [],
+     "emoji": [
+      "☀",
+      "✨",
+      "🌱",
+      "✓"
+     ],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Sampah Butuh Teman",
+     "words": 3,
+     "chars": 18,
+     "lines": 2,
+     "size": 13,
+     "vw": 1.7,
+     "font": "-apple-system",
+     "weight": 800,
+     "tracking": -0.02,
+     "leading": 1.25,
+     "top": 14,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Sampah Butuh Teman",
+     "words": 3,
+     "lines": 2,
+     "size": 13,
+     "font": "-apple-system"
+    },
+    "headings": [
+     {
+      "text": "Monitoring Sirkularitas & Limbah Kertas",
+      "words": 5,
+      "chars": 39,
+      "lines": 2,
+      "size": 30,
+      "vw": 3.9,
+      "font": "-apple-system",
+      "weight": 900,
+      "tracking": -0.025,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.5,
+      "top": 314,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "2.380",
+      "words": 1,
+      "chars": 5,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "-apple-system",
+      "weight": 900,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.1,
+      "top": 702,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "3.332.000",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "-apple-system",
+      "weight": 900,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.18,
+      "top": 702,
+      "tag": "span",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 3,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 1,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "-apple-system",
+       "share": 0.9,
+       "mono": false
+      },
+      {
+       "family": "Material Symbols Outlined",
+       "share": 0.09,
+       "mono": true
+      },
+      {
+       "family": "Helvetica Neue",
+       "share": 0.01,
+       "mono": false
+      }
+     ],
+     "familyCount": 3,
+     "sizes": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      17,
+      18,
+      20,
+      24,
+      30
+     ],
+     "sizeCount": 11,
+     "notLoaded": [],
+     "body": {
+      "font": "-apple-system",
+      "size": 11,
+      "leading": 1.33,
+      "weight": 500,
+      "tracking": 0,
+      "contrast": 6.7
+     },
+     "measureChars": 59,
+     "max": {
+      "size": 30,
+      "vw": 3.9,
+      "font": "-apple-system",
+      "text": "Monitoring Sirkularitas & Limbah Kertas"
+     },
+     "monoShare": 0.09,
+     "monoProseShare": 0.09,
+     "monoFamilies": [
+      "Material Symbols Outlined"
+     ],
+     "monoSamples": [
+      "analytics",
+      "inventory_2",
+      "flag",
+      "logout",
+      "menu",
+      "inventory_2"
+     ],
+     "microLabels": 15,
+     "microLabelShare": 0.087,
+     "microSamples": [
+      "Admin Portal",
+      "Menu Utama",
+      "PUSAT KOMANDO SIRKULARITAS • KAMPUS UPJ",
+      "Total Tersalurkan",
+      "Nilai Sirkularitas",
+      "Capaian Semester"
+     ],
+     "upperShare": 0.09,
+     "centerShare": 0.12,
+     "smallText": 60
+    },
+    "eyebrows": [
+     {
+      "text": "PUSAT KOMANDO SIRKULARITAS • KAMPUS UPJ",
+      "above": "Monitoring Sirkularitas & Limbah Kertas",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": true,
+      "size": 11,
+      "top": 275
+     },
+     {
+      "text": "Total Tersalurkan",
+      "above": "2.380",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": false,
+      "size": 10,
+      "top": 668
+     },
+     {
+      "text": "Nilai Sirkularitas",
+      "above": "3.332.000",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": false,
+      "size": 10,
+      "top": 668
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#fafaf7",
+     "bodyBgHsl": {
+      "h": 60,
+      "s": 0.23,
+      "l": 0.97
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f7f8f5",
+       "top": 0,
+       "hsl": {
+        "h": 80,
+        "s": 0.18,
+        "l": 0.97
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 0,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#4a5c52",
+       "share": 0.35
+      },
+      {
+       "color": "#141e18",
+       "share": 0.17
+      },
+      {
+       "color": "#2d6a4f",
+       "share": 0.15
+      },
+      {
+       "color": "#8a9e94",
+       "share": 0.12
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.06
+      }
+     ],
+     "button": {
+      "bg": "#f7f8f5",
+      "hsl": {
+       "h": 80,
+       "s": 0.18,
+       "l": 0.97
+      },
+      "fg": "#4a5c52"
+     },
+     "lowContrast": [
+      {
+       "text": "Mitra",
+       "ratio": 2.5,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#52b788",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "Admin Portal",
+       "ratio": 2.8,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#8a9e94",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "Menu Utama",
+       "ratio": 2.8,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#8a9e94",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "arrow_forward",
+       "ratio": 2.8,
+       "need": 3,
+       "size": 24,
+       "fg": "#8a9e94",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "arrow_forward",
+       "ratio": 2.8,
+       "need": 3,
+       "size": 24,
+       "fg": "#8a9e94",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "arrow_forward",
+       "ratio": 2.8,
+       "need": 3,
+       "size": 24,
+       "fg": "#8a9e94",
+       "bg": "#ffffff"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 6,
+     "inHero": 1,
+     "radius": 12,
+     "height": 38,
+     "withShadow": 2,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "analytics Dashboard"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 18,
+     "shadowOverlay": 2,
+     "shadowSamples": [
+      "span.inline-flex.items-center → rgba(20, 30, 24, 0.06) 0px 1px 2px 0px",
+      "div.absolute.inset-x-0 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+      "div.inline-flex.items-center → rgba(20, 30, 24, 0.06) 0px 1px 2px 0px",
+      "div.relative.bg-white → rgba(20, 30, 24, 0.1) 0px 8px 24px 0px, rgba(20, 30, 24, 0.05) 0px 2px 6px 0px"
+     ],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 12,
+     "hairlineSamples": [
+      "aside.fixed.lg:static 288px",
+      "div.h-20.flex 287px",
+      "div.p-4.border-t 287px",
+      "header.h-20.bg-white 768px",
+      "div.mt-3.pt-2.5 302px"
+     ],
+     "outlinedBoxes": 15,
+     "dashed": 0,
+     "blurred": 1,
+     "roundedBoxes": 17,
+     "boxRadius": 16,
+     "squareMedia": 5,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 509
+      },
+      {
+       "count": 4,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 641
+      }
+     ]
+    },
+    "heroMedia": [
+     {
+      "type": "svg",
+      "ratio": 0.23
+     },
+     {
+      "type": "img",
+      "ratio": 0.17
+     },
+     {
+      "type": "img",
+      "ratio": 0.11
+     }
+    ],
+    "nav": {
+     "links": 0,
+     "fixed": false,
+     "height": 80,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "material symbols outlined"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 1024,
+    "margins": {
+     "left": 32,
+     "right": 32
+    },
+    "sections": [
+     {
+      "sel": "div.w-full.relative",
+      "tag": "div",
+      "top": 195,
+      "height": 302,
+      "words": 34,
+      "media": 2,
+      "middle": 0,
+      "heading": {
+       "text": "Monitoring Sirkularitas & Limbah Kertas",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 33,
+      "right": 0,
+      "textLeft": 68,
+      "textRight": 328,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.grid.grid-cols-1",
+      "tag": "div",
+      "top": 641,
+      "height": 368,
+      "words": 56,
+      "media": 0,
+      "middle": 109,
+      "heading": {
+       "text": "2.380",
+       "size": 30,
+       "tag": "span"
+      },
+      "left": 53,
+      "right": 53,
+      "textLeft": 53,
+      "textRight": 53,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.grid.grid-cols-1",
+      "tag": "div",
+      "top": 1033,
+      "height": 810,
+      "words": 0,
+      "media": 2,
+      "middle": 0,
+      "heading": null,
+      "left": 57,
+      "right": 57,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.grid.grid-cols-1",
+      "tag": "div",
+      "top": 1867,
+      "height": 869,
+      "words": 0,
+      "media": 3,
+      "middle": 0,
+      "heading": null,
+      "left": 0,
+      "right": 0,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.bg-white.rounded-2xl",
+      "tag": "div",
+      "top": 2760,
+      "height": 380,
+      "words": 0,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 596,
+      "right": 57,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Sampah Butuh Teman",
+      "size": 13,
+      "top": 14,
+      "firstScreen": true
+     },
+     {
+      "text": "Selamat Pagi, Tim Pengelola!",
+      "size": 24,
+      "top": 120,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 68,
+      "n": 2
+     },
+     {
+      "x": 88,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 3,
+    "bodySize": 13,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "dark": false,
+    "ground": "#fafaf7",
+    "sidebar": {
+     "w": 288,
+     "tag": "aside",
+     "links": 4,
+     "share": 0.38
+    },
+    "topbar": {
+     "h": 80
+    },
+    "canvas": {
+     "left": 14,
+     "right": -45
+    },
+    "hero": {
+     "text": "Sampah Butuh Teman",
+     "words": 3,
+     "chars": 18,
+     "lines": 2,
+     "size": 13,
+     "vw": 1.7,
+     "font": "-apple-system",
+     "weight": 800,
+     "tracking": -0.02,
+     "leading": 1.25,
+     "top": 14,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 1,
+    "layout": {
+     "panels": 13,
+     "firstScreen": 8,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 18,
+     "radii": [
+      [
+       16,
+       12
+      ],
+      [
+       0,
+       4
+      ],
+      [
+       12,
+       2
+      ]
+     ],
+     "heavyBorders": 0,
+     "borderSamples": [],
+     "heavyShadows": 0,
+     "softShadows": 13,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 1,
+     "hues": 1,
+     "samples": [
+      {
+       "hue": 45,
+       "size": 40,
+       "radius": "12px"
+      }
+     ]
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 8,
+     "tabularShare": 0.5,
+     "kpiMax": 30
+    },
+    "rows": {
+     "count": 5,
+     "median": 49
+    },
+    "chartHues": 3,
+    "placeholders": [],
+    "type": {
+     "under13": 0.72,
+     "tiny": 34,
+     "tinySamples": [
+      "Admin Portal 10px",
+      "Menu Utama 10px",
+      "Total Tersalurkan 10px",
+      "Nilai Sirkularitas 10px"
+     ],
+     "sizes": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      17,
+      18,
+      20,
+      24,
+      30
+     ]
+    },
+    "title": {
+     "text": "Sampah\nButuh Teman",
+     "size": 13,
+     "top": 14
+    },
+    "colourShare": 0.123
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    0.86
+   ],
+   "motion": {
+    "elements": 40,
+    "css": 6,
+    "transitions": 18,
+    "scripted": 16,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 844,
+     "screens": 1,
+     "words": 428,
+     "img": 5,
+     "video": 0,
+     "canvas": 0,
+     "svg": 4,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 4,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "mina.png",
+      "moni.png",
+      "4239.png",
+      "4239.png"
+     ],
+     "blendText": 0,
+     "sideScrollers": 2,
+     "brokenImages": [],
+     "emoji": [
+      "☀",
+      "✨",
+      "🌱",
+      "✓"
+     ],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Sampah Butuh Teman",
+     "words": 3,
+     "chars": 18,
+     "lines": 2,
+     "size": 13,
+     "vw": 3.3,
+     "font": "-apple-system",
+     "weight": 800,
+     "tracking": -0.02,
+     "leading": 1.25,
+     "top": 14,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Sampah Butuh Teman",
+     "words": 3,
+     "lines": 2,
+     "size": 13,
+     "font": "-apple-system"
+    },
+    "headings": [
+     {
+      "text": "menu",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "center",
+      "position": "left",
+      "widthRatio": 0.1,
+      "top": 20,
+      "tag": "button",
+      "kind": "heading"
+     },
+     {
+      "text": "☀️",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "-apple-system",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.08,
+      "top": 104,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "analytics",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "center",
+      "position": "left",
+      "widthRatio": 0.06,
+      "top": 140,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "inventory_2",
+      "words": 1,
+      "chars": 11,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "center",
+      "position": "left",
+      "widthRatio": 0.06,
+      "top": 194,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "flag",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "center",
+      "position": "left",
+      "widthRatio": 0.06,
+      "top": 248,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "inventory_2",
+      "words": 1,
+      "chars": 11,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.11,
+      "top": 602,
+      "tag": "div",
+      "kind": "heading"
+     },
+     {
+      "text": "arrow_forward",
+      "words": 1,
+      "chars": 13,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.06,
+      "top": 612,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "flag",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.11,
+      "top": 696,
+      "tag": "div",
+      "kind": "heading"
+     },
+     {
+      "text": "arrow_forward",
+      "words": 1,
+      "chars": 13,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.06,
+      "top": 706,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "emoji_events",
+      "words": 1,
+      "chars": 12,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.11,
+      "top": 790,
+      "tag": "div",
+      "kind": "heading"
+     },
+     {
+      "text": "logout",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "center",
+      "position": "left",
+      "widthRatio": 0.06,
+      "top": 794,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "arrow_forward",
+      "words": 1,
+      "chars": 13,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.06,
+      "top": 800,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "2.380",
+      "words": 1,
+      "chars": 5,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "-apple-system",
+      "weight": 900,
+      "tracking": -0.025,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.16,
+      "top": 936,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "3.332.000",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "-apple-system",
+      "weight": 900,
+      "tracking": -0.025,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.28,
+      "top": 1128,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "verified",
+      "words": 1,
+      "chars": 8,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.06,
+      "top": 1548,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "refresh",
+      "words": 1,
+      "chars": 7,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "center",
+      "position": "right",
+      "widthRatio": 0.06,
+      "top": 2928,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "school",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "center",
+      "position": "left",
+      "widthRatio": 0.06,
+      "top": 2986,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "factory",
+      "words": 1,
+      "chars": 7,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "center",
+      "position": "right",
+      "widthRatio": 0.06,
+      "top": 2986,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "recycling",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "center",
+      "position": "right",
+      "widthRatio": 0.06,
+      "top": 2986,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "precision_manufacturing",
+      "words": 1,
+      "chars": 23,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "center",
+      "position": "right",
+      "widthRatio": 0.06,
+      "top": 2986,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "school",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.06,
+      "top": 3264,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "arrow_forward",
+      "words": 1,
+      "chars": 13,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "center",
+      "position": "right",
+      "widthRatio": 0.06,
+      "top": 3524,
+      "tag": "span",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 22,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 11,
+     "medianWords": 1,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "-apple-system",
+       "share": 0.9,
+       "mono": false
+      },
+      {
+       "family": "Material Symbols Outlined",
+       "share": 0.09,
+       "mono": true
+      },
+      {
+       "family": "Helvetica Neue",
+       "share": 0.01,
+       "mono": false
+      }
+     ],
+     "familyCount": 3,
+     "sizes": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      17,
+      18,
+      20,
+      24
+     ],
+     "sizeCount": 10,
+     "notLoaded": [],
+     "body": {
+      "font": "-apple-system",
+      "size": 11,
+      "leading": 1.33,
+      "weight": 500,
+      "tracking": 0,
+      "contrast": 6.7
+     },
+     "measureChars": 28,
+     "max": {
+      "size": 24,
+      "vw": 6.2,
+      "font": "Material Symbols Outlined",
+      "text": "analytics"
+     },
+     "monoShare": 0.09,
+     "monoProseShare": 0.09,
+     "monoFamilies": [
+      "Material Symbols Outlined"
+     ],
+     "monoSamples": [
+      "analytics",
+      "inventory_2",
+      "flag",
+      "logout",
+      "menu",
+      "inventory_2"
+     ],
+     "microLabels": 15,
+     "microLabelShare": 0.087,
+     "microSamples": [
+      "Admin Portal",
+      "Menu Utama",
+      "PUSAT KOMANDO SIRKULARITAS • KAMPUS UPJ",
+      "Total Tersalurkan",
+      "Nilai Sirkularitas",
+      "Capaian Semester"
+     ],
+     "upperShare": 0.09,
+     "centerShare": 0.12,
+     "smallText": 60
+    },
+    "eyebrows": [
+     {
+      "text": "Total Tersalurkan",
+      "above": "2.380",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": false,
+      "size": 10,
+      "top": 902
+     },
+     {
+      "text": "Nilai Sirkularitas",
+      "above": "3.332.000",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": false,
+      "size": 10,
+      "top": 1094
+     },
+     {
+      "text": "Terselamatkan",
+      "above": "verified",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 10,
+      "top": 1509
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#fafaf7",
+     "bodyBgHsl": {
+      "h": 60,
+      "s": 0.23,
+      "l": 0.97
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f7f8f5",
+       "top": 0,
+       "hsl": {
+        "h": 80,
+        "s": 0.18,
+        "l": 0.97
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 0,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#174630",
+       "top": 271,
+       "hsl": {
+        "h": 152,
+        "s": 0.51,
+        "l": 0.18
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#4a5c52",
+       "share": 0.35
+      },
+      {
+       "color": "#141e18",
+       "share": 0.17
+      },
+      {
+       "color": "#2d6a4f",
+       "share": 0.15
+      },
+      {
+       "color": "#8a9e94",
+       "share": 0.13
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.06
+      }
+     ],
+     "button": {
+      "bg": "#ffffff",
+      "hsl": {
+       "h": 0,
+       "s": 0,
+       "l": 1
+      },
+      "fg": "#141e18"
+     },
+     "lowContrast": [
+      {
+       "text": "Mitra",
+       "ratio": 2.5,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#52b788",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "Pusat Kampus",
+       "ratio": 2.7,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#8a9e94",
+       "bg": "#f7f8f5"
+      },
+      {
+       "text": "Admin Portal",
+       "ratio": 2.8,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#8a9e94",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "Menu Utama",
+       "ratio": 2.8,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#8a9e94",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "arrow_forward",
+       "ratio": 2.8,
+       "need": 3,
+       "size": 24,
+       "fg": "#8a9e94",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "arrow_forward",
+       "ratio": 2.8,
+       "need": 3,
+       "size": 24,
+       "fg": "#8a9e94",
+       "bg": "#ffffff"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 9,
+     "inHero": 4,
+     "radius": 12,
+     "height": 78,
+     "withShadow": 5,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "analytics Dashboard",
+      "inventory_2 Kelola Unit & Tong Atur kuot",
+      "flag Laporan & Sengketa Tinjau kontamina",
+      "emoji_events Papan Skor Sirkularitas Per"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 18,
+     "shadowOverlay": 2,
+     "shadowSamples": [
+      "span.inline-flex.items-center → rgba(20, 30, 24, 0.06) 0px 1px 2px 0px",
+      "div.absolute.inset-x-0 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+      "div.inline-flex.items-center → rgba(20, 30, 24, 0.06) 0px 1px 2px 0px",
+      "div.relative.bg-white → rgba(20, 30, 24, 0.1) 0px 8px 24px 0px, rgba(20, 30, 24, 0.05) 0px 2px 6px 0px"
+     ],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 13,
+     "hairlineSamples": [
+      "aside.fixed.lg:static 288px",
+      "div.h-20.flex 287px",
+      "div.p-4.border-t 287px",
+      "header.h-20.bg-white 390px",
+      "div.mt-3.pt-2.5 316px"
+     ],
+     "outlinedBoxes": 12,
+     "dashed": 0,
+     "blurred": 1,
+     "roundedBoxes": 14,
+     "boxRadius": 16,
+     "squareMedia": 4,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "svg",
+      "ratio": 0.32
+     },
+     {
+      "type": "img",
+      "ratio": 0.2
+     },
+     {
+      "type": "img",
+      "ratio": 0.14
+     }
+    ],
+    "nav": {
+     "links": 0,
+     "fixed": false,
+     "height": 80,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "material symbols outlined"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 844,
+    "margins": {
+     "left": 16,
+     "right": 16
+    },
+    "sections": [
+     {
+      "sel": "div.w-full.relative",
+      "tag": "div",
+      "top": 231,
+      "height": 342,
+      "words": 42,
+      "media": 3,
+      "middle": 0,
+      "heading": {
+       "text": "Monitoring Sirkularitas & Limbah Kertas",
+       "size": 20,
+       "tag": "h2"
+      },
+      "left": 0,
+      "right": 0,
+      "textLeft": 4,
+      "textRight": 183,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.grid.grid-cols-1",
+      "tag": "div",
+      "top": 581,
+      "height": 270,
+      "words": 33,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "inventory_2",
+       "size": 24,
+       "tag": "span"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 43,
+      "textRight": 33,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.grid.grid-cols-1",
+      "tag": "div",
+      "top": 875,
+      "height": 718,
+      "words": 0,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": null,
+      "right": null,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.grid.grid-cols-1",
+      "tag": "div",
+      "top": 1617,
+      "height": 827,
+      "words": 0,
+      "media": 2,
+      "middle": 0,
+      "heading": null,
+      "left": 41,
+      "right": 41,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.grid.grid-cols-1",
+      "tag": "div",
+      "top": 2468,
+      "height": 992,
+      "words": 0,
+      "media": 2,
+      "middle": 291,
+      "heading": null,
+      "left": 29,
+      "right": 0,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.bg-white.rounded-2xl",
+      "tag": "div",
+      "top": 3484,
+      "height": 458,
+      "words": 0,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 255,
+      "right": 41,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Sampah Butuh Teman",
+      "size": 13,
+      "top": 14,
+      "firstScreen": true
+     },
+     {
+      "text": "Selamat Pagi, Tim Pengelola!",
+      "size": 20,
+      "top": 106,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [
+     {
+      "text": "Hai Admin! Kertas HVS UPJ siap olah! ✨",
+      "side": "left",
+      "px": 4
+     }
+    ],
+    "edges": [
+     {
+      "x": 40,
+      "n": 1
+     },
+     {
+      "x": 59,
+      "n": 1
+     },
+     {
+      "x": 72,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 3,
+    "bodySize": 11,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "dark": false,
+    "ground": "#fafaf7",
+    "sidebar": null,
+    "topbar": {
+     "h": 80
+    },
+    "canvas": {
+     "left": 16,
+     "right": -283
+    },
+    "hero": {
+     "text": "Sampah Butuh Teman",
+     "words": 3,
+     "chars": 18,
+     "lines": 2,
+     "size": 13,
+     "vw": 3.3,
+     "font": "-apple-system",
+     "weight": 800,
+     "tracking": -0.02,
+     "leading": 1.25,
+     "top": 14,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 1,
+    "layout": {
+     "panels": 13,
+     "firstScreen": 4,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 18,
+     "radii": [
+      [
+       16,
+       12
+      ],
+      [
+       0,
+       4
+      ],
+      [
+       12,
+       2
+      ]
+     ],
+     "heavyBorders": 0,
+     "borderSamples": [],
+     "heavyShadows": 0,
+     "softShadows": 13,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 1,
+     "hues": 1,
+     "samples": [
+      {
+       "hue": 45,
+       "size": 40,
+       "radius": "12px"
+      }
+     ]
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 8,
+     "tabularShare": 0.5,
+     "kpiMax": 24
+    },
+    "rows": {
+     "count": 5,
+     "median": 56
+    },
+    "chartHues": 3,
+    "placeholders": [],
+    "type": {
+     "under13": 0.78,
+     "tiny": 36,
+     "tinySamples": [
+      "Admin Portal 10px",
+      "Menu Utama 10px",
+      "PUSAT KOMANDO SIRKULARIT 10px",
+      "Hai Admin! Kertas HVS UP 10px"
+     ],
+     "sizes": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      17,
+      18,
+      20,
+      24
+     ]
+    },
+    "title": {
+     "text": "Sampah\nButuh Teman",
+     "size": 13,
+     "top": 14
+    },
+    "colourShare": 0.191
+   },
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "FAIL",
+   "id": "micro-label",
+   "width": 1440,
+   "message": "15 tiny uppercase letter-spaced labels (e.g. \"Admin Portal\", \"Menu Utama\", \"PUSAT KOMANDO SIRKULARITAS • KAMPUS UPJ\", \"Total Tersalurkan\").",
+   "fix": "Use sentence-case text at a readable size, or delete the label.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "emoji",
+   "width": 1440,
+   "message": "Emoji in the page: ☀ ✨ 🌱 ✓",
+   "fix": "Remove. Use words or real imagery.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "button-fx",
+   "width": 1440,
+   "message": "Buttons with shadow/glow.",
+   "fix": "Flat fill, one colour.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "palette-cream",
+   "width": 1440,
+   "message": "Yellow-cream background (page background #fafaf7).",
+   "fix": "Use the drawn palette. If you want warmth, take a low-chroma stone or bone, not a yellow cream.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "contrast",
+   "width": 1440,
+   "message": "Unreadable text: \"Mitra\" 2.5:1 (#52b788 on #ffffff)",
+   "fix": "Raise contrast to at least 4.5:1 for text, 3:1 for large display.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "dev-server",
+   "width": 1440,
+   "message": "This page is served by a development server (Vite, webpack or Next in dev mode).",
+   "fix": "Run the last gate on the production build too (vite build && vite preview, next build && next start, or the built index.html): minifiers and bundlers change the CSS a visitor receives.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "many-h1",
+   "width": 1440,
+   "message": "2 h1 elements.",
+   "fix": "One h1 per page; section titles are h2.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "tiny-text",
+   "width": 1440,
+   "message": "34 text blocks under 11px: Admin Portal 10px, Menu Utama 10px, Total Tersalurkan 10px, Nilai Sirkularitas 10px.",
+   "fix": "Nothing below 11px; secondary text 12px, data 13–14px.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "panel-void",
+   "width": 1440,
+   "message": "2 card(s) hold a blank band inside: 91px in \"Setor vs Salur Mitra\", 67px in \"Tren Volume Pengumpulan Kertas\".",
+   "fix": "A card stretches to its neighbour only when it has content to fill. Keep a legend or a note directly under its chart (only an action or a total may sit at a stretched card's foot), let a short card keep its own height (align-items: start), and let a filtered block shrink to its rows."
+  },
+  {
+   "level": "WARN",
+   "id": "colour-sprawl",
+   "width": 768,
+   "message": "12% of the first screen is strongly coloured.",
+   "fix": "Keep the screen neutral and spend colour on data and status: the studied screens sit near 3%, and only tinted styles reach 10–15%, as pale tints rather than saturated fills.",
+   "alsoAt": [
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "covered-text",
+   "width": 768,
+   "message": "Large text lies under another element at some scroll position: \"Monitoring Sirkularitas & Limbah Kertas\" (screen 1, 88% hidden)",
+   "fix": "Nothing may sit on top of a headline or statement. Move the picture, shorten the pinned run, or raise the text above it (z-index) and give it a ground."
+  },
+  {
+   "level": "FAIL",
+   "id": "edge-text",
+   "width": 390,
+   "message": "1 text block(s) sit within 12px of the screen edge: \"Hai Admin! Kertas HVS UPJ siap\" (4px from the left)",
+   "fix": "Keep text inside the page margin (16–20px). Only display type deliberately bled past the edge may touch it."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\Samuel\\Downloads\\sampah-butuh-teman\\.taste-skill\\before\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\Samuel\\Downloads\\sampah-butuh-teman\\.taste-skill\\before\\desktop-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "C:\\Users\\Samuel\\Downloads\\sampah-butuh-teman\\.taste-skill\\before\\tablet-fold.jpg",
+   "pages": [
+    "C:\\Users\\Samuel\\Downloads\\sampah-butuh-teman\\.taste-skill\\before\\tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "C:\\Users\\Samuel\\Downloads\\sampah-butuh-teman\\.taste-skill\\before\\mobile-fold.jpg",
+   "pages": [
+    "C:\\Users\\Samuel\\Downloads\\sampah-butuh-teman\\.taste-skill\\before\\mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}
