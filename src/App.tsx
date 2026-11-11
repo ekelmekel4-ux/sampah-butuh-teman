@@ -9,10 +9,13 @@ import { LoginView } from './views/auth/LoginView';
 import { RegisterPenyalurView } from './views/auth/RegisterPenyalurView';
 import { RegisterPenerimaView } from './views/auth/RegisterPenerimaView';
 import { LeaderboardView } from './views/LeaderboardView';
+import { LeaderboardDetailView } from './views/LeaderboardDetailView';
 import { UnitBerandaView } from './views/UnitBerandaView';
 import { UnitDompetView } from './views/UnitDompetView';
 import { UnitSetorKertasView } from './views/UnitSetorKertasView';
 import { UnitStatusView } from './views/UnitStatusView';
+import { UnitRiwayatView } from './views/UnitRiwayatView';
+import { UnitProfilView } from './views/UnitProfilView';
 import { PerusahaanDashboardView } from './views/PerusahaanDashboardView';
 import { PerusahaanPermintaanView } from './views/PerusahaanPermintaanView';
 import { PerusahaanJadwalView } from './views/PerusahaanJadwalView';
@@ -22,6 +25,19 @@ import { PerusahaanProfilView } from './views/PerusahaanProfilView';
 import { AdminDashboardView } from './views/AdminDashboardView';
 import { AdminUnitTongView } from './views/AdminUnitTongView';
 import { AdminLaporanView } from './views/AdminLaporanView';
+
+/** Sub-halaman (detail/profil/riwayat) yang disembunyikan navbar atasnya. */
+const DETAIL_ROUTES = new Set([
+  '/unit/profil',
+  '/unit/riwayat',
+  '/unit/setor-kertas',
+  '/unit/posting-baru',
+  '/perusahaan/profil',
+  '/perusahaan/riwayat',
+  '/perusahaan/jadwal',
+  '/perusahaan/listing-detail',
+  '/leaderboard/rincian',
+]);
 
 const MainContent: React.FC = () => {
   const { isLoggedIn, hasSeenOnboarding, authStep, activeRoute, role, toastNotification, hideToast } = useApp();
@@ -62,6 +78,12 @@ const MainContent: React.FC = () => {
       case '/unit/status':
         return <UnitStatusView />;
 
+      case '/unit/riwayat':
+        return <UnitRiwayatView />;
+
+      case '/unit/profil':
+        return <UnitProfilView />;
+
       case '/perusahaan/permintaan-baru':
         return <PerusahaanPermintaanView />;
 
@@ -93,6 +115,11 @@ const MainContent: React.FC = () => {
 
       case 'beranda':
       case '/leaderboard':
+        return <LeaderboardView />;
+
+      case '/leaderboard/rincian':
+        return <LeaderboardDetailView />;
+
       default:
         return <LeaderboardView />;
     }
@@ -106,11 +133,14 @@ const MainContent: React.FC = () => {
     );
   }
 
+  // Halaman detail (sub-halaman) disembunyikan navbar-nya agar fokus ke konten.
+  const hideNavbar = DETAIL_ROUTES.has(activeRoute);
+
   return (
-    <div className="min-h-screen bg-[#FAFAF7] text-[#1A2E22] font-sans antialiased flex flex-col relative">
+    <div className="min-h-screen bg-[#FAF5EA] text-[#1A2E22] font-sans antialiased flex flex-col relative">
       {/* Floating Global Toast Notification */}
       {toastNotification && (
-        <div className="fixed top-16 inset-x-0 z-50 flex justify-center px-4 pointer-events-none animate-in slide-in-from-top-4 duration-300">
+        <div className="fixed app-toast-top inset-x-0 z-50 flex justify-center px-4 pointer-events-none animate-in slide-in-from-top-4 duration-300">
           <div className="pointer-events-auto max-w-md w-full bg-[#174630] border border-[#52B788]/40 text-white rounded-2xl p-3.5 shadow-2xl flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="w-8 h-8 rounded-full bg-[#52B788]/20 text-[#A7F3D0] flex items-center justify-center shrink-0">
@@ -133,17 +163,21 @@ const MainContent: React.FC = () => {
       )}
 
       {/* Top Fixed Header */}
-      <Navbar />
+      {!hideNavbar && <Navbar />}
 
       {/* Main Page Area */}
-      <main className="flex-1 max-w-2xl w-full mx-auto px-3 sm:px-4 pt-14 pb-28">
+      <main
+        className={`flex-1 max-w-2xl w-full mx-auto px-3 sm:px-4 ${
+          hideNavbar ? 'pt-4 pb-8' : 'app-main-top pb-28'
+        }`}
+      >
         <div className="animate-in fade-in duration-200">
           {renderCurrentView()}
         </div>
       </main>
 
       {/* Bottom Tab Navigation */}
-      <BottomNav />
+      {!hideNavbar && <BottomNav />}
     </div>
   );
 };
