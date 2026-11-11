@@ -1,171 +1,215 @@
-# PRD: Sampah Butuh Teman
+# PRD — Redesign UI Sampah Butuh Teman
 
-**Product Requirements Document**
-**Tema PjBL:** Sistem Pengelolaan Sampah Berbasis Komunitas
-**Jurusan:** Sistem Informasi
-**Platform:** Web App (dibangun menggunakan Antigravity)
-**Cakupan Wilayah:** Lingkungan Kampus
-**Jenis Limbah:** Limbah Kertas
+**Status:** Draft untuk acuan desain dan implementasi
 
----
+**Tanggal:** 7 November 2026
 
-## 1. Ringkasan Produk (Apa Aplikasi Ini?)
+**Platform:** Web responsif
 
-**Sampah Butuh Teman** adalah aplikasi web kampus yang menyalurkan **limbah kertas** dari unit-unit kampus (biro, fakultas, prodi, dll) ke pihak eksternal yang membutuhkannya (perusahaan daur ulang, produsen kemasan, dll) — lewat **satu drop point terpusat** di kampus yang berisi tong-tong bernomor & bernama per unit, dilengkapi sistem matching dan papan peringkat unit paling aktif menyalurkan.
+**Cakupan:** Redesign seluruh layar aktif tanpa mengubah tujuan produk atau perilaku bisnis yang sudah ada
+**Design brief:** [`design.md`](./design.md)
 
-**Cara kerja inti:**
-- **Penyalur** bukan individu, tapi **unit kampus** (biro, fakultas, prodi, dll) yang mengumpulkan limbah kertas dari kegiatan operasional mereka
-- **Penerima** adalah **pihak eksternal** — perusahaan daur ulang, produsen kemasan, atau industri lain yang butuh kertas bekas sebagai bahan baku
-- **Drop point-nya cuma satu untuk seluruh kampus** — tapi di dalamnya ada beberapa tong yang masing-masing diberi nama & nomor sesuai unit asalnya (contoh: "FTD No. 1" untuk tong milik Fakultas Teknik dan Desain). Jadi limbah kertas dari tiap unit tetap teridentifikasi meski dikumpulkan di satu lokasi fisik yang sama
-- Saat perusahaan datang mengambil, sistem cukup mengarahkan ke **nomor tong** yang sesuai (misal "ambil di tong FTD No. 1") — tidak perlu berpindah lokasi drop point
-- **Sistem matching tetap berlaku** — mencocokkan limbah kertas yang tersedia dari suatu unit dengan permintaan dari perusahaan
-- Ada **papan peringkat (leaderboard)** yang menampilkan unit kampus mana yang paling banyak menyalurkan limbah kertas — jadi ada unsur kompetisi sehat antar bagian kampus
+## 1. Ringkasan Produk
 
-## 2. Masalah yang Diselesaikan
+Sampah Butuh Teman menghubungkan unit kampus yang mengumpulkan limbah kertas dengan mitra industri
+yang membutuhkan pasokan kertas daur ulang. Unit mencatat kertas dan tong asalnya, mitra mencari
+pasokan melalui rekomendasi atau penelusuran manual, lalu pickup dijadwalkan di drop point pusat
+kampus. Admin memantau unit, tong, aktivitas, dan laporan.
 
-1. Limbah kertas dari kegiatan operasional kampus (biro, fakultas, dll) menumpuk tanpa jalur penyaluran yang jelas ke pihak yang bisa memanfaatkannya
-2. Unit-unit kampus tidak tahu ke mana atau ke siapa limbah kertas mereka bisa disalurkan
-3. Perusahaan daur ulang/produsen kemasan kesulitan menemukan sumber kertas bekas yang stabil dan terlokalisasi
-4. Tidak ada insentif atau pengakuan bagi unit kampus yang aktif memilah dan menyalurkan limbah kertasnya
+Redesign bertujuan membuat alur tersebut mudah dipahami dan dijalankan pada ponsel maupun desktop.
+Dokumen ini membatasi pekerjaan pada pengalaman visual dan interaksi layar; perubahan data,
+perhitungan matching, autentikasi, pembayaran, atau kebijakan insentif bukan bagian dari redesign.
 
-## 3. Siapa yang Pakai Aplikasi Ini (User Roles)
+## 2. Masalah Pengalaman Pengguna
 
-| Peran | Siapa | Yang Dilakukan di App |
+- Pengguna perlu memahami tugas utama dan status kertas tanpa harus menafsirkan istilah atau angka
+  yang tersebar di beberapa kartu.
+- Unit harus dapat mencatat berat, kategori, kondisi, foto, dan tong asal tanpa salah input.
+- Mitra perlu membandingkan listing, membedakan rekomendasi dari pilihan manual, dan melihat lokasi
+  tong sebelum menyimpan jadwal pickup.
+- Admin perlu menemukan unit/tong bermasalah serta laporan yang belum ditangani dengan cepat.
+- Perbedaan antara saldo/transaksi, eco-points, berat tersalurkan, dan estimasi dampak harus jelas.
+
+## 3. Sasaran dan Ukuran Keberhasilan
+
+### Sasaran
+
+1. Memastikan pengguna dapat mengidentifikasi peran dan tugas utama pada setiap layar.
+2. Mempermudah alur unit untuk membuat listing dan memantau status tong.
+3. Mempermudah alur mitra untuk menemukan listing, membuat permintaan, melihat detail, dan
+   menjadwalkan pickup.
+4. Mempermudah admin memantau operasi serta menindaklanjuti laporan.
+5. Menjaga desain konsisten, aksesibel, dan responsif tanpa menghilangkan informasi penting.
+
+### Kriteria keberhasilan
+
+- Seluruh **19 layar aktif** pada inventaris di bawah memiliki desain final yang ditinjau pada
+  viewport ponsel dan desktop yang relevan.
+- Pengguna uji dari setiap peran dapat menyelesaikan tugas utama tanpa bantuan: unit membuat listing
+  dan menemukan status tong; mitra mencari listing dan membuat jadwal; admin menemukan unit/tong dan
+  menyelesaikan peninjauan laporan.
+- Tidak ada route aktif, aksi utama, field wajib, atau status transaksi yang hilang dibandingkan
+  baseline sebelum redesign.
+- Semua status dan formulir dapat dipahami tanpa hanya mengandalkan warna; alur utama dapat
+  dijalankan dengan keyboard.
+- Tidak ada overflow horizontal pada viewport 320 px ke atas, serta target kontras warna teks
+  memenuhi WCAG 2.2 AA.
+- Desain tidak menyajikan metrik, partner, lokasi, atau kemampuan yang belum didukung data/produk.
+
+**Catatan pengukuran:** persentase keberhasilan dan waktu penyelesaian belum memiliki baseline.
+Ukur dengan sesi uji kegunaan setelah prototipe tersedia; jangan mengklaim peningkatan kuantitatif
+sebelum dibandingkan dengan baseline.
+
+## 4. Pengguna dan Kebutuhan
+
+| Peran | Kebutuhan utama | Keberhasilan bagi pengguna |
 |---|---|---|
-| **Penyalur** | Unit kampus — biro, fakultas, prodi, dll | Posting limbah kertas yang tersedia dari unit mereka; limbah ditaruh di tong bernama unit mereka pada drop point pusat kampus |
-| **Penerima** | Pihak eksternal — perusahaan daur ulang, produsen kemasan, dll | Posting permintaan kebutuhan kertas bekas, memilih/menerima hasil matching dari unit-unit yang sesuai, menjadwalkan pengambilan di drop point sesuai nomor tong yang diarahkan |
-| **Admin** | Pengelola sistem (tim proyek) | Kelola data unit & tong di drop point pusat, kelola matching, kelola papan peringkat, tangani laporan, pantau dampak |
+| Unit kampus / penyalur | Memasukkan listing yang benar, mengetahui tong yang terkait, memantau status dan kontribusi unit. | Listing tercatat dengan berat/kategori yang benar dan pengguna tahu tindakan berikutnya. |
+| Mitra industri / penerima | Mencari pasokan yang sesuai, memilih rekomendasi atau listing manual, mengatur pickup. | Mitra dapat mengidentifikasi kertas, unit, tong, jadwal, dan status transaksi yang dipilih. |
+| Admin | Memantau ringkasan operasi, unit/tong, dan laporan yang membutuhkan tindakan. | Admin dapat menemukan item bermasalah dan memahami status penanganannya. |
 
-## 4. Tujuan Produk (Goals)
+## 5. Alur Produk yang Harus Dipertahankan
 
-- Menyalurkan limbah kertas kampus ke pihak eksternal yang membutuhkan secara terstruktur per unit
-- Memudahkan perusahaan menemukan & menjadwalkan pengambilan kertas bekas dari unit kampus yang sesuai
-- Mendorong partisipasi unit kampus lewat papan peringkat yang menampilkan kontribusi masing-masing
-- Menyediakan data terukur tentang dampak lingkungan (kg kertas tersalurkan, estimasi pohon/air terselamatkan, dll) untuk pelaporan proyek
+### Unit kampus
 
-## 5. Yang HARUS Ada di Prototipe (In Scope)
+Masuk/daftar sebagai unit → buat listing kertas dengan jumlah, kategori, kondisi, foto, serta tong
+terkait → lihat status tong/listing → lihat kontribusi, dompet, atau peringkat sesuai data yang
+tersedia.
 
-### Wajib (MVP — harus jalan untuk demo)
-1. **Registrasi Unit & Perusahaan** — unit kampus daftar sebagai Penyalur, perusahaan daftar sebagai Penerima
-2. **Drop Point Pusat dengan Tong per Unit** — satu lokasi drop point untuk seluruh kampus, berisi beberapa tong yang masing-masing diberi nama & nomor sesuai unit asal (mis. "FTD No. 1")
-3. **Posting Limbah Kertas (Unit)** — unit input jumlah/berat, kondisi kertas, foto — otomatis tertaut ke tong bernama unit tersebut di drop point pusat
-4. **Posting Permintaan (Perusahaan)** — jenis/jumlah kertas yang dibutuhkan
-5. **Sistem Matching + Pilih Manual** — sistem menyarankan pasangan otomatis antara limbah kertas yang tersedia dari unit dengan permintaan perusahaan, TAPI perusahaan tetap bisa menjelajah semua listing yang ada dan memilih sendiri secara manual, tidak harus mengikuti saran sistem
-6. **Jadwal Pengambilan (Perusahaan)** — setelah matching, perusahaan pilih tanggal/jam datang ke drop point pusat, sistem tunjukkan nomor tong yang harus dituju
-7. **Konfirmasi Status Manual** — unit konfirmasi "kertas sudah ditaruh", perusahaan konfirmasi "sudah diambil" — tanpa perlu koordinasi langsung antar individu
-8. **Papan Peringkat (Leaderboard)** — ranking unit kampus berdasarkan total limbah kertas yang berhasil disalurkan
-9. **Admin Dashboard** — kelola unit & drop point, pantau matching, leaderboard, laporan, dan analisis dampak (detail lihat section 5.1)
+### Mitra industri
 
-### Penting, tapi bisa menyusul (Should Have)
-10. **Self-Checklist saat Posting + Lapor/Flag** — checklist singkat saat posting; listing langsung tampil tanpa approval admin, bisa dilaporkan kalau bermasalah
-11. **Eco-Points untuk Unit** — poin berdasarkan jumlah kertas berhasil disalurkan — **benefit poin masih dalam pembahasan tim, lihat Catatan Terbuka di section 11**
-12. **Dashboard Eco-Impact** — total limbah kertas tersalurkan & estimasi dampak lingkungan
+Masuk/daftar sebagai mitra → buat permintaan bila diperlukan → lihat rekomendasi atau jelajah listing
+manual → buka detail listing → jadwalkan pickup pada drop point dan tong terkait → pantau riwayat
+serta konfirmasi pengambilan bila aksi itu tersedia.
 
-### Nice to Have (kalau waktu masih cukup)
-13. **Rating & Review** — penilaian dari perusahaan terhadap kualitas kertas dari suatu unit
-14. **Keuangan & Transaksi** — pencatatan nilai/biaya (kalau ada)
+### Admin
 
-### 5.1 Detail Isi Admin Dashboard
+Masuk sebagai admin → lihat ringkasan → kelola unit dan tong → tinjau laporan/flag → tandai laporan
+selesai bila ditangani.
 
-**Kelola Unit & Tong:**
-- Daftar unit kampus terdaftar (biro/fakultas/prodi) beserta status tong masing-masing di drop point pusat (kosong/terisi)
-- Tambah/nonaktifkan unit atau tong
+Drop point adalah satu lokasi pusat kampus dengan tong yang ditandai per unit. Jangan menggambar
+beberapa drop point kampus atau lokasi pickup yang tidak didukung data aktual. Nama/nomor tong dan
+lokasi spesifik yang tersedia harus tetap menonjol di detail pickup.
 
-**Matching & Moderasi:**
-- Daftar hasil matching yang sedang berjalan/menunggu konfirmasi
-- Daftar laporan/flag dari user
+## 6. Inventaris Layar dan Kebutuhan UI
 
-**Papan Peringkat:**
-- Ranking unit kampus berdasarkan total kg kertas tersalurkan (mingguan/bulanan/akumulatif)
+Route berikut dibaca dari `src/App.tsx`, `src/components/BottomNav.tsx`, dan
+`src/components/AdminLayout.tsx`. Route alias dihitung sebagai satu layar bila saat ini
+menampilkan komponen yang sama.
 
-**Analisis Dampak:**
-- Total limbah kertas berhasil disalurkan (akumulatif & per periode)
-- Breakdown per unit kampus
-- Estimasi dampak lingkungan (mis. estimasi pohon/air terselamatkan dari daur ulang kertas)
-- Tren dari waktu ke waktu
+| # | Peran / layar | Route atau tahap | Informasi dan aksi yang harus dipertahankan |
+|---:|---|---|---|
+| 1 | Publik — onboarding | `onboarding` | Slide pengenalan produk, indikator slide, lewati/lanjut/mulai. |
+| 2 | Publik — pilih peran | `gate` | Pilih unit kampus, mitra industri, atau admin; arah ke autentikasi sesuai pilihan. |
+| 3 | Autentikasi — login | `login` | Email/kata sandi, validasi, loading, error, dan navigasi daftar/kembali. |
+| 4 | Unit — registrasi | `register-penyalur` | Nama unit, inisial, jenis, PIC, email, kontak, serta lokasi jika diminta. |
+| 5 | Mitra — registrasi | `register-penerima` | Nama perusahaan, NIB, email, dan kontak dispatcher. |
+| 6 | Unit — beranda | `/unit/beranda` | Ringkasan unit, kontribusi/tong, status terbaru, dan pintasan ke aksi unit. |
+| 7 | Unit — setor kertas | `/unit/setor-kertas`, `/unit/posting-baru` | Jumlah kg, kategori, kondisi, foto, tong terkait, validasi, dan hasil submit. |
+| 8 | Unit — status tong | `/unit/status` | Nama/nomor tong, berat, kapasitas, lokasi, jadwal, status, serta aksi yang tersedia. |
+| 9 | Unit — dompet | `/unit/dompet` | Saldo dan riwayat nominal, jenis, tanggal, serta status transaksi. |
+| 10 | Unit — peringkat | `/leaderboard` | Ranking dan kontribusi unit; konteks periode bila datanya tersedia. |
+| 11 | Mitra — pasokan/matching | `/perusahaan/dashboard`, `/perusahaan/pasokan`, `/perusahaan/matching` | Tab saran/manual, filter, listing aktif, unit/tong, kategori, jumlah, dan aksi detail/jadwal. |
+| 12 | Mitra — permintaan baru | `/perusahaan/permintaan-baru` | Jenis/jumlah, toleransi QC, syarat, hari dan waktu pickup; status permintaan. |
+| 13 | Mitra — detail listing | `/perusahaan/listing-detail` | Foto, kategori/kondisi, jumlah, unit/tong, status, dan aksi yang sesuai status. |
+| 14 | Mitra — jadwal pickup | `/perusahaan/jadwal` | Listing terpilih, tanggal/jam, lokasi pusat, tong tujuan, serta konfirmasi penyimpanan. |
+| 15 | Mitra — riwayat pickup | `/perusahaan/riwayat` | Daftar transaksi, berat/nilai jika ada, status, jadwal, dan bukti yang tersimpan. |
+| 16 | Mitra — profil | `/perusahaan/profil` | Identitas/kontak perusahaan, edit jika didukung, simpan, dan status perubahan. |
+| 17 | Admin — dashboard | `/admin/dashboard` | Ringkasan transaksi/dampak, tren berperiode, perhatian operasional, dan navigasi admin. |
+| 18 | Admin — unit & tong | `/admin/unit-tong` | Daftar dan pencarian unit, relasi tong, status/kapasitas, tambah/nonaktifkan sesuai izin. |
+| 19 | Admin — laporan | `/admin/laporan` | Daftar laporan, alasan/tingkat, item terkait, bukti, status, dan tindak lanjut. |
 
-## 6. Yang TIDAK Perlu Dibuat (Out of Scope)
+### View ada di source, tetapi belum menjadi layar aktif
 
-- Pertemuan langsung terjadwal antar individu dari unit dan perusahaan — cukup lewat drop point per unit
-- QR Code untuk serah terima — digantikan konfirmasi status manual
-- Sistem pembayaran digital sungguhan
-- Aplikasi mobile native (cukup web app responsif)
-- Validasi manual admin untuk setiap listing sebelum tampil
-- Penanganan jenis limbah lain selain kertas (organik, plastik, dll) untuk versi ini
+`LandingAuthView`, `UnitPostingView`, dan `PerusahaanMatchingView` tidak dirutekan oleh switch utama
+di `src/App.tsx`. Jangan memasukkannya sebagai layar baru dalam desain final sebelum ada keputusan
+produk dan route yang bisa diuji. `UnitDompetView` berbeda: route-nya aktif meskipun tidak menjadi
+tab bawah.
 
-## 7. Alur Utama Pengguna (User Flow Singkat)
+## 7. Persyaratan Fungsional untuk Redesign
 
-**Sebagai Unit Kampus (Penyalur):**
-1. Daftar unit & login → posting limbah kertas yang tersedia (jumlah, kondisi, foto)
-2. Sistem menautkan listing ke tong bernama unit tersebut di drop point pusat kampus
-3. Taruh kertas di tong sesuai nama unit → konfirmasi "sudah ditaruh"
-4. Setelah perusahaan mengambil, unit dapat eco-points & kontribusinya masuk ke papan peringkat
+1. Desain mempertahankan navigasi role-aware dan route aktif; tombol kembali membawa pengguna ke
+   konteks sebelumnya yang sesuai.
+2. Form memperlihatkan label, satuan, field wajib, validasi, loading, dan pesan error per field.
+   Nilai yang sudah dimasukkan tetap tersedia setelah validasi gagal.
+3. Berat selalu memiliki satuan kg; nilai uang selalu memiliki format rupiah; angka yang dibandingkan
+   menggunakan format konsisten.
+4. Rekomendasi matching dibedakan secara visual dari listing yang dipilih manual. Jangan menjanjikan
+   kecocokan atau pasokan tersedia jika tidak ada di data.
+5. Jadwal pickup mengulang konteks listing serta identitas tong sebelum pengguna mengonfirmasi.
+6. Aksi perubahan status dan penyelesaian laporan menunjukkan status baru hanya setelah operasi
+   berhasil; tampilkan pesan gagal dan jalur coba lagi.
+7. Tombol tarik dana/top up, rating, QR, atau aksi pembayaran tidak boleh terlihat seolah aktif
+   kecuali implementasinya benar-benar mendukungnya.
+8. Empty state menjelaskan kondisi dan menawarkan aksi yang memang tersedia. Jangan membuat data
+   contoh terlihat seperti transaksi nyata.
 
-**Sebagai Perusahaan (Penerima):**
-1. Daftar & login → posting permintaan kebutuhan kertas
-2. Punya 2 opsi: (a) lihat saran matching dari sistem berdasarkan permintaan yang diposting, atau (b) langsung jelajah semua listing kertas yang tersedia dan pilih sendiri secara manual
-3. Pilih listing yang sesuai (baik dari saran sistem maupun pilihan sendiri) → buat jadwal pengambilan (tanggal/jam)
-4. Datang ke drop point pusat sesuai jadwal, menuju nomor tong yang diarahkan sistem → ambil kertas → konfirmasi "sudah diambil"
+## 8. Persyaratan Nonfungsional
 
-**Sebagai Admin:**
-1. Login ke Admin Dashboard
-2. Kelola data unit kampus & tong di drop point pusat
-3. Pantau matching yang berjalan dan tangani laporan
-4. Lihat papan peringkat dan data dampak lingkungan
+- **Responsif:** ponsel 320 px+, tablet, desktop; admin memiliki pola sidebar/drawer tersendiri.
+- **Aksesibilitas:** target WCAG 2.2 AA, kontras memadai, semantik heading/form, fokus keyboard,
+  label screen reader, dan alternatif non-warna untuk status.
+- **Keterbacaan:** gunakan Bahasa Indonesia yang lugas, istilah konsisten, rupiah/berat/tanggal
+  terformat sesuai lokal Indonesia.
+- **Konsistensi:** gunakan satu design system bersama dan satu token warna sumber.
+- **Kinerja interaksi:** berikan feedback saat loading/submit, cegah submit berulang, dan jangan
+  menyembunyikan error backend.
+- **Integrasi:** hasil desain diterapkan pada React + TypeScript + Vite + Tailwind yang sudah ada.
+  Pertahankan integrasi `AppContext`, route, dan data; redesign bukan alasan mengganti framework atau
+  menambah dependency.
 
-## 8. Kriteria Sukses / Definisi "Selesai" untuk Demo
+## 9. Di Luar Cakupan
 
-Prototipe dianggap siap didemokan kalau bisa menunjukkan skenario end-to-end berikut tanpa error:
-1. Minimal 2 unit kampus contoh terdaftar, masing-masing dengan tong bernama sendiri di drop point pusat
-2. Salah satu unit berhasil posting limbah kertas yang tersedia
-3. Sebuah akun perusahaan berhasil posting permintaan
-4. Sistem menampilkan hasil matching antara unit dan perusahaan tersebut
-5. Perusahaan berhasil membuat jadwal pengambilan
-6. Status transaksi bisa diubah: Menunggu Diambil → Sudah Diambil
-7. Papan peringkat menampilkan unit dengan kontribusi terbanyak
-8. Admin bisa melihat ringkasan semuanya di dashboard
+- Mengubah model bisnis, algoritma/skor matching, skema Supabase, aturan role, atau autentikasi.
+- Menambah jenis limbah selain kertas atau banyak drop point kampus.
+- Pembayaran digital sungguhan, pencairan dana, top up, atau manfaat tukar eco-points yang belum
+  disepakati.
+- QR handoff, rating/review, notifikasi baru, maupun fitur yang tidak tersedia pada baseline.
+- Membuat data, statistik dampak, partner, testimoni, lokasi, ataupun aksi yang tidak bersumber dari
+  sistem.
+- Mengganti stack atau melakukan redesign branding/logo tanpa keputusan terpisah.
 
-## 9. Spesifikasi Teknis untuk Build (Web App)
+## 10. Konteks Teknis Saat Ini
 
-**Tech stack:**
-- Frontend: React.js (Vite) + TypeScript + Tailwind CSS
-- Backend: Express.js (Node.js) — atau langsung Supabase client di frontend untuk MVP
-- Database & Auth: Supabase (PostgreSQL + Supabase Auth, role-based: unit/penyalur, perusahaan/penerima, admin)
+- Frontend: React 19, TypeScript, Vite 6, Tailwind CSS 4.
+- Data dan alur UI dikelola melalui `src/context/AppContext.tsx`; akses backend berada di
+  `src/lib/` dan Supabase dipakai untuk sumber data yang tersedia.
+- Shell pengguna: `src/components/Navbar.tsx` dan `src/components/BottomNav.tsx`.
+- Shell admin: `src/components/AdminLayout.tsx`.
+- Komponen utama layar berada di `src/views/`; sumber route adalah `src/App.tsx`.
+- Design tokens/font saat ini didefinisikan di `src/index.css`. PRD ini tidak menganggap setiap tombol
+  atau nilai contoh sudah terhubung ke operasi backend.
 
-**Halaman/route yang perlu dibuat (MVP):**
+## 11. Verifikasi dan Kriteria Penerimaan
 
-| Route | Peran | Fungsi |
-|---|---|---|
-| `/login`, `/register` | Semua | Autentikasi + pilih peran (Unit/Perusahaan) saat daftar |
-| `/leaderboard` | Semua | Papan peringkat unit kampus paling banyak menyalurkan |
-| `/unit/kertas/baru` | Penyalur (Unit) | Form posting limbah kertas tersedia |
-| `/unit/status` | Penyalur (Unit) | Lihat status listing, konfirmasi "sudah ditaruh" |
-| `/perusahaan/permintaan/baru` | Penerima (Perusahaan) | Form posting permintaan kertas |
-| `/perusahaan/matching` | Penerima (Perusahaan) | Lihat hasil matching / jelajah listing manual |
-| `/perusahaan/jadwal/:transaksiId` | Penerima (Perusahaan) | Pilih tanggal/jam pengambilan |
-| `/perusahaan/riwayat` | Penerima (Perusahaan) | Lihat status transaksi, konfirmasi "sudah diambil" |
-| `/admin/dashboard` | Admin | Ringkasan transaksi, leaderboard, & analisis dampak |
-| `/admin/unit` | Admin | Kelola unit kampus & drop point |
-| `/admin/laporan` | Admin | Daftar laporan/flag dari user |
+Sebelum redesign dinyatakan selesai:
 
-**Referensi entitas data (ERD):** lihat file `sampah-butuh-teman-spec.md`.
+- [ ] 19 layar aktif telah dicocokkan dengan tabel inventaris; layar tak terhubung tetap dicatat
+  sebagai tidak aktif.
+- [ ] Ketiga alur peran dapat ditelusuri pada prototipe dari masuk sampai tugas utama selesai.
+- [ ] Semua CTA dan tab mempunyai tujuan yang benar; alias route tetap menghasilkan pengalaman
+  yang konsisten.
+- [ ] Listing, tong, permintaan, jadwal, dompet, leaderboard, transaksi, dan laporan mempertahankan
+  makna data/status saat ini.
+- [ ] Setiap form memperlihatkan valid, invalid, submit/loading, dan error/sukses yang relevan.
+- [ ] Empty/loading/error state dirancang untuk halaman data.
+- [ ] Layout diperiksa pada ukuran 320/360 px, tablet, dan desktop; fokus keyboard serta kontras
+  warna ditinjau.
+- [ ] Tidak ada aksi atau klaim baru yang hanya dibuat agar desain terlihat lengkap.
 
-### Instruksi Build (bisa langsung dipakai sebagai prompt di Antigravity)
+## 12. Keputusan yang Masih Perlu Pemilik Produk
 
-> Bangun web app bernama "Sampah Butuh Teman" menggunakan React + Vite + TypeScript + Tailwind CSS untuk frontend, dan Supabase (PostgreSQL + Auth) sebagai backend/database. Fokus: penyaluran limbah kertas dari unit kampus (biro/fakultas/prodi) ke perusahaan eksternal (daur ulang/produsen kemasan). Mulai dari MVP berikut secara berurutan:
-> 1. Setup autentikasi dengan role: unit (penyalur), perusahaan (penerima), admin
-> 2. Buat skema database: units, drop_point (satu record saja untuk seluruh kampus), tong (banyak, masing-masing tertaut ke drop_point dan diberi nama+nomor sesuai unit), listing_kertas, permintaan, matching, transaksi
-> 3. Bangun halaman posting limbah kertas untuk Unit, tertaut otomatis ke tong bernama unit tersebut di drop point pusat
-> 4. Bangun halaman posting permintaan untuk Perusahaan, dengan hasil matching otomatis terhadap listing yang tersedia
-> 5. Bangun alur jadwal pengambilan dan status transaksi: Menunggu Diambil → Sudah Diambil, dengan konfirmasi manual di kedua sisi
-> 6. Bangun halaman papan peringkat (leaderboard) unit berdasarkan total kg kertas tersalurkan
-> 7. Bangun Admin Dashboard: kelola unit & drop point, pantau matching, leaderboard, laporan, dan analisis dampak
-> 8. Setelah MVP jalan, tambahkan: eco-points untuk unit (mekanisme reward masih perlu didefinisikan tim), dashboard eco-impact detail, rating & review
+Pertanyaan berikut tidak menghalangi pembuatan brief, tetapi harus diputuskan sebelum desain final
+menampilkan perilaku terkait:
 
-## 10. Ringkasan Satu Kalimat
-
-> Aplikasi web kampus yang menyalurkan limbah kertas dari unit-unit kampus ke perusahaan daur ulang/produsen kemasan lewat satu drop point pusat berisi tong bernomor per unit, dilengkapi sistem matching dan papan peringkat unit paling aktif menyalurkan.
-
-## 11. Catatan Terbuka (Masih Perlu Dibahas Tim)
-
-- **Benefit Eco-Points:** belum diputuskan poin dari unit yang menyalurkan limbah kertas ini bisa ditukar/digunakan untuk apa. Ini perlu didiskusikan lebih lanjut oleh tim sebelum masuk ke pengembangan fitur eco-points.
+1. Apakah `LandingAuthView`, `UnitPostingView`, atau `PerusahaanMatchingView` akan diaktifkan, atau
+   tetap menjadi komponen lama yang tidak dirutekan?
+2. Apakah penarikan saldo/top up benar-benar fitur yang akan tersedia? Jika tidak, tombolnya harus
+   dihilangkan atau dijadikan informasi non-aksi.
+3. Apa dasar dan periode resmi perhitungan eco-points/leaderboard serta rumus estimasi pohon/air?
+   Jangan menampilkan nilai sebagai fakta sebelum sumbernya disepakati.
+4. Apakah peta admin diperlukan untuk mengelola satu drop point pusat, dan sumber lokasi mana yang
+   dianggap resmi?
+5. Aksi konfirmasi penempatan kertas oleh unit harus berstatus seperti apa? Model listing saat ini
+   memiliki status `menunggu_mitra`, `siap_pickup`, dan `sudah_diambil`; perubahan state tambahan
+   perlu disepakati sebelum dijadikan bagian desain.

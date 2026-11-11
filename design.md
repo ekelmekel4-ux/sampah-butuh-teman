@@ -1,525 +1,221 @@
-# Design Specification — Sampah Butuh Teman
+# Design System & Screen Brief — Sampah Butuh Teman
 
-> **Untuk Stitch AI:** Dokumen ini berisi spesifikasi desain lengkap untuk web app **Sampah Butuh Teman** — platform penyaluran limbah kertas kampus ke industri daur ulang. Setiap layar dijelaskan dengan detail konten, komponen UI, dan interaksi. Gunakan spesifikasi ini untuk menghasilkan desain yang konsisten di semua layar.
+Dokumen ini adalah acuan desain kanonis untuk redesign UI aplikasi. Dokumen PRD ada di
+[`sampah-butuh-teman-prd (1).md`](./sampah-butuh-teman-prd%20%281%29.md). Cakupan aktif mengikuti
+route di `src/App.tsx`; file view yang belum dirutekan dicatat terpisah agar redesign tidak
+menciptakan layar yang tidak dapat dibuka pengguna.
 
----
+## 1. Arah Desain
 
-## Design System
+**Gagasan visual: kertas kampus kembali menjadi sumber daya.** Antarmuka terasa seperti ruang kerja
+sirkular yang tertata: informasi bergerak dari unit kampus, ke tong bernomor, ke proses pencocokan,
+lalu ke pengambilan dan dampak. Krem kertas menjadi kanvas utama; hijau hutan menandai aksi dan
+kemajuan tanpa mengubah struktur tugas yang sudah ada.
 
-### Brand & Identity
-- **Nama Produk:** Sampah Butuh Teman
-- **Tagline:** "Kertas Bekasmu, Bahan Baku Mereka"
-- **Tone:** Ramah lingkungan, bersih, profesional namun hangat
-- **Platform:** Web App responsif (mobile-first, max-width 448px utama)
+- **Karakter:** bersih, tepercaya, hangat, operasional, dan berorientasi komunitas kampus.
+- **Bahasa:** Bahasa Indonesia yang jelas dan langsung; gunakan istilah "unit kampus", "mitra
+  industri", "tong", "listing", "permintaan", dan "jadwal pickup" secara konsisten.
+- **Prioritas:** tugas utama dan status transaksi terlihat lebih dahulu daripada dekorasi, jargon,
+  atau ilustrasi.
+- **Kepadatan:** layar dashboard boleh padat oleh data yang berguna. Form dan onboarding lebih lega.
+  Jangan menyamakan semua layar menjadi grid kartu yang seragam.
+- **Prinsip:** satu tindakan utama per layar; tampilkan konteks unit/tong pada setiap perpindahan
+  material; angka, status, dan aksi tidak boleh hanya dibedakan oleh warna.
 
-### Palet Warna
-| Token | Hex | Penggunaan |
+Gunakan logo, ilustrasi onboarding, dan maskot yang sudah tersedia hanya jika mendukung pesan:
+`public/logo-full.png`, `public/logo-sbt.png`, `public/mina.png`, `public/moni.png`, dan
+`public/onboarding-1.jpg` sampai `public/onboarding-3.jpg`. Jangan mengganti foto atau membuat
+testimoni, mitra, angka dampak, maupun data operasional fiktif sebagai bukti produk.
+
+## 2. Design Tokens
+
+Pertahankan peran warna yang sudah didefinisikan di `src/index.css`. Jika nilai token berubah,
+perbarui satu sumber token tersebut; jangan menambah warna ad hoc per halaman.
+
+| Peran | Token saat ini | Pemakaian |
 |---|---|---|
-| Primary | `#2D6A4F` | CTA utama, elemen aktif, header |
-| Primary Dark | `#1A4235` | Hover / pressed state |
-| Primary Light | `#52B788` | Accent hijau segar, badge sukses |
-| Primary Pale | `#D8F3DC` | Badge/tag background, highlight ringan |
-| Background | `#FAFAF7` | Background halaman utama |
-| Surface | `#F2F7F4` | Input background, sub-card |
-| Card | `#FFFFFF` | Card putih |
-| Border | `rgba(45,106,79,0.12)` | Outline ringan |
-| Text Dark | `#1A2E22` | Teks utama |
-| Text Mid | `#52645A` | Teks sekunder |
-| Text Light | `#8CA090` | Placeholder / hint |
-| Warning | `#F4A261` | Amber — peringatan |
-| Error | `#E76F51` | Merah terakota — error |
-| Success | `#52B788` | Konfirmasi sukses |
-
-### Tipografi
-- **Font:** Plus Jakarta Sans (Google Fonts)
-- **Heading besar:** 24–28px, font-weight 800 (ExtraBold)
-- **Heading sekunder:** 18–20px, font-weight 700
-- **Body:** 14–15px, font-weight 400–500
-- **Caption/label kecil:** 11–12px, font-weight 600
-
-### Komponen Umum
-- **Button Primer:** Rounded-full, background `#2D6A4F`, teks putih, padding `12px 24px`, shadow ringan
-- **Button Sekunder:** Rounded-full, border `#2D6A4F`, teks `#2D6A4F`, background transparan
-- **Card:** Rounded-2xl (`16px`), background putih, shadow `0 1px 4px rgba(26,46,34,0.06), 0 4px 16px rgba(26,46,34,0.04)`
-- **Input Field:** Rounded-xl, background `#F2F7F4`, border `rgba(45,106,79,0.12)`, padding `12px 16px`
-- **Badge/Chip:** Rounded-full, padding `4px 10px`, background `#D8F3DC`, teks `#2D6A4F`, font-size 11px
-- **Bottom Navigation:** Fixed di bawah, floating pill (rounded-full), background `white/95` dengan backdrop blur, 3 item tab per role
-
-### Ikon
-- Gunakan **Material Symbols Outlined** (Google Icons)
-- Icon ukuran 20–24px
-- Icon aktif: `FILL 1` (solid), tidak aktif: `FILL 0` (outline)
-
----
-
-## Struktur Navigasi
-
-```
-App
-├── [Publik] Onboarding (1 layar)
-├── [Publik] Auth Gate — pilih cara masuk
-├── [Auth] Login Penyalur (Unit Kampus)
-├── [Auth] Register Penyalur (Unit Kampus)
-├── [Auth] Login Penerima (Mitra Industri)
-├── [Auth] Register Penerima (Mitra Industri)
-├── [Auth] Login Admin
-│
-├── [Unit Kampus] Tab: Beranda → UnitBerandaView / UnitSetorKertasView
-├── [Unit Kampus] Tab: Status Tong → UnitStatusView
-├── [Unit Kampus] Tab: Peringkat → LeaderboardView
-│
-├── [Perusahaan] Tab: Pasokan Kertas → PerusahaanMatchingView
-├── [Perusahaan]   → PerusahaanListingDetailView (detail 1 listing)
-├── [Perusahaan]   → PerusahaanJadwalView (jadwal pickup)
-├── [Perusahaan] Tab: Buat Kebutuhan → PerusahaanPermintaanView
-├── [Perusahaan] Tab: Riwayat Pickup → PerusahaanRiwayatView
-├── [Perusahaan] Tab: Profil → PerusahaanProfilView
-│
-├── [Admin] Tab: Dashboard → AdminDashboardView
-├── [Admin] Tab: Unit & Tong → AdminUnitTongView
-└── [Admin] Tab: Laporan & Flag → AdminLaporanView
-```
-
----
-
-## Layar 1 — Onboarding
-
-**File:** `OnboardingView.tsx`
-**Route:** Layar pertama saat app dibuka
-
-### Konten
-- **Latar belakang:** Hijau gradien dari `#2D6A4F` ke `#1A4235`
-- **Logo app:** Ikon daun/tumbuhan + teks "Sampah Butuh Teman" (putih), besar di tengah
-- **3 slide carousel onboarding:**
-  1. "Kertas Menumpuk di Kampus?" — ilustrasi tong/kotak berisi kertas
-  2. "Hubungkan ke Industri Daur Ulang" — ilustrasi matching/handshake
-  3. "Kampus Lebih Hijau, Bersama!" — ilustrasi papan peringkat / pohon
-- **Dot indicator** di bawah carousel (active dot = putih solid, inactive = putih transparan)
-- **Tombol "Mulai Sekarang"** di paling bawah: pill button putih, teks hijau gelap
-- **Tombol "Lewati"** kecil di pojok kanan atas: teks putih semi-transparan
-
----
-
-## Layar 2 — Auth Gate (Pilih Peran)
-
-**File:** `AuthGateView.tsx`
-**Route:** Setelah onboarding, sebelum login
-
-### Konten
-- **Header:** Logo kecil + "Selamat Datang!" + tagline
-- **Background:** `#FAFAF7` dengan ornamen daun samar
-- **3 card pilihan peran** (vertical stack):
-  1. **Unit Kampus (Penyalur)** — icon `corporate_fare`, deskripsi singkat "Biro, Fakultas, Prodi — salurkan limbah kertas unit Anda"
-  2. **Mitra Industri (Penerima)** — icon `factory`, deskripsi "Perusahaan daur ulang & produsen kemasan — temukan pasokan kertas"
-  3. **Admin** — icon `admin_panel_settings`, deskripsi "Pengelola sistem & drop point"
-- Setiap card: rounded-2xl, border tipis, arrow ke kanan, hover efek hijau
-- Di bawah card: teks kecil "Sudah punya akun? Login langsung"
-
----
-
-## Layar 3 — Login Penyalur (Unit Kampus)
-
-**File:** `auth/LoginPenyalurView.tsx`
-
-### Konten
-- **Header:** Back button + badge "Unit Kampus" (chip hijau)
-- **Logo kecil** + heading "Masuk sebagai Unit Kampus"
-- **Form:**
-  - Field Email/ID Unit (icon `alternate_email`)
-  - Field Password (icon `lock`, toggle show/hide)
-  - Tombol "Lupa Password?" (link kecil)
-- **Tombol "Masuk"** — primary button penuh lebar
-- **Divider "atau"**
-- **Tombol "SSO Kampus"** — secondary button dengan icon `school`
-- **Link:** "Belum terdaftar? **Daftar sekarang**"
-
----
-
-## Layar 4 — Register Penyalur (Unit Kampus)
-
-**File:** `auth/RegisterPenyalurView.tsx`
-
-### Konten
-- **Header:** Back button + badge "Daftar Unit Kampus"
-- **Form multi-field:**
-  - Nama Unit (dropdown/text: Biro, Fakultas, Prodi, Lembaga)
-  - Nama PIC (Person in Charge)
-  - Email Unit
-  - Nomor Kontak
-  - Password + Konfirmasi Password
-  - Checkbox "Saya setuju dengan syarat & ketentuan"
-  - *Catatan: Lokasi default (fix) adalah Universitas Pembangunan Jaya, tidak perlu set alamat.*
-- **Tombol "Daftar"** — primary button
-- **Link:** "Sudah punya akun? **Masuk**"
-
----
-
-## Layar 5 — Login Penerima (Mitra Industri)
-
-**File:** `auth/LoginPenerimaView.tsx`
-
-### Konten
-- Identik dengan Login Penyalur tapi badge "Mitra Industri" warna biru-hijau teal
-- Heading: "Masuk sebagai Mitra Industri"
-- Tidak ada tombol SSO Kampus
-
----
-
-## Layar 6 — Register Penerima (Mitra Industri)
-
-**File:** `auth/RegisterPenerimaView.tsx`
-
-### Konten
-- **Form:**
-  - Nama Perusahaan
-  - Jenis Perusahaan (Daur Ulang / Produsen Kemasan / Lainnya)
-  - Email Perusahaan
-  - Nomor Kontak
-  - Password + Konfirmasi Password
-  - Checkbox persetujuan
-
----
-
-## Layar 7 — Login Admin
-
-**File:** `auth/LoginAdminView.tsx`
-
-### Konten
-- **Tampilan lebih sederhana/minimal**
-- Badge "Admin" dengan warna ungu/abu gelap
-- Heading: "Admin Panel"
-- Form: Username + Password
-- Tidak ada pilihan SSO atau daftar
-
----
-
-## Layar 8 — Unit Beranda (Setor Kertas)
-
-**File:** `UnitBerandaView.tsx` / `UnitSetorKertasView.tsx`
-**Tab:** Beranda (unit)
-**Bottom Nav:** Icon `home` aktif
-
-### Konten
-- **Header Section:**
-  - Greeting: "Halo, [Nama Unit]!"
-  - Sub-teks: "Tong: FTD No. 1 — Drop Point Utama"
-  - Badge status tong: `TERISI 12 kg` atau `KOSONG`
-- **Eco Points Card** (horizontal banner):
-  - Icon daun besar, "**450 Eco Points**", "Peringkat #2 bulan ini"
-  - Background: gradient hijau
-- **Section "Posting Limbah Kertas Baru":**
-  - Sub-heading: "Apa yang ingin kamu setor?"
-  - **Form Setor:**
-    - **Pilih Kategori Kertas** (4 chip selectable):
-      - HVS/Fotokopi | Kardus/Karton | Koran/Majalah | Kertas Campur
-    - **Estimasi Berat** — stepper / input angka (kg)
-    - **Kondisi Kertas** — multi-select checklist:
-      - Kering | Bersih (tidak berminyak) | Sudah dipisah | Ada sedikit basah | Masih ada staples
-    - **Foto** — area upload foto (kotak dashed, icon `photo_camera`, teks "Tambah Foto")
-    - **Catatan tambahan** — textarea opsional
-  - **Tombol "Kirim ke Drop Point"** — primary button penuh lebar, icon `send`
-- **Info Card** "Tong kamu ada di:"
-  - Icon `location_on`
-  - "Drop Point Pusat Kampus — Gedung Rektorat Lt. Dasar"
-  - "Tong **FTD No. 1** — bawa kertas ke sana setelah konfirmasi"
-
----
-
-## Layar 9 — Status Tong (Unit)
-
-**File:** `UnitStatusView.tsx`
-**Tab:** Status Tong
-**Bottom Nav:** Icon `inventory_2` aktif
-
-### Konten
-- **Header:** "Status Tong Saya"
-- **Tong Status Card** (besar, di atas):
-  - Visual tong dengan % isi (progress bar vertikal atau lingkaran)
-  - Nama: "FTD No. 1"
-  - Status badge: `SIAP PICKUP` (hijau) / `TERISI` (kuning) / `KOSONG` (abu)
-  - Berat saat ini: "**18 kg** dari 50 kg kapasitas"
-- **Tombol "Konfirmasi Kertas Sudah Ditaruh"** — jika ada listing menunggu konfirmasi
-  - Tampil sebagai banner kuning dengan icon `check_circle`
-- **Riwayat Listing** (list card):
-  - Setiap card: kategori kertas, berat, tanggal post, status chip
-  - Status chip: `Menunggu Mitra` (abu) / `Siap Pickup` (kuning) / `Sudah Diambil` (hijau)
-- **Empty state** jika belum ada listing: ilustrasi tong kosong + teks motivasi + tombol "Setor Sekarang"
-
----
-
-## Layar 10 — Leaderboard (Papan Peringkat)
-
-**File:** `LeaderboardView.tsx`
-**Tab:** Peringkat (semua role bisa akses)
-**Bottom Nav:** Icon `leaderboard` aktif
-
-### Konten
-- **Header Section:**
-  - Heading: "Papan Peringkat Unit"
-  - Sub-teks: "Unit paling aktif menyalurkan limbah kertas"
-  - **Filter tab:** Mingguan | Bulanan | Akumulatif (pill tab selector)
-- **Podium Top 3** (visual dominan):
-  - Posisi 2 (kiri), Posisi 1 (tengah, lebih tinggi), Posisi 3 (kanan)
-  - Setiap podium: avatar/inisial unit, nama unit disingkat, total kg
-  - Podium 1: mahkota emas + latar kuning
-- **Statistik Banner** (horizontal scroll chips):
-  - "Total 1,240 kg tersalurkan" | "Setara 12 pohon diselamatkan" | "Hemat 6,200 liter air"
-- **Daftar Ranking** (#4 ke bawah):
-  - Setiap row: nomor rank, inisial unit (avatar bulat), nama unit, total kg, eco points
-  - Row user sendiri: di-highlight dengan border hijau
-- **Bagian bawah:** "Kamu di posisi #7 — Setor lebih banyak untuk naik peringkat!"
-
----
-
-## Layar 11 — Pasokan Kertas / Matching (Perusahaan)
-
-**File:** `PerusahaanMatchingView.tsx`
-**Tab:** Pasokan Kertas
-**Bottom Nav:** Icon `handshake` aktif
-
-### Konten
-- **Header:** "Temukan Pasokan Kertas"
-- **Filter & Pencarian:**
-  - Search bar: "Cari unit atau jenis kertas..."
-  - Filter chips (horizontal scroll): `Semua` | `HVS` | `Kardus` | `Koran` | `Campur`
-  - Tombol Filter lanjutan (icon `tune`)
-- **Saran Matching Sistem** (section khusus jika ada permintaan aktif):
-  - Banner kuning kecil: "Cocok dengan permintaan kamu"
-  - 1–2 listing highlighted dengan badge "DISARANKAN SISTEM" + skor kecocokan (mis. 94%)
-- **Semua Listing Tersedia** (list card):
-  - Setiap card listing:
-    - Foto kertas (thumbnail kiri)
-    - Nama unit + inisial badge
-    - Kategori kertas + berat (kg)
-    - Tanggal post
-    - Kondisi chips: `Kering` `Bersih` `Sudah dipisah`
-    - Nama tong: "FTD No. 1"
-    - Tombol "Lihat Detail"
-- **Empty state:** ilustrasi kosong + "Belum ada listing tersedia saat ini"
-
----
-
-## Layar 12 — Detail Listing Kertas (Perusahaan)
-
-**File:** `PerusahaanListingDetailView.tsx`
-**Diakses dari:** Matching View
-
-### Konten
-- **Header:** Back button + "Detail Listing"
-- **Foto kertas** — full width, rounded, bisa swipe jika multi-foto
-- **Info Utama:**
-  - Nama Unit: "Fakultas Teknik & Desain"
-  - Tong: "FTD No. 1 — Drop Point Pusat"
-  - Kategori: chip `HVS/Fotokopi`
-  - Berat: "**24 kg**"
-  - Tanggal tersedia: "Diposting 2 hari lalu"
-- **Kondisi Kertas** (checklist icons): Kering | Bersih | Sudah dipisah
-- **Skor Kecocokan** (jika ada permintaan aktif):
-  - Progress bar / donut chart: "**92% cocok** dengan permintaan Anda"
-- **Info Drop Point:**
-  - Icon `location_on`
-  - "Gedung Rektorat Lt. Dasar — Tong FTD No. 1"
-- **Tombol Aksi:** "Jadwalkan Pickup dari Listing Ini" — primary button besar
-
----
-
-## Layar 13 — Jadwal Pickup (Perusahaan)
-
-**File:** `PerusahaanJadwalView.tsx`
-**Diakses dari:** Listing Detail
-
-### Konten
-- **Header:** Back button + "Atur Jadwal Pickup"
-- **Ringkasan Listing** (card kecil di atas):
-  - Nama unit, kategori, berat, nomor tong
-- **Form Jadwal:**
-  - **Pilih Tanggal** — date picker calendar (inline atau modal)
-  - **Pilih Jam Kedatangan** — time picker atau slot waktu (mis. 08:00 | 09:00 | 10:00...)
-  - **Pilih Armada & Driver** — dropdown mengambil data dari profil (Nomor Polisi Armada & Nama Driver)
-  - **Nomor Surat Jalan** — input text (opsional)
-- **Info Lokasi Pickup** (card info):
-  - Icon `local_shipping`
-  - "Datang ke: **Drop Point Pusat Kampus**"
-  - "Tuju: **Tong FTD No. 1**"
-  - "Alamat: Gedung Rektorat Lt. Dasar"
-- **Tombol "Konfirmasi Jadwal"** — primary button
-
----
-
-## Layar 14 — Buat Kebutuhan Kertas (Perusahaan)
-
-**File:** `PerusahaanPermintaanView.tsx`
-**Tab:** Buat Kebutuhan
-**Bottom Nav:** Icon `post_add` aktif
-
-### Konten
-- **Header:** "Posting Kebutuhan Kertas"
-- **Form:**
-  - **Jenis Kertas yang Dibutuhkan** — multi-select checklist: HVS/Fotokopi | Kardus/Karton | Koran/Majalah | Campur
-  - **Jumlah yang Dibutuhkan** — input angka + unit "kg"
-  - **Toleransi Kadar Air** — slider 0–30%
-  - **Syarat QC** — multi-checklist (Kering, Bersih, Sudah dipisah, dll)
-  - **Hari Pickup yang Tersedia** — multi-select hari (Senin–Minggu chips)
-  - **Jam Operasional** — input "07:00 – 17:00"
-  - **Estimasi Dana Riset (Rp)** — input nominal (opsional)
-- **Tombol "Posting Permintaan"** — primary button
-- **Info card:** "Setelah posting, sistem akan otomatis mencarikan listing kertas yang cocok dari unit-unit kampus"
-
----
-
-## Layar 15 — Riwayat Pickup (Perusahaan)
-
-**File:** `PerusahaanRiwayatView.tsx`
-**Tab:** Riwayat Pickup
-**Bottom Nav:** Icon `history` aktif
-
-### Konten
-- **Header:** "Riwayat Transaksi Pickup"
-- **Filter Tab:** Menunggu Diambil | Sudah Diambil | Semua
-- **Daftar Transaksi** (card list):
-  - Setiap card:
-    - Header card: nama unit + tong + tanggal jadwal
-    - Kategori kertas + berat + nilai (Rp)
-    - Status badge: `MENUNGGU DIAMBIL` (kuning) / `SUDAH DIAMBIL` (hijau)
-    - Jika "Menunggu Diambil": Tombol **"Konfirmasi Sudah Diambil"** (prominent, hijau)
-    - Jika "Sudah Diambil": Tombol "Beri Rating" (outline) + foto timbangan (thumbnail)
-- **Empty state:** "Belum ada transaksi" + tombol "Cari Pasokan Kertas"
-
----
-
-## Layar 16 — Admin Dashboard
-
-**File:** `AdminDashboardView.tsx`
-**Tab:** Dashboard
-**Bottom Nav:** Icon `analytics` aktif
-
-### Konten
-- **Header:** "Admin Dashboard" + tanggal hari ini
-- **Summary Stats** (grid 2x2 card kecil):
-  - Total Kertas Tersalurkan: "**1,240 kg**"
-  - Transaksi Aktif: "**8**"
-  - Unit Terdaftar: "**14**"
-  - Laporan Pending: "**3**" (merah)
-- **Grafik Tren** (line chart sederhana):
-  - "Volume Penyaluran Kertas" — per minggu/bulan
-  - Sumbu X: waktu, Sumbu Y: kg
-- **Eco Impact Banner:**
-  - Background hijau gradien
-  - "Setara **12 pohon** diselamatkan" | "**6,200 liter** air terhemat" | "**1,240 kg** CO2 dikurangi"
-- **Matching Aktif** (list card 3 item):
-  - Setiap row: nama unit dan nama perusahaan, status, tanggal jadwal
-  - Tombol "Lihat Semua"
-- **Top 3 Leaderboard** (mini leaderboard card):
-  - 3 unit teratas dengan icon mahkota
-- **Shortcut aksi cepat:**
-  - Tombol "Kelola Unit & Tong" | Tombol "Lihat Laporan (3)"
-
----
-
-## Layar 17 — Admin: Kelola Unit & Tong
-
-**File:** `AdminUnitTongView.tsx`
-**Tab:** Unit & Tong
-**Bottom Nav:** Icon `inventory_2` aktif
-
-### Konten
-- **Header:** "Kelola Unit & Tong"
-- **Tombol "Tambah Unit Baru"** — secondary button di kanan atas
-- **Search bar:** "Cari unit kampus..."
-- **Daftar Unit Kampus** (accordion/card expandable):
-  - Setiap unit card:
-    - Header: inisial badge (berwarna), nama unit, jenis (chip: Fakultas/Biro/Prodi)
-    - Detail (expandable): PIC, kontak, lokasi
-    - **Status Tong:**
-      - Nama tong (mis. "FTD No. 1")
-      - Status badge: `KOSONG` (abu) / `TERISI` (kuning) / `SIAP PICKUP` (hijau)
-      - Berat saat ini / kapasitas
-    - Aksi: `Edit` | `Nonaktifkan`
-- **Modal Tambah/Edit Unit** (slide-up atau modal):
-  - Form: Nama Unit, Jenis, PIC, Kontak, Nama Tong, Nomor Tong, Kapasitas
-
----
-
-## Layar 18 — Admin: Laporan & Flag
-
-**File:** `AdminLaporanView.tsx`
-**Tab:** Laporan & Flag
-**Bottom Nav:** Icon `flag` aktif
-
-### Konten
-- **Header:** "Laporan & Masalah"
-- **Filter Tab:** Menunggu Tindakan | Sudah Selesai | Semua
-- **Summary chips:**
-  - Kritis: 1 (merah) | Sedang: 2 (kuning) | Selesai: 14 (hijau)
-- **Daftar Laporan** (card list):
-  - Setiap card:
-    - Level badge: `KRITIS` (merah) / `SEDANG` (kuning) / `SELESAI` (hijau)
-    - Nama pelapor + tanggal
-    - Tong yang dilaporkan (mis. "Tong FTD No. 1")
-    - Alasan singkat + detail (truncated, bisa expand)
-    - Foto laporan (thumbnail jika ada)
-    - Tombol aksi: "Tandai Selesai" (jika belum selesai)
-- **Empty state:** "Tidak ada laporan saat ini"
-
----
-
-## Layar 19 — Profil Mitra Industri (Penerima)
-
-**File:** `PerusahaanProfilView.tsx`
-**Tab:** Profil
-**Bottom Nav:** Icon `person` aktif
-
-### Konten
-- **Header:** "Profil Perusahaan"
-- **Info Perusahaan:**
-  - Nama Perusahaan, Email, Jenis Perusahaan
-- **Pengaturan Alamat:**
-  - Alamat Lengkap (Textarea)
-  - Kota/Kabupaten, Kode Pos
-- **Data Armada & Driver:**
-  - Daftar kendaraan operasional (Plat Nomor) & Nama Driver
-  - Tombol "Tambah Armada"
-- **Tombol "Simpan Perubahan"**
-
----
-
-## Komponen Global
-
-### Navbar (Top Bar)
-- **Fixed** di atas
-- Kiri: Logo + nama app "Sampah Butuh Teman" (kecil)
-- Kanan: Badge role user (chip: `UNIT` hijau / `MITRA` biru-teal / `ADMIN` ungu) + tombol logout (icon `logout`)
-- Background: `white/95` dengan backdrop blur + border bawah tipis
-
-### Bottom Navigation
-- **Fixed** di bawah, floating pill (rounded-full)
-- Background: `white/95` + backdrop blur + shadow
-- **Unit role:** Beranda | Status Tong | Peringkat
-- **Perusahaan role:** Pasokan Kertas | Buat Kebutuhan | Riwayat Pickup | Profil
-- **Admin role:** Dashboard | Unit & Tong | Laporan & Flag
-- Tab aktif: background `#2D6A4F`, teks putih, label muncul, sedikit scale-up
-- Tab tidak aktif: hanya icon, teks `#52645A`
-
-### Demo Role Banner
-- Banner kuning di bawah Navbar (saat mode demo)
-- "Mode Demo — Login sebagai: [Nama Unit/Perusahaan]"
-- Tombol ganti role untuk testing
-
-### Toast / Notification
-- Muncul di atas, slide down
-- Success: background `#D8F3DC`, border hijau, icon `check_circle`
-- Error: background `#FDECEA`, border merah terakota, icon `error`
-- Auto dismiss 3 detik
-
----
-
-## Catatan Desain Penting untuk Stitch
-
-1. **Mobile-first:** Desain utama untuk lebar 375–430px. Max-width konten 448px, center di layar lebih lebar.
-2. **Hierarki warna:** Gunakan hijau (`#2D6A4F`) hanya untuk elemen paling penting per layar.
-3. **Whitespace:** Beri ruang yang cukup antar elemen — tidak sesak.
-4. **State empty selalu ada:** Setiap list/feed harus punya ilustrasi empty state yang ramah dan motivatif.
-5. **Konsistensi card:** Semua card pakai `rounded-2xl` dengan shadow ringan, tidak ada shadow keras.
-6. **Bottom nav clearance:** Konten utama harus punya padding bawah minimal 100px agar tidak tertutup bottom nav.
-7. **Bahasa:** Semua teks UI dalam **Bahasa Indonesia**.
-8. **Eco-theme:** Gunakan ikon dan elemen visual yang berkaitan dengan alam, daur ulang, dan keberlanjutan.
+| Aksi utama / identitas | `#2D6A4F` | Tombol primer, tautan aktif, indikator proses |
+| Hijau gelap | `#1A4235` | Kontras pada hover/pressed dan teks di atas hijau muda |
+| Hijau pendamping | `#52B788` | Grafik atau variasi data, bukan tombol primer kedua |
+| Hijau pucat | `#D8F3DC` | Latar penanda sukses/aktif yang lembut |
+| Latar aplikasi | `#FAFAF7` | Krem lembut untuk latar halaman |
+| Permukaan | `#FFFFFF` | Panel utama, form, tabel, dan dialog |
+| Permukaan sekunder | `#F2F7F4` | Area kontrol dan panel sekunder |
+| Garis | `rgba(45,106,79,0.12)` | Batas input, tabel, dan pemisah yang diperlukan |
+| Teks utama | `#1A2E22` | Judul dan isi utama |
+| Teks sekunder | `#52645A` | Deskripsi dan metadata |
+| Teks tersier | `#8CA090` | Metadata/hint; gunakan warna yang lolos kontras pada ukuran teks kecil |
+| Peringatan | `#F4A261` | Aksen peringatan |
+| Bahaya | `#E76F51` | Error, tindakan destruktif, laporan kritis |
+| Sukses | `#52B788` | Konfirmasi proses selesai |
+
+### Tipografi, bentuk, dan jarak
+
+- **Font:** Plus Jakarta Sans, dengan fallback sans-serif sistem.
+- **Palet permukaan:** gunakan krem lembut `#FAFAF7` sebagai latar aplikasi, putih untuk permukaan
+  utama, dan hijau hutan `#2D6A4F` sebagai aksen produk. Merah dan amber tetap khusus untuk status
+  bahaya/peringatan, bukan aksen dekoratif.
+- **Ukuran:** body utama 14-16 px (utamakan 16 px untuk paragraf/form), label 12-14 px,
+  judul halaman 22-30 px sesuai viewport, judul bagian 17-22 px. Jangan mengandalkan teks 10-11 px
+  untuk informasi penting.
+- **Angka:** gunakan angka tabular untuk berat, saldo, poin, tanggal, dan statistik.
+- **Hierarki:** bedakan judul, isi, dan metadata melalui ukuran, bobot, serta jarak; jangan membuat
+  semua teks tebal atau uppercase.
+- **Radius:** 4, 6, 10, 14, dan 20 px mengikuti peran komponen. Radius pill hanya untuk chip/status
+  yang ringkas, bukan semua tombol dan panel.
+- **Jarak:** gunakan kelipatan 4 px (4, 8, 12, 16, 24, 32, 48, 64). Grup informasi terkait lebih
+  rapat daripada jarak antarbagian.
+- **Elevation:** bidang datar dan border tonal sebagai default. Bayangan ringan hanya untuk elemen
+  yang benar-benar mengambang, seperti menu dan dialog.
+
+## 3. Grid, Navigasi, dan Responsif
+
+- Bangun mobile-first pada lebar 360 px ke atas. Pastikan layout tetap bekerja pada 320 px tanpa
+  scroll horizontal; tablet sekitar 640-1023 px; desktop mulai 1024 px.
+- Layar unit dan mitra memakai konten terpusat dengan lebar baca yang nyaman. Form panjang tidak
+  melebar penuh pada desktop.
+- Admin adalah ruang kerja desktop: sidebar navigasi, header kontekstual, dan area konten lebar.
+  Pada mobile sidebar menjadi drawer yang bisa dibuka/ditutup dan kontennya menjadi satu kolom.
+- Jangan memaksakan layout admin desktop ke layar unit/mitra. Jangan menyusutkan tabel desktop
+  menjadi kolom tak terbaca: ubah menjadi daftar/ringkasan per baris pada layar sempit.
+- Sediakan ruang aman untuk header tetap dan navigasi bawah; konten tidak boleh tertutup.
+- Navigasi pengguna unit dan mitra: pertahankan tiga tab yang saat ini tersedia pada
+  `src/components/BottomNav.tsx`. Halaman dompet dan profil tetap dapat dicapai melalui aksi/menu
+  kontekstual; jangan menambahkan tab keempat tanpa keputusan produk. Admin menggunakan
+  `src/components/AdminLayout.tsx`, bukan bottom navigation.
+- Tampilkan peran dan identitas akun secara cukup jelas agar pengguna tidak salah mengelola akun
+  unit/perusahaan.
+
+## 4. Pola Komponen
+
+| Komponen | Aturan desain dan perilaku |
+|---|---|
+| Header halaman | Judul spesifik, konteks singkat bila membantu, lalu satu aksi utama yang relevan. Hindari greeting besar yang menggeser tugas. |
+| Tombol primer | Satu aksi paling penting; teks berupa kata kerja konkret ("Buat listing", "Jadwalkan pickup"). Tinggi target minimal 44 px. |
+| Tombol sekunder | Aksi pendamping beroutline atau tonal. Aksi destruktif menggunakan gaya bahaya dan konfirmasi bila perlu. |
+| Form | Label tetap terlihat di atas field; placeholder bukan pengganti label. Tampilkan format, satuan, validasi, dan pesan error di dekat field. Jangan menghapus isian saat error. |
+| Panel dan kartu | Gunakan panel untuk mengelompokkan data yang punya hubungan. Hindari kartu dekoratif berulang; KPI hanya ditampilkan jika membantu keputusan. |
+| Status | Teks status selalu eksplisit, dapat disertai ikon dan warna semantik. Konsisten antara listing, tong, jadwal, transaksi, dan laporan. |
+| Tabel/daftar | Judul kolom jelas, angka rata kanan, tanggal konsisten, baris dapat dipindai, dan tindakan terkait dekat dengan itemnya. Di mobile gunakan ringkasan/row card yang mempertahankan label data. |
+| Grafik | Tampilkan satuan, rentang waktu, label/legend dan nilai yang bisa diakses tanpa hover. Grafik tidak boleh menjadi satu-satunya cara memahami angka. Hindari metrik atau tren yang tidak berasal dari data aplikasi. |
+| Dialog/konfirmasi | Jelaskan akibat tindakan, beri pilihan batal yang jelas, dan jangan mengonfirmasi sukses sebelum aksi benar-benar berhasil. |
+| Notifikasi | Pesan singkat, spesifik, dapat ditindaklanjuti; gunakan live region untuk hasil aksi penting. |
+| Maskot/ilustrasi | Gunakan secukupnya pada onboarding atau empty/success state. Jangan bersaing dengan data operasional. |
+
+### Status yang perlu dibedakan
+
+Gunakan label yang sesuai data, jangan menambah status seolah-olah sudah tersedia di backend.
+
+- Tong: kosong, terisi, siap pickup.
+- Listing: menunggu mitra, siap pickup, sudah diambil.
+- Matching/transaksi: menunggu diambil, sudah diambil.
+- Laporan: menunggu tindakan, sudah selesai; tingkat laporan kritis/sedang ditampilkan terpisah
+  dari status penanganannya.
+
+## 5. Brief Seluruh Layar Aktif
+
+Ada 19 layar/alur aktif di bawah ini. Nama komponen adalah acuan implementasi, bukan keharusan
+mengubah kontrak route atau nama file.
+
+### Publik dan autentikasi
+
+| Layar | Komponen / route | Fokus hierarki dan aksi |
+|---|---|---|
+| Onboarding | `OnboardingView` / tahap onboarding | Ceritakan alur kertas kampus dalam tiga langkah singkat; satu ilustrasi relevan per slide, indikator yang dapat diakses, "Lewati" dan "Mulai sekarang". |
+| Pilih peran | `AuthGateView` / tahap gate | Jelaskan perbedaan Unit Kampus, Mitra Industri, dan Admin; berikan aksi masuk/daftar yang sesuai. Jangan membuat peran baru. |
+| Login | `LoginView` / tahap login | Email dan kata sandi, tampil/sembunyikan kata sandi, validasi, loading, error autentikasi, serta jalur kembali/pilih peran. |
+| Daftar unit kampus | `RegisterPenyalurView` / tahap register-penyalur | Nama unit, inisial, jenis unit, PIC, email/kontak, dan lokasi jika diminta; jelaskan data wajib dan hasil setelah daftar. |
+| Daftar mitra industri | `RegisterPenerimaView` / tahap register-penerima | Nama perusahaan, NIB, email, kontak dispatcher; jaga keterbacaan form panjang dan jelaskan error spesifik. |
+
+### Unit kampus
+
+| Layar | Komponen / route | Fokus hierarki dan aksi |
+|---|---|---|
+| Beranda unit | `UnitBerandaView` / `/unit/beranda` | Ringkas kontribusi dan kondisi tong unit, tampilkan aksi utama setor/posting, status terbaru, dan pintasan ke dompet serta peringkat jika tersedia. |
+| Setor kertas | `UnitSetorKertasView` / `/unit/setor-kertas`, `/unit/posting-baru` | Alur/form jumlah kg, kategori, kondisi, foto, dan tong yang terkait; tunjukkan review ringkas sebelum submit serta validasi yang mempertahankan isian. |
+| Status tong | `UnitStatusView` / `/unit/status` | Status, kapasitas, berat, nama/nomor tong, lokasi spesifik, jadwal pickup, dan tindakan yang didukung saat ini. Bedakan keadaan kosong, terisi, dan siap pickup. |
+| Dompet unit | `UnitDompetView` / `/unit/dompet` | Saldo dan riwayat transaksi dengan tanda masuk/keluar, tanggal, status, nominal rupiah; jangan menampilkan tombol tarik/top up sebagai berfungsi bila belum tersambung. |
+| Peringkat | `LeaderboardView` / `/leaderboard` | Periode/peringkat, identitas unit, kg tersalurkan, dan posisi unit saat ini. Jangan mempermalukan unit dengan data kosong atau mengklaim poin bisa ditukar tanpa keputusan produk. |
+
+### Mitra industri
+
+| Layar | Komponen / route | Fokus hierarki dan aksi |
+|---|---|---|
+| Pasokan dan matching | `PerusahaanDashboardView` / `/perusahaan/dashboard`, `/perusahaan/pasokan`, `/perusahaan/matching` | Dua cara menemukan pasokan (saran dan jelajah manual), filter kategori, kuantitas, unit/tong, status, dan aksi detail/jadwalkan. Labeli sumber saran secara jujur. |
+| Buat permintaan | `PerusahaanPermintaanView` / `/perusahaan/permintaan-baru` | Jenis/jumlah kertas, toleransi QC, syarat dan hari/jam pickup; kelompokkan field dan tunjukkan rangkuman sebelum kirim. |
+| Detail listing | `PerusahaanListingDetailView` / `/perusahaan/listing-detail` | Foto, kategori/kondisi, jumlah, unit asal, tong dan status; aksi menuju penjadwalan hanya jika listing dapat dipilih. |
+| Jadwal pickup | `PerusahaanJadwalView` / `/perusahaan/jadwal` | Listing/matching terpilih, tanggal/jam yang tersedia, arahan drop point pusat dan nama/nomor tong; konfirmasi sebelum menyimpan. |
+| Riwayat pickup | `PerusahaanRiwayatView` / `/perusahaan/riwayat` | Daftar transaksi dan status, berat/nilai jika tersedia, jadwal, detail bukti yang tersimpan; filter sederhana bila data mendukung. |
+| Profil mitra | `PerusahaanProfilView` / `/perusahaan/profil` | Identitas perusahaan dan kontak yang bisa ditinjau/dikelola; pisahkan simpan perubahan dari keluar akun. |
+
+### Admin
+
+| Layar | Komponen / route | Fokus hierarki dan aksi |
+|---|---|---|
+| Dashboard admin | `AdminDashboardView` / `/admin/dashboard` | Ringkasan volume/status, tren dengan periode jelas, unit/tong yang perlu perhatian, dan pintasan ke pengelolaan. Peta hanya ditampilkan jika lokasi valid dan berguna bagi tugas admin. |
+| Unit dan tong | `AdminUnitTongView` / `/admin/unit-tong` | Cari/filter unit, relasi unit-tong, status dan kapasitas tong, aksi tambah/nonaktifkan yang tersedia; tampilkan dampak aksi dan konfirmasi. |
+| Laporan dan flag | `AdminLaporanView` / `/admin/laporan` | Prioritaskan laporan yang menunggu tindakan, alasan, tingkat, detail, bukti foto jika ada, item terkait, dan aksi penyelesaian. Pertahankan jejak status. |
+
+### View yang belum aktif
+
+`LandingAuthView`, `UnitPostingView`, dan `PerusahaanMatchingView` tersedia di source tree tetapi
+tidak dipilih oleh switch route utama `src/App.tsx`. Jangan menggambar atau menghubungkannya sebagai
+layar tambahan hanya berdasarkan keberadaan file. Jika produk memutuskan mengaktifkannya, tambahkan
+route, alur, dan kriteria penerimaan ke PRD lebih dahulu. `/unit/dompet` juga tidak ada di tab bawah
+saat ini, tetapi route-nya aktif dan layar dompet harus tetap didesain.
+
+## 6. Interaksi dan Kondisi Layar
+
+Setiap layar yang memuat data atau aksi harus punya desain untuk keadaan yang relevan:
+
+- **Loading:** indikator dekat konten yang dimuat; pertahankan struktur halaman dan cegah aksi ganda.
+- **Kosong:** jelaskan mengapa belum ada data dan berikan satu langkah berikutnya yang memang tersedia.
+- **Error:** jelaskan bagian yang gagal dan cara mencoba lagi; jangan menampilkan data lama sebagai hasil
+  sukses tanpa penanda.
+- **Sukses:** konfirmasi aksi dan status baru secara nyata; gunakan toast hanya untuk hasil singkat,
+  bukan mengganti detail penting.
+- **Disabled:** jelaskan sebab tombol belum tersedia jika sebabnya tidak jelas dari konteks.
+- **Data parsial:** tampilkan data yang ada dengan label yang jelas; jangan mengarang nilai atau
+  menyamarkan `0` sebagai data yang hilang.
+- **Mobile:** aksi utama mudah dijangkau, form tetap dapat digunakan dengan keyboard, dan modal tidak
+  memotong konten/CTA.
+
+Animasi singkat dan fungsional saja (misalnya perpindahan slide atau feedback tombol). Hormati
+`prefers-reduced-motion`; jangan gunakan animasi berulang yang mengalihkan perhatian.
+
+## 7. Aksesibilitas dan Kualitas
+
+- Targetkan WCAG 2.2 AA: kontras teks normal minimal 4.5:1 dan teks besar minimal 3:1.
+- Token teks tersier yang lebih terang di stylesheet lama (`#8A9E94`) tidak dipakai untuk teks
+  kecil di atas putih; selaraskan token tersebut ke `#65766D` saat menerapkan redesign.
+- Seluruh aksi harus dapat dioperasikan dengan keyboard, memiliki focus indicator terlihat, nama
+  aksesibel, serta urutan fokus yang masuk akal.
+- Gunakan label form eksplisit, hubungkan error dengan field, dan umumkan hasil async penting kepada
+  screen reader.
+- Gunakan heading semantik berurutan; tabel memiliki header; grafik memiliki ringkasan teks.
+- Jangan mengandalkan warna, hover, ikon tanpa label, atau placeholder sebagai satu-satunya pembawa
+  informasi.
+- Target area sentuh sekurangnya 44 x 44 px untuk aksi utama dan navigasi.
+
+## 8. Handoff Redesign
+
+Sebelum implementasi, artefak desain harus menunjukkan:
+
+1. Semua 19 layar aktif, dengan versi mobile dan desktop yang sesuai peran/layout.
+2. Komponen bersama dan token warna, type, jarak, radius, status, serta fokus.
+3. Keadaan loading, kosong, error, disabled, sukses, dan konfirmasi untuk flow yang relevan.
+4. Prototipe alur onboarding → autentikasi → posting listing → pilih pasokan/matching → jadwalkan
+   pickup → konfirmasi pengambilan, serta alur admin memantau unit/tong dan laporan.
+5. Semua konten menggunakan bahasa dan status yang konsisten dengan PRD serta model data yang ada.
+6. Komponen hasil alat desain (termasuk Stitch/Figma) diperlakukan sebagai referensi visual; sebelum
+   dipakai, pastikan route, state, aksesibilitas, dan integrasinya mengikuti aplikasi React yang ada.
+
+### Checklist review
+
+- [ ] Tidak ada layar aktif yang terlewat atau route yang berubah tanpa keputusan.
+- [ ] Layout terbaca pada 320/360 px, tablet, dan desktop; tidak ada scroll horizontal yang tidak perlu.
+- [ ] Hierarki visual memprioritaskan pekerjaan dan status, bukan dekorasi.
+- [ ] Status, nominal, satuan, pesan error, serta aksi sesuai konteks dan konsisten di semua peran.
+- [ ] Tidak ada angka dampak, fasilitas, testimoni, atau fitur pembayaran yang tidak bersumber dari data.
+- [ ] Navigasi, keyboard, fokus, form, dialog, dan reduced motion sudah dipertimbangkan.
+- [ ] Semua aset yang digunakan memang tersedia dan tidak menyiratkan mitra/aktivitas yang belum nyata.
