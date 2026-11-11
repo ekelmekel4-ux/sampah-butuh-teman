@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { APP_BRAND } from '../../data/initialData';
 
 export const RegisterPenyalurView: React.FC = () => {
   const { registerPenyalur, setAuthStep } = useApp();
@@ -9,12 +10,11 @@ export const RegisterPenyalurView: React.FC = () => {
   const [picNama, setPicNama] = useState('');
   const [email, setEmail] = useState('');
   const [kontak, setKontak] = useState('');
-  const [lokasiDetail, setLokasiDetail] = useState('');
   const [password, setPassword] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
 
@@ -28,14 +28,14 @@ export const RegisterPenyalurView: React.FC = () => {
       return;
     }
 
-    const res = registerPenyalur({
+    const res = await registerPenyalur({
       namaUnit,
       inisial: inisial.toUpperCase().trim(),
       jenis,
       picNama,
       email,
       kontak,
-      lokasiDetail: lokasiDetail || `Gedung ${namaUnit}`
+      lokasiDetail: APP_BRAND.dropPointUtama.nama
     });
 
     if (!res.success) {
@@ -167,26 +167,28 @@ export const RegisterPenyalurView: React.FC = () => {
               />
             </div>
 
-            <div>
-              <label className="text-xs font-extrabold text-[#1A2E22] block mb-1">
-                Alamat / Titik Koordinat
-              </label>
-              <textarea
-                rows={2}
-                placeholder="Contoh: Gedung A Lt. 1 / -6.208, 106.845"
-                className="w-full py-2.5 px-4 rounded-2xl bg-[#F2F7F4] border border-[#2D6A4F]/15 text-xs font-bold text-[#1A2E22] outline-none focus:border-[#2D6A4F] transition-all resize-none"
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-extrabold text-[#1A2E22] block mb-1">
-                Armada Kendaraan (Opsional)
-              </label>
-              <input
-                type="text"
-                placeholder="Contoh: Motor Tossa / B 1234 CD"
-                className="w-full h-11 px-4 rounded-2xl bg-[#F2F7F4] border border-[#2D6A4F]/15 text-xs font-bold text-[#1A2E22] outline-none focus:border-[#2D6A4F] transition-all"
-              />
+            <div className="flex items-start gap-2.5 rounded-2xl border border-[#2D6A4F]/15 bg-[#F2F7F4] p-3.5">
+              <span className="material-symbols-outlined text-[18px] text-[#2D6A4F] shrink-0">
+                location_on
+              </span>
+              <div className="min-w-0">
+                <span className="block text-[11px] font-extrabold text-[#1A2E22]">
+                  Lokasi penjemputan terpusat
+                </span>
+                <p className="text-[11px] text-[#52645A] leading-relaxed mt-0.5">
+                  Seluruh penjemputan dilakukan di {APP_BRAND.dropPointUtama.nama}. Tidak perlu
+                  mengisi alamat unit.
+                </p>
+                <a
+                  href={APP_BRAND.dropPointUtama.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[11px] font-extrabold text-[#2D6A4F] mt-1.5 hover:underline"
+                >
+                  <span className="material-symbols-outlined text-[14px]">map</span>
+                  Lihat titik UPJ di Google Maps
+                </a>
+              </div>
             </div>
 
             <div>

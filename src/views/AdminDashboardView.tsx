@@ -1,10 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { APP_BRAND } from '../data/initialData';
 
-/* ─── Leaflet Map Marker Icons ─── */
+/* ─── Map Marker Icons ─── */
+/**
+ * Marker drop point UPJ (hub) — pin besar dengan denyut + label.
+ * Semua penjemputan berpusat di sini, jadi dibuat paling menonjol.
+ */
+const markerIconDropPoint = L.divIcon({
+  className: '',
+  html: `
+    <div class="sbt-hub-marker">
+      <div class="sbt-hub-marker__halo"></div>
+      <div class="sbt-hub-marker__halo sbt-hub-marker__halo--2"></div>
+      <div class="sbt-hub-pin"><span class="material-symbols-outlined">warehouse</span></div>
+      <div class="sbt-map-label">DROP POINT UPJ</div>
+    </div>
+  `,
+  iconSize: [62, 62],
+  iconAnchor: [31, 31],
+  popupAnchor: [0, -26],
+});
+
+/** Marker mitra — pin warna partner, memakai foto profil bila akun sudah mengunggah. */
+const buildMitraIcon = (color: string, iconName: string, avatarUrl?: string) =>
+  L.divIcon({
+    className: '',
+    html: `
+      <div class="sbt-partner-pin" style="background:${color}">
+        ${
+          avatarUrl
+            ? `<img src="${avatarUrl}" alt="" />`
+            : `<span class="material-symbols-outlined">${iconName}</span>`
+        }
+      </div>
+    `,
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
+    popupAnchor: [0, -18],
+  });
+
 const markerIconUnit = L.divIcon({
   className: 'custom-map-marker-unit',
   html: `<div style="background-color: #2D6A4F; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2.5px solid white;"><span class="material-symbols-outlined" style="color: white; font-size: 18px;">school</span></div>`,
@@ -23,7 +61,7 @@ const markerIconIndustri = L.divIcon({
 
 const markerIconSerpong = L.divIcon({
   className: 'custom-map-marker-serpong',
-  html: `<div style="background-color: #1B4332; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2.5px solid white;"><span class="material-symbols-outlined" style="color: white; font-size: 17px;">recycling</span></div>`,
+  html: `<div style="background-color: #005138; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2.5px solid white;"><span class="material-symbols-outlined" style="color: white; font-size: 17px;">recycling</span></div>`,
   iconSize: [32, 32],
   iconAnchor: [16, 16],
   popupAnchor: [0, -16],
@@ -51,7 +89,20 @@ const MapFlyController: React.FC<{ coords: [number, number]; zoom: number; trigg
   return null;
 };
 
-/* ─── Logistics Partners Data ─── */
+/* ─── Skala Jarak (meter) ─── */
+const MapScaleControl: React.FC = () => {
+  const map = useMap();
+  useEffect(() => {
+    const scale = L.control.scale({ imperial: false, position: 'bottomright' });
+    scale.addTo(map);
+    return () => {
+      scale.remove();
+    };
+  }, [map]);
+  return null;
+};
+
+/* ─── Logistics Partners Data Structure ─── */
 interface LogisticsPartner {
   id: string;
   name: string;
@@ -70,22 +121,27 @@ interface LogisticsPartner {
   armada: string;
   driver?: string;
   jadwal: string;
+  /** Id akun di tabel profiles — dipakai untuk menampilkan foto profil mitra. */
+  akunId?: string;
+  /** Id perusahaan di tabel profiles (akun-akun mitra di bawah perusahaan ini). */
+  perusahaanId?: string;
 }
 
 const MITRA_PARTNERS: LogisticsPartner[] = [
   {
     id: 'upj-gsg',
-    name: 'Drop Point Kampus UPJ (GSG)',
+    name: APP_BRAND.dropPointUtama.nama,
     type: 'drop_point',
     category: 'Pusat Konsolidasi Utama',
-    address: 'Jl. Cendrawasih Raya Blok B7/P, Bintaro Jaya, Sawah Baru, Ciputat, Tangerang Selatan',
-    coords: [-6.291391, 106.725795],
+    address: APP_BRAND.dropPointUtama.alamat,
+    coords: [-6.292137, 106.725419],
     distance: 'Pusat Kampus',
     badge: '8 / 10 Tong Aktif',
-    badgeClass: 'bg-[#E8F5EE] text-[#1B4332] border-[#2D6A4F]/25',
+    badgeClass: 'bg-[#E8F5EE] text-[#005138] border-[#2D6A4F]/25',
     color: '#2D6A4F',
     iconName: 'school',
     iconType: markerIconUnit,
+    akunId: 'user-admin-pusat',
     acceptedTypes: ['Kertas HVS', 'Kardus Box', 'Kertas Campur'],
     capacity: '1.085 Kg Terkumpul',
     armada: 'Ramp Truk 6-Roda & Timbangan Digital Tera',
@@ -98,105 +154,119 @@ const MITRA_PARTNERS: LogisticsPartner[] = [
     category: 'Mitra Pengolah Kertas HVS & Arsip',
     address: 'Kawasan Niaga Bintaro Sektor 7, Pondok Aren (~4.2 Km dari UPJ)',
     coords: [-6.2500, 106.7600],
-    distance: '4.2 Km dari UPJ',
-    badge: 'Siap Tampung 3 Ton',
+    distance: '4.2 Km',
+    badge: 'Siap Jemput',
     badgeClass: 'bg-[#FEF3C7] text-[#92400E] border-[#D97706]/25',
     color: '#D97706',
     iconName: 'factory',
     iconType: markerIconIndustri,
-    acceptedTypes: ['Kertas HVS Kantor', 'Koran', 'Arsip Rahasia Terpilah'],
-    capacity: 'Kapasitas Harian: 3.000 Kg',
-    armada: 'Armada Truk Box Sedang (Nomor #A-02)',
-    driver: 'Pak Hendro (Status: Standby)',
-    jadwal: 'Penjemputan Setiap Selasa & Jumat Pagi',
+    akunId: 'user-perusahaan-mdl',
+    perusahaanId: 'perusahaan-mdl',
+    acceptedTypes: ['HVS Bersih', 'Buku & Majalah', 'Dokumen Rahasia'],
+    capacity: 'Kapasitas Harian: 2.000 Kg',
+    armada: 'Truk Box B 9821 PQL',
+    driver: 'Pak Joko Susilo (0812-8871-xxxx)',
+    jadwal: 'Penjemputan: Selasa & Jumat',
   },
   {
     id: 'mitra-serpong',
-    name: 'Pabrik Pengolah Kertas Serpong',
+    name: 'Pabrik Kertas Kraft Serpong',
     type: 'mitra_industri',
-    category: 'Pabrik Peleburan Kardus & Dupleks',
-    address: 'Kawasan Industri Taman Tekno BSD Blok J-12, Serpong (~7.8 Km dari UPJ)',
+    category: 'Pabrik Karton & Box Corrugated',
+    address: 'Kawasan Pergudangan Taman Tekno Blok B, BSD Serpong (~8.7 Km dari UPJ)',
     coords: [-6.3000, 106.7000],
-    distance: '7.8 Km dari UPJ',
-    badge: 'Kapasitas Besar',
-    badgeClass: 'bg-[#E8F5EE] text-[#1B4332] border-[#2D6A4F]/25',
-    color: '#1B4332',
+    distance: '8.7 Km',
+    badge: 'Jadwal Kamis',
+    badgeClass: 'bg-[#E8F5EE] text-[#005138] border-[#2D6A4F]/25',
+    color: '#005138',
     iconName: 'recycling',
     iconType: markerIconSerpong,
-    acceptedTypes: ['Kardus Box Gelombang (Corrugated)', 'Dupleks', 'Karton Tebal'],
-    capacity: 'Kapasitas Harian: 8.000 Kg',
-    armada: 'Truk Tronton Hidrolik (Nomor #TR-01)',
-    driver: 'Pak Bambang (Status: Menuju Pabrik)',
-    jadwal: 'Penjemputan Terjadwal: Setiap Kamis Jam 10.00',
+    acceptedTypes: ['Kardus Cokelat', 'Karton Duplex', 'Paper Core'],
+    capacity: 'Kapasitas Kontainer: 1.500 Kg',
+    armada: 'Flatbed Container B 9102 KRD',
+    driver: 'Pak Hendra Pratama (0856-9123-xxxx)',
+    jadwal: 'Penjemputan Rutin: Setiap Kamis',
   },
   {
     id: 'mitra-ciputat',
-    name: 'CV Berkah Jaya Daur Ulang',
+    name: 'CV Berkah Daur Paperindo',
     type: 'mitra_industri',
-    category: 'Bank Sampah & Pusat Sortir Ciputat',
-    address: 'Jl. Dewi Sartika No. 45, Cipayung, Ciputat (~3.1 Km dari UPJ)',
-    coords: [-6.3100, 106.7400],
-    distance: '3.1 Km dari UPJ',
-    badge: 'Mitra Cepat Tanggap',
+    category: 'Pabrik Pulp & Kertas Campur',
+    address: 'Jl. RE Martadinata No. 45, Cipayung, Ciputat (~5.4 Km dari UPJ)',
+    coords: [-6.3150, 106.7450],
+    distance: '5.4 Km',
+    badge: 'Mitra Cadangan',
     badgeClass: 'bg-[#D1FAE5] text-[#065F46] border-[#059669]/25',
     color: '#059669',
     iconName: 'precision_manufacturing',
     iconType: markerIconCiputat,
-    acceptedTypes: ['Semua Jenis Kertas Bersih', 'Koran Buram', 'Majalah'],
-    capacity: 'Kapasitas Harian: 1.500 Kg',
-    armada: 'Pick-Up L300 Khusus Kampus (Nomor #PU-03)',
-    driver: 'Mas Dani (Status: Siap Jemput 2 Jam)',
-    jadwal: 'Layanan Jemput Kilat (Senin - Sabtu)',
+    acceptedTypes: ['Kertas Campur', 'Brosur & Flier', 'Koran Bekas'],
+    capacity: 'Kapasitas Batch: 800 Kg',
+    armada: 'Pick-Up L300 B 9334 TNG',
+    driver: 'Pak Rahmat Hidayat (0878-7112-xxxx)',
+    jadwal: 'Sistem On-Call / Sesuai Permintaan',
   },
 ];
 
-/* ─── Smooth Catmull-Rom Spline Helper (Ensures line passes exactly through points) ─── */
-function createSmoothSpline(pts: { x: number; y: number }[]): string {
-  if (pts.length === 0) return '';
-  let path = `M ${pts[0].x},${pts[0].y}`;
-  for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[Math.max(i - 1, 0)];
-    const p1 = pts[i];
-    const p2 = pts[i + 1];
-    const p3 = pts[Math.min(i + 2, pts.length - 1)];
+/* ─── Sparkline (Animated SVG Path) ─── */
+const Sparkline: React.FC<{ data: number[]; color: string; isLoaded?: boolean }> = ({ data, color, isLoaded = true }) => {
+  const max = Math.max(...data), min = Math.min(...data);
+  const w = 120, h = 32;
+  const pts = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * w;
+    const y = h - ((v - min) / (max - min || 1)) * (h - 6) - 3;
+    return `${x},${y}`;
+  }).join(' ');
 
-    const cp1x = p1.x + (p2.x - p0.x) / 6;
-    const cp1y = p1.y + (p2.y - p0.y) / 6;
-    const cp2x = p2.x - (p3.x - p1.x) / 6;
-    const cp2y = p2.y - (p3.y - p1.y) / 6;
-
-    path += ` C ${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${p2.x},${p2.y}`;
-  }
-  return path;
-}
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} className="w-full overflow-visible" style={{ height: 32 }} preserveAspectRatio="none">
+      <polyline
+        points={pts}
+        fill="none"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeDasharray="300"
+        strokeDashoffset={isLoaded ? '0' : '300'}
+        style={{ transition: 'stroke-dashoffset 1.3s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+      />
+    </svg>
+  );
+};
 
 export const AdminDashboardView: React.FC = () => {
-  const { units, totalKgTersalurkan, totalPohon, totalAirBersih, laporanList, setActiveRoute } = useApp();
+  const { units, totalKgTersalurkan, totalPohon, totalAirBersih, laporanList, setActiveRoute, currentUser, profiles, tongList } = useApp();
 
-  // Animation on initial mount
   const [isLoaded, setIsLoaded] = useState(false);
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoaded(true), 120);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Mascot quotes & hover states
   const [activeMascotQuote, setActiveMascotQuote] = useState(0);
   const [hoveredMascot, setHoveredMascot] = useState<'mina' | 'moni' | null>(null);
-
-  const mascotQuotes = [
-    { mina: 'Hai Admin! Kertas HVS UPJ siap olah! ✨', moni: 'Kardus terjaga kering & rapi!' },
-    { mina: 'Hari ini emisi CO2 kampus turun lagi lho! 🌿', moni: 'Armada mitra siap jemput tepat waktu!' },
-    { mina: 'Klik kami kalau butuh semangat sirkular! 💚', moni: 'Semangat pilah limbah kertas kampus!' }
-  ];
-
-  // Interactive Map State
-  const [selectedMitraId, setSelectedMitraId] = useState<string>('upj-gsg');
+  const [selectedMitraId, setSelectedMitraId] = useState<string>('mitra-bintaro');
   const [mapTarget, setMapTarget] = useState<{ coords: [number, number]; zoom: number; triggerKey: number }>({
-    coords: [-6.291391, 106.725795],
-    zoom: 13,
+    coords: [-6.2500, 106.7600],
+    zoom: 15,
     triggerKey: Date.now(),
   });
+
+  // Jumlah tong aktif mengikuti perhitungan menu "Kelola Unit & Tong".
+  const totalTong = tongList.length;
+  const tongAktif = tongList.filter(t => t.status === 'terisi' || t.status === 'siap_pickup').length;
+
+  const badgeFor = (partner: LogisticsPartner) =>
+    partner.type === 'drop_point' ? `${tongAktif} / ${totalTong} Tong Aktif` : partner.badge;
+
+  /** Foto profil akun mitra (kalau sudah mengunggah, bukan logo bawaan). */
+  const avatarFor = (partner: LogisticsPartner): string | undefined => {
+    const kandidat = profiles.filter(p =>
+      (partner.akunId && p.id === partner.akunId) ||
+      (partner.perusahaanId && p.perusahaan_id === partner.perusahaanId)
+    );
+    for (const akun of kandidat) {
+      const url = akun.avatar_url;
+      if (url && url !== APP_BRAND.avatarUrl && url !== '/logo-sbt.png') return url;
+    }
+    return undefined;
+  };
 
   const handleSelectMitra = (mitra: LogisticsPartner) => {
     setSelectedMitraId(mitra.id);
@@ -208,49 +278,24 @@ export const AdminDashboardView: React.FC = () => {
   };
 
   const handleResetMap = () => {
-    setSelectedMitraId('upj-gsg');
+    setSelectedMitraId('');
     setMapTarget({
-      coords: [-6.291391, 106.725795],
+      coords: [-6.292137, 106.725419],
       zoom: 12,
       triggerKey: Date.now(),
     });
   };
 
-  const selectedPartner = MITRA_PARTNERS.find(p => p.id === selectedMitraId) || MITRA_PARTNERS[0];
+  useEffect(() => {
+    const t = setTimeout(() => setIsLoaded(true), 100);
+    return () => clearTimeout(t);
+  }, []);
 
-  // Line Chart Data Points
-  const linePoints = [
-    { month: 'Apr', label: '24.500 Kg', x: 60, y: 140 },
-    { month: 'Mei', label: '31.200 Kg', x: 170, y: 122 },
-    { month: 'Jun', label: '38.800 Kg', x: 280, y: 98 },
-    { month: 'Jul', label: '44.600 Kg', x: 390, y: 84 },
-    { month: 'Agu', label: '48.100 Kg', x: 500, y: 68 },
-    { month: 'Sep', label: '52.180 Kg', x: 610, y: 50 },
+  const mascotQuotes = [
+    { mina: 'Hai Admin! Kertas HVS UPJ siap olah! 📄✨', moni: 'Kardus terjaga kering & rapi! 📦' },
+    { mina: 'Hari ini emisi CO₂ turun lagi lho! 🌱', moni: 'Armada mitra siap jemput sesuai jadwal! 🚚' },
+    { mina: 'Klik kami kalau butuh semangat sirkular! ✋', moni: 'Semangat pilah sampah kertas kampus! 🚀' }
   ];
-  const splinePath = createSmoothSpline(linePoints);
-  const areaPath = `${splinePath} L 610,180 L 60,180 Z`;
-
-  const [activeLinePoint, setActiveLinePoint] = useState<number | null>(5);
-
-  // Categories composition data
-  const categories = [
-    { id: 'hvs', name: 'Kertas HVS & Arsip', pct: 42, amount: '21.900 Kg', color: '#2D6A4F', desc: 'Arsip kantor & berkas prodi UPJ', dasharray: '158 218', dashoffset: 0 },
-    { id: 'kardus', name: 'Kardus Box Cokelat', pct: 28, amount: '14.610 Kg', color: '#C4934F', desc: 'Kardus logistik & paket kampus', dasharray: '105 271', dashoffset: -158 },
-    { id: 'dupleks', name: 'Kertas Dupleks', pct: 16, amount: '8.350 Kg', color: '#E76F51', desc: 'Karton kemasan & box makanan kering', dasharray: '60 316', dashoffset: -263 },
-    { id: 'koran', name: 'Koran & Buram', pct: 14, amount: '7.320 Kg', color: '#52B788', desc: 'Surat kabar perpustakaan & buram', dasharray: '53 323', dashoffset: -323 },
-  ];
-  const [hoveredCategory, setHoveredCategory] = useState<typeof categories[0] | null>(null);
-
-  // Bar chart monthly comparison
-  const barData = [
-    { month: 'Apr', setor: 48, setorKg: '24.500 Kg', mitra: 38, mitraKg: '19.200 Kg', eff: '78%' },
-    { month: 'Mei', setor: 62, setorKg: '31.200 Kg', mitra: 50, mitraKg: '25.000 Kg', eff: '80%' },
-    { month: 'Jun', setor: 74, setorKg: '38.800 Kg', mitra: 60, mitraKg: '31.500 Kg', eff: '81%' },
-    { month: 'Jul', setor: 85, setorKg: '44.600 Kg', mitra: 70, mitraKg: '36.800 Kg', eff: '83%' },
-    { month: 'Agu', setor: 92, setorKg: '48.100 Kg', mitra: 80, mitraKg: '41.500 Kg', eff: '86%' },
-    { month: 'Sep', setor: 98, setorKg: '52.180 Kg', mitra: 88, mitraKg: '46.800 Kg', eff: '90%' },
-  ];
-  const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(null);
 
   const targetSemester = 2500;
   const pct = Math.min(100, Math.round((totalKgTersalurkan / targetSemester) * 100));
@@ -276,89 +321,108 @@ export const AdminDashboardView: React.FC = () => {
     }))
     .sort((a, b) => b.kg - a.kg);
 
+  const monthlyData = [120, 185, 290, 240, 250, totalKgTersalurkan];
+
+  // Sapaan — seragam dengan dashboard mitra &ljawab unit
+  const jamSekarang = new Date().getHours();
+  const periodeHari =
+    jamSekarang >= 5 && jamSekarang < 11
+      ? 'pagi'
+      : jamSekarang < 15
+        ? 'siang'
+        : jamSekarang < 19
+          ? 'sore'
+          : 'malam';
+  const tanggalHariIni = new Date().toLocaleDateString('id-ID', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  });
+  const namaAdmin =
+    currentUser?.nama
+      ?.replace(/,\s*.*$/, '')
+      .replace(/\(.*\)$/, '')
+      .trim() || 'Admin Drop Point';
+
   return (
-    <div className="w-full max-w-6xl mx-auto font-sans text-[#141E18] space-y-6 pb-12">
+    <div className="w-full max-w-7xl mx-auto font-sans text-[#1A2E22] space-y-6 pb-12">
 
-      {/* ─── 1. TOP GREETING HEADER ─── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
-        <div>
-          <div className="flex flex-wrap items-center gap-2.5">
-            <span className="text-2xl">☀️</span>
-            <h1 className="text-xl sm:text-2xl font-black text-[#141E18] tracking-tight">
-              Selamat Pagi, Tim Pengelola!
-            </h1>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E0E5E2] text-[11px] font-bold text-[#4A5C52] shadow-xs">
-              <span className="w-2 h-2 rounded-full bg-[#2D6A4F] animate-pulse" />
-              <span>Senin, 04 November 2026</span>
-            </span>
-          </div>
-          <p className="text-xs text-[#4A5C52] font-medium mt-1">
-            Berikut ringkasan perputaran limbah kertas &amp; logistik kampus UPJ hari ini.
-          </p>
-        </div>
-      </div>
+      {/* ═══ Sapaan — sama seperti dashboard mitra &ljawab unit ═══ */}
+      <section aria-label="Sapaan" className="px-1">
+        <p className="text-[11px] font-medium text-[#8CA090] leading-snug">{tanggalHariIni}</p>
+        <h1 className="mt-2 leading-[1.08] tracking-tight text-[#1A2E22]">
+          <span className="block text-[22px] font-medium">Selamat {periodeHari},</span>
+          <span className="block text-[26px] sm:text-[28px] font-extrabold break-words">
+            {namaAdmin} <span aria-hidden="true">👋</span>
+          </span>
+        </h1>
+        <p className="mt-2.5 text-[13px] leading-relaxed text-[#52645A]">
+          Satu langkah kecil hari ini, untuk bumi yang lebih baik.
+        </p>
+      </section>
 
-      {/* ─── 2. HERO BANNER PERSIS REFERENSI (MINA DIGESER KE KIRI AGAR TIDAK TERTUMPUK DENGAN MONI) ─── */}
-      <div className="w-full relative pt-10 sm:pt-12 mb-2">
-        {/* Dark Forest Green Background Card */}
-        <div className="absolute inset-x-0 bottom-0 top-10 sm:top-12 rounded-[28px] sm:rounded-[32px] bg-[#174630] border border-[#52B788]/30 shadow-xl shadow-[#0C2419]/25 overflow-hidden pointer-events-none">
-          <div className="absolute -right-10 -bottom-14 w-80 h-80 rounded-full bg-[#52B788]/20 blur-3xl" />
-          <svg className="absolute inset-0 w-full h-full opacity-10" preserveAspectRatio="none" viewBox="0 0 800 220">
-            <path d="M -50 100 Q 150 20 350 120 T 750 40 T 950 180" fill="none" stroke="#52B788" strokeWidth="1.5" />
-            <path d="M -50 150 Q 200 60 450 180 T 850 90" fill="none" stroke="#D8F3DC" strokeWidth="1" />
-          </svg>
+      {/* ═══ 1. EXECUTIVE SUSTAINABILITY COMMAND BANNER (WITH 3D BREAKOUT MASCOTS) ═══ */}
+      <div className="w-full relative pt-3 sm:pt-4 md:pt-5 mb-2">
+        <div className="absolute inset-x-0 bottom-0 top-3 sm:top-4 md:top-5 rounded-[24px] bg-gradient-to-br from-[#123827] via-[#1B4D36] to-[#256346] border border-[#52B788]/25 shadow-xl shadow-[#0E281C]/25 overflow-hidden pointer-events-none">
+          <div
+            className="absolute inset-0 opacity-[0.09]"
+            style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #ffffff 1.2px, transparent 0)', backgroundSize: '24px 24px' }}
+          />
+          <div className="absolute -right-12 -bottom-16 w-96 h-96 rounded-full bg-[#52B788]/20 blur-3xl" />
+          <div className="absolute left-1/3 -top-20 w-80 h-80 rounded-full bg-[#74C69D]/15 blur-3xl" />
+          <div className="absolute -left-12 -bottom-12 w-72 h-72 rounded-full bg-[#2D6A4F]/35 blur-2xl" />
         </div>
 
-        {/* Content Container (Overflow-visible so Mascots sprout above top edge!) */}
-        <div className="relative z-10 px-6 sm:px-9 py-7 sm:py-8 min-h-[225px] sm:min-h-[245px] flex items-center overflow-visible">
-          
-          {/* Left Text Column */}
-          <div className="max-w-[50%] sm:max-w-xs md:max-w-sm lg:max-w-md space-y-3 z-10 text-left">
-            <div className="inline-flex items-center gap-2 bg-[#0F2D1F]/60 backdrop-blur-md px-3.5 py-1 rounded-full text-[10px] sm:text-[11px] font-extrabold tracking-wider text-[#A7F3D0] uppercase border border-white/10 shadow-xs">
+        {/* Card Content Layer — OVERFLOW VISIBLE: Mina & Moni break OUT of the top card border for real 3D effect */}
+        <div className="relative z-10 p-6 sm:p-8 md:px-10 min-h-[210px] sm:min-h-[235px] overflow-visible flex items-center">
+          {/* Left Column Text — Width constrained so it never overlaps with mascots on the right */}
+          <div className="max-w-[60%] sm:max-w-md md:max-w-lg lg:max-w-xl space-y-3.5 z-10 py-4 sm:py-6 text-left">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full text-[11px] font-bold tracking-wide text-[#D8F3DC] border border-white/15 shadow-xs">
               <span className="w-2 h-2 rounded-full bg-[#52B788] animate-pulse" />
               PUSAT KOMANDO SIRKULARITAS • KAMPUS UPJ
             </div>
 
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight tracking-tight drop-shadow-sm">
-              Monitoring Sirkularitas &amp; Limbah Kertas
-            </h2>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white leading-tight tracking-tight drop-shadow-sm">
+              Monitoring Sirkularitas & Limbah Kertas
+            </h1>
 
-            <p className="text-xs sm:text-sm text-[#D1FAE5]/85 font-normal leading-relaxed max-w-sm">
+            <p className="text-xs sm:text-sm text-[#D8F3DC]/85 font-normal leading-relaxed max-w-lg">
               Pantau serapan limbah kertas kampus, kendalikan kapasitas drop point serbaguna, dan pastikan penyaluran ke mitra industri berjalan tepat waktu.
             </p>
           </div>
 
-          {/* Right Column: Mascots with Floating Animation & Clear Horizontal Spacing */}
+          {/* Right Column — Mina & Moni Mascots PINNED SECURELY TO THE FAR RIGHT SIDE */}
           <div
-            className="absolute bottom-0 right-1 sm:right-4 md:right-8 flex items-end justify-end select-none cursor-pointer group pb-0 z-20 overflow-visible pointer-events-auto"
+            className="absolute bottom-0 right-1 sm:right-4 md:right-8 lg:right-12 xl:right-16 flex items-end justify-end select-none cursor-pointer group pb-0 z-20 overflow-visible pointer-events-auto"
             onClick={() => setActiveMascotQuote(q => (q + 1) % mascotQuotes.length)}
-            title="Klik Mina &amp; Moni untuk pesan berikutnya"
+            title="Klik Mina & Moni untuk melihat pesan mereka"
             role="button"
             tabIndex={0}
             aria-label="Maskot Mina dan Moni"
           >
-            {/* Ambient Glow behind mascots */}
-            <div className="absolute w-72 h-72 rounded-full bg-[#52B788]/20 blur-3xl -top-6 pointer-events-none" />
+            <div className="absolute w-72 h-72 rounded-full bg-[#52B788]/25 blur-3xl -top-6 pointer-events-none animate-pulse-glow" />
+            <div className="absolute bottom-0 w-60 sm:w-76 md:w-88 h-5 bg-[#081F14]/55 rounded-full blur-md pointer-events-none z-0" />
 
-            {/* Ground Contact Shadow */}
-            <div className="absolute bottom-0 w-72 h-5 bg-[#081F14]/60 rounded-full blur-md pointer-events-none z-0" />
-
-            {/* Characters Pair Container (Side-by-side with clear gap, no cramming!) */}
+            {/* Characters Duo Container — standing shoulder-to-shoulder on the right edge */}
             <div className="relative flex items-end justify-end z-10 pb-0 overflow-visible">
 
-              {/* Mina (Paper Sheets Mascot) — Shifted left with clear breathing space */}
+              {/* Mina Slot (Paper Mascot) */}
               <div
-                className="relative -translate-x-28 sm:-translate-x-36 md:-translate-x-44 w-[130px] sm:w-[155px] md:w-[175px] h-[230px] sm:h-[260px] md:h-[285px] flex items-end justify-center animate-float-mina z-10 transition-transform duration-300 hover:scale-105 hover:z-30 cursor-pointer"
+                className="relative -translate-x-30 sm:-translate-x-30 md:-translate-x-18 w-[120px] sm:w-[145px] md:w-[170px] lg:w-[190px] h-[215px] sm:h-[245px] md:h-[270px] lg:h-[285px] flex items-end justify-center animate-float-mina z-10 transition-transform duration-300 hover:scale-105 hover:z-30 cursor-pointer"
                 onMouseEnter={() => setHoveredMascot('mina')}
                 onMouseLeave={() => setHoveredMascot(null)}
               >
-                {/* Speech Bubble directly above Mina */}
+                {/* Speech Bubble directly above Mina's head */}
                 {(hoveredMascot === 'mina' || hoveredMascot === null) && (
-                  <div className="absolute -top-7 sm:-top-8 left-1/2 -translate-x-1/2 z-40 pointer-events-auto cursor-pointer animate-speech-bubble whitespace-nowrap">
-                    <div className="relative bg-white text-[#141E18] px-3.5 py-1.5 rounded-full shadow-lg border border-[#E0E5E2] text-[10px] sm:text-[11px] font-extrabold flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-transform">
+                  <div className="absolute -top-4 sm:-top-5 left-1/2 -translate-x-1/2 z-40 pointer-events-auto cursor-pointer animate-speech-bubble whitespace-nowrap">
+                    <div className="relative bg-white/95 backdrop-blur-md text-[#1A2E22] px-3.5 py-1 rounded-full shadow-lg border border-[#E3DDCF] text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-transform">
                       <span className="w-2 h-2 rounded-full bg-[#2D6A4F] animate-pulse shrink-0" />
-                      <span>{mascotQuotes[activeMascotQuote].mina}</span>
-                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rotate-45 border-r border-b border-[#E0E5E2]" />
+                      <span className="max-w-[180px] sm:max-w-none text-center">
+                        {mascotQuotes[activeMascotQuote].mina}
+                      </span>
+                      <span className="text-[11px]">📄</span>
+                      {/* Speech Bubble Arrow Tail pointing down straight into Mina's head */}
+                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rotate-45 border-r border-b border-[#E3DDCF]" />
                     </div>
                   </div>
                 )}
@@ -366,25 +430,30 @@ export const AdminDashboardView: React.FC = () => {
                 <img
                   src="/mina.png"
                   alt="Mina - Maskot Kertas"
-                  className="max-w-none h-[230px] sm:h-[260px] md:h-[285px] object-contain object-bottom pointer-events-none"
+                  className="max-w-none h-[215px] sm:h-[245px] md:h-[270px] lg:h-[285px] object-contain object-bottom pointer-events-none"
                   style={{
-                    filter: 'drop-shadow(0 16px 20px rgba(7, 24, 16, 0.45)) drop-shadow(0 4px 6px rgba(7, 24, 16, 0.3))'
+                    filter: 'drop-shadow(0 16px 20px rgba(7, 24, 16, 0.45)) drop-shadow(0 6px 8px rgba(7, 24, 16, 0.3))'
                   }}
                 />
               </div>
 
-              {/* Moni (Cardboard Stack Mascot) — Positioned cleanly beside Mina, NO overlapping! */}
+              {/* Moni Slot (Cardboard Mascot) */}
               <div
-                className="relative -ml-4 sm:-ml-6 md:-ml-8 w-[115px] sm:w-[140px] md:w-[160px] h-[195px] sm:h-[225px] md:h-[245px] flex items-end justify-center animate-float-moni z-20 transition-transform duration-300 hover:scale-105 hover:z-30 cursor-pointer"
+                className="relative w-[95px] sm:w-[115px] md:w-[135px] lg:w-[150px] h-[170px] sm:h-[195px] md:h-[215px] lg:h-[230px] -ml-5 sm:-ml-7 md:-ml-9 flex items-end justify-center animate-float-moni z-20 transition-transform duration-300 hover:scale-105 hover:z-30 cursor-pointer"
                 onMouseEnter={() => setHoveredMascot('moni')}
                 onMouseLeave={() => setHoveredMascot(null)}
               >
+                {/* Speech Bubble directly above Moni's head when hovering Moni */}
                 {hoveredMascot === 'moni' && (
-                  <div className="absolute -top-7 sm:-top-8 left-1/2 -translate-x-1/2 z-40 pointer-events-auto cursor-pointer animate-speech-bubble whitespace-nowrap">
-                    <div className="relative bg-white text-[#78350F] px-3.5 py-1.5 rounded-full shadow-lg border border-[#FDE68A] text-[10px] sm:text-[11px] font-extrabold flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-transform">
+                  <div className="absolute -top-4 sm:-top-5 left-1/2 -translate-x-1/2 z-40 pointer-events-auto cursor-pointer animate-speech-bubble whitespace-nowrap">
+                    <div className="relative bg-white/95 backdrop-blur-md text-[#1A2E22] px-3.5 py-1 rounded-full shadow-lg border border-[#E3DDCF] text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-transform">
                       <span className="w-2 h-2 rounded-full bg-[#D97706] animate-pulse shrink-0" />
-                      <span>{mascotQuotes[activeMascotQuote].moni}</span>
-                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rotate-45 border-r border-b border-[#FDE68A]" />
+                      <span className="max-w-[180px] sm:max-w-none text-center">
+                        {mascotQuotes[activeMascotQuote].moni}
+                      </span>
+                      <span className="text-[11px]">📦</span>
+                      {/* Speech Bubble Arrow Tail pointing down straight into Moni's head */}
+                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rotate-45 border-r border-b border-[#E3DDCF]" />
                     </div>
                   </div>
                 )}
@@ -392,9 +461,9 @@ export const AdminDashboardView: React.FC = () => {
                 <img
                   src="/moni.png"
                   alt="Moni - Maskot Kardus"
-                  className="max-w-none h-[195px] sm:h-[225px] md:h-[245px] object-contain object-bottom pointer-events-none"
+                  className="max-w-none h-[170px] sm:h-[195px] md:h-[215px] lg:h-[230px] object-contain object-bottom pointer-events-none"
                   style={{
-                    filter: 'drop-shadow(0 14px 18px rgba(7, 24, 16, 0.45)) drop-shadow(0 4px 6px rgba(7, 24, 16, 0.25))'
+                    filter: 'drop-shadow(0 16px 20px rgba(7, 24, 16, 0.45)) drop-shadow(0 6px 8px rgba(7, 24, 16, 0.3))'
                   }}
                 />
               </div>
@@ -403,636 +472,737 @@ export const AdminDashboardView: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* ─── 3. EXACT 3 ACTION BUTTON CARDS FROM USER SCREENSHOT ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
-        {/* Card 1: Kelola Unit & Tong */}
+      {/* ═══ 2. QUICK ACTIONS BAR ═══ */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
         <button
           onClick={() => setActiveRoute('/admin/unit-tong')}
-          className="bg-white rounded-2xl p-4 border border-[#E0E5E2] shadow-xs hover:shadow-md hover:border-[#2D6A4F]/40 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-between group cursor-pointer text-left"
+          className="bg-white border border-[#E3DDCF] hover:border-[#2D6A4F] rounded-[14px] p-4 text-left transition-all hover:shadow-xs group flex items-center justify-between"
         >
           <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-[#E8F5EE] text-[#2D6A4F] flex items-center justify-center shrink-0 border border-[#D8F3DC] group-hover:scale-105 transition-transform">
-              <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>inventory_2</span>
+            <div className="w-10 h-10 rounded-[10px] bg-[#E6ECDD] text-[#005138] flex items-center justify-center shrink-0 group-hover:bg-[#2D6A4F] group-hover:text-white transition-colors">
+              <span className="material-symbols-outlined text-[20px]">inventory_2</span>
             </div>
             <div>
-              <h3 className="text-sm font-extrabold text-[#141E18] group-hover:text-[#2D6A4F] transition-colors">
-                Kelola Unit &amp; Tong
-              </h3>
-              <p className="text-[11px] text-[#4A5C52] font-medium mt-0.5">
-                Atur kuota slot tong di drop point GSG
-              </p>
+              <h3 className="text-[13px] font-bold text-[#1A2E22]">Kelola Unit & Tong</h3>
+              <p className="text-[11px] text-[#52645A]">Atur kuota slot tong di drop point GSG</p>
             </div>
           </div>
-          <span className="material-symbols-outlined text-[#8A9E94] text-lg group-hover:text-[#2D6A4F] group-hover:translate-x-1 transition-all">
-            arrow_forward
-          </span>
+          <span className="material-symbols-outlined text-[#8CA090] text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
         </button>
 
-        {/* Card 2: Laporan & Sengketa */}
         <button
           onClick={() => setActiveRoute('/admin/laporan')}
-          className="bg-white rounded-2xl p-4 border border-[#E0E5E2] shadow-xs hover:shadow-md hover:border-[#E76F51]/40 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-between group cursor-pointer text-left"
+          className="bg-white border border-[#E3DDCF] hover:border-[#C0392B] rounded-[14px] p-4 text-left transition-all hover:shadow-xs group flex items-center justify-between"
         >
           <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-[#FEECEC] text-[#C0392B] flex items-center justify-center shrink-0 border border-[#FCD5D5] group-hover:scale-105 transition-transform">
-              <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>flag</span>
+            <div className="w-10 h-10 rounded-[10px] bg-[#FEECEC] text-[#C0392B] flex items-center justify-center shrink-0 group-hover:bg-[#C0392B] group-hover:text-white transition-colors">
+              <span className="material-symbols-outlined text-[20px]">flag</span>
             </div>
             <div>
-              <h3 className="text-sm font-extrabold text-[#141E18] group-hover:text-[#C0392B] transition-colors">
-                Laporan &amp; Sengketa {pendingLaporan > 0 && <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-[#C0392B] text-white">{pendingLaporan}</span>}
-              </h3>
-              <p className="text-[11px] text-[#4A5C52] font-medium mt-0.5">
-                Tinjau kontaminasi basah/minyak
-              </p>
+              <div className="flex items-center gap-2">
+                <h3 className="text-[13px] font-bold text-[#1A2E22]">Laporan & Sengketa</h3>
+                {pendingLaporan > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-full bg-[#C0392B] text-white text-[10px] font-bold">
+                    {pendingLaporan} baru
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-[#52645A]">Tinjau kontaminasi basah/minyak</p>
             </div>
           </div>
-          <span className="material-symbols-outlined text-[#8A9E94] text-lg group-hover:text-[#C0392B] group-hover:translate-x-1 transition-all">
-            arrow_forward
-          </span>
+          <span className="material-symbols-outlined text-[#8CA090] text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
         </button>
 
-        {/* Card 3: Papan Skor Sirkularitas */}
         <button
           onClick={() => setActiveRoute('/leaderboard')}
-          className="bg-white rounded-2xl p-4 border border-[#E0E5E2] shadow-xs hover:shadow-md hover:border-[#D97706]/40 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-between group cursor-pointer text-left"
+          className="bg-white border border-[#E3DDCF] hover:border-[#2D6A4F] rounded-[14px] p-4 text-left transition-all hover:shadow-xs group flex items-center justify-between sm:col-span-2 md:col-span-1"
         >
           <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center shrink-0 border border-[#FDE68A] group-hover:scale-105 transition-transform">
-              <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>emoji_events</span>
+            <div className="w-10 h-10 rounded-[10px] bg-[#FEF3C7] text-[#92400E] flex items-center justify-center shrink-0 group-hover:bg-[#8A5309] group-hover:text-white transition-colors">
+              <span className="material-symbols-outlined text-[20px]">trophy</span>
             </div>
             <div>
-              <h3 className="text-sm font-extrabold text-[#141E18] group-hover:text-[#D97706] transition-colors">
-                Papan Skor Sirkularitas
-              </h3>
-              <p className="text-[11px] text-[#4A5C52] font-medium mt-0.5">
-                Peringkat unit &amp; konversi dana kas
-              </p>
+              <h3 className="text-[13px] font-bold text-[#1A2E22]">Papan Skor Sirkularitas</h3>
+              <p className="text-[11px] text-[#52645A]">Peringkat unit & konversi dana kas</p>
             </div>
           </div>
-          <span className="material-symbols-outlined text-[#8A9E94] text-lg group-hover:text-[#D97706] group-hover:translate-x-1 transition-all">
-            arrow_forward
-          </span>
+          <span className="material-symbols-outlined text-[#8CA090] text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
         </button>
       </div>
 
-      {/* ─── 4. OVERVIEW STATS ─── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1 — Total Tersalurkan */}
-        <div className="bg-white rounded-2xl p-5 border border-[#E0E5E2] shadow-xs flex flex-col justify-between hover:shadow-sm transition-shadow">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black text-[#8A9E94] uppercase tracking-wider">Total Tersalurkan</span>
-            <span className="w-7 h-7 rounded-lg bg-[#E8F5EE] text-[#2D6A4F] flex items-center justify-center font-black text-xs">
-              Kg
-            </span>
-          </div>
-          <div className="mt-3">
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl sm:text-3xl font-black text-[#141E18] tracking-tight tabular-nums">{totalKgTersalurkan.toLocaleString('id-ID')}</span>
-              <span className="text-xs font-bold text-[#8A9E94]">Kg</span>
-            </div>
-            <p className="text-[11px] text-[#2D6A4F] font-semibold mt-0.5">Target {targetSemester.toLocaleString('id-ID')} Kg • Semester Genap</p>
-          </div>
-          <div className="mt-3 pt-2.5 border-t border-[#E0E5E2]/60 flex items-center gap-1.5 text-xs font-bold text-[#2D6A4F]">
-            <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-[#E8F5EE] text-[11px]">
-              ↑ 12.4%
-            </span>
-            <span className="text-[11px] text-[#8A9E94] font-medium">vs. bulan lalu</span>
-          </div>
+      {/* ═══ 3. SECTION HEADER ═══ */}
+      <div className="flex items-center justify-between pt-2">
+        <div>
+          <h2 className="text-xl font-bold text-[#1A2E22] tracking-tight">Ringkasan Kinerja Sirkularitas</h2>
+          <p className="text-xs text-[#52645A]">Agregasi data real-time seluruh unit kampus dan mitra industri</p>
         </div>
-
-        {/* Card 2 — Nilai Sirkularitas */}
-        <div className="bg-white rounded-2xl p-5 border border-[#E0E5E2] shadow-xs flex flex-col justify-between hover:shadow-sm transition-shadow">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black text-[#8A9E94] uppercase tracking-wider">Nilai Sirkularitas</span>
-            <span className="w-7 h-7 rounded-lg bg-[#FEF3C7] text-[#D97706] flex items-center justify-center font-black text-xs">
-              Rp
-            </span>
-          </div>
-          <div className="mt-3">
-            <div className="flex items-baseline gap-1">
-              <span className="text-xs font-bold text-[#8A9E94]">Rp</span>
-              <span className="text-2xl sm:text-3xl font-black text-[#141E18] tracking-tight tabular-nums">{(nilaiSirkularitas).toLocaleString('id-ID')}</span>
-            </div>
-            <p className="text-[11px] text-[#C4934F] font-semibold mt-0.5">Rata-rata Rp 1.400 / Kg Terpilah</p>
-          </div>
-          <div className="mt-3 pt-2.5 border-t border-[#E0E5E2]/60 flex items-center gap-1.5 text-xs font-bold text-[#D97706]">
-            <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[11px]">
-              ↑ 18.2%
-            </span>
-            <span className="text-[11px] text-[#8A9E94] font-medium">distribusi kas unit</span>
-          </div>
-        </div>
-
-        {/* Card 3 — Capaian Semester */}
-        <div 
-          className="bg-white rounded-2xl p-5 border border-[#E0E5E2] shadow-xs flex flex-col justify-between group relative cursor-help hover:shadow-sm transition-shadow"
-          title={`Target ${targetSemester} Kg • Tercapai ${totalKgTersalurkan} Kg (${pct}%)`}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black text-[#8A9E94] uppercase tracking-wider">Capaian Semester</span>
-            <span className="text-xs font-black text-[#2D6A4F] tabular-nums">{pct}%</span>
-          </div>
-          <div className="mt-3">
-            <div className="w-full h-2.5 bg-[#F1EEE5] rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-[#2D6A4F] rounded-full transition-all duration-1000 ease-out" 
-                style={{ width: isLoaded ? `${pct}%` : '0%' }} 
-              />
-            </div>
-            <p className="text-[11px] text-[#4A5C52] font-semibold mt-2">
-              Tersisa {(targetSemester - totalKgTersalurkan).toLocaleString('id-ID')} Kg menuju target
-            </p>
-          </div>
-          <div className="mt-3 pt-2.5 border-t border-[#E0E5E2]/60 flex items-center gap-1 text-[11px] font-bold text-[#2D6A4F]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#2D6A4F]" />
-            <span>Target Genap 2026</span>
-          </div>
-        </div>
-
-        {/* Card 4 — Dampak Ekologis */}
-        <div className="bg-white rounded-2xl p-5 border border-[#E0E5E2] shadow-xs flex flex-col justify-between hover:shadow-sm transition-shadow">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black text-[#8A9E94] uppercase tracking-wider">Dampak Ekologis</span>
-            <span className="w-7 h-7 rounded-lg bg-[#E8F5EE] text-[#2D6A4F] flex items-center justify-center font-bold text-xs">
-              🌱
-            </span>
-          </div>
-          <div className="mt-3 flex items-baseline justify-between">
-            <div>
-              <p className="text-xl font-black text-[#2D6A4F] tabular-nums">{totalPohon} Pohon</p>
-              <p className="text-[10px] text-[#8A9E94] font-semibold">Terselamatkan</p>
-            </div>
-            <div className="text-right">
-              <p className="text-xl font-black text-[#141E18] tabular-nums">{totalAirBersih} L</p>
-              <p className="text-[10px] text-[#8A9E94] font-semibold">Air Terhemat</p>
-            </div>
-          </div>
-          <div className="mt-3 pt-2.5 border-t border-[#E0E5E2]/60 flex items-center gap-1 text-[11px] font-bold text-[#2D6A4F]">
-            <span className="material-symbols-outlined text-xs">verified</span>
-            <span>Tervalidasi Sistem UPJ</span>
-          </div>
-        </div>
+        <button className="h-9 px-4 rounded-[8px] bg-white border border-[#E3DDCF] text-xs font-semibold text-[#1A2E22] hover:bg-[#FAFAF7] transition-colors flex items-center gap-2 shadow-xs">
+          <span className="material-symbols-outlined text-[16px] text-[#52645A]">download</span>
+          Ekspor Laporan
+        </button>
       </div>
 
-      {/* ─── 5. INTERACTIVE CHARTS ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        
-        {/* Left: Volume Pengumpulan Line Chart */}
-        <div className="lg:col-span-8 bg-white rounded-2xl p-6 border border-[#E0E5E2] shadow-xs flex flex-col justify-between">
-          <div className="flex items-center justify-between pb-3 border-b border-[#E0E5E2]/70">
-            <div>
-              <h2 className="text-sm font-black text-[#141E18]">Tren Volume Pengumpulan Kertas</h2>
-              <p className="text-[11px] text-[#4A5C52] font-medium mt-0.5">Arahkan kursor pada titik grafik untuk melihat rincian tonase per bulan</p>
+      {/* ═══ 4. UNIFIED METRIC CARDS GRID ═══ */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        {/* Card 1: Total Tersalurkan */}
+        <div className="bg-white border border-[#E3DDCF] rounded-[16px] p-5 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[11px] font-bold text-[#8CA090] uppercase tracking-wider">Total Kertas Terserap</span>
+              <span className="w-7 h-7 rounded-[6px] bg-[#E6ECDD] text-[#005138] flex items-center justify-center">
+                <span className="material-symbols-outlined text-[16px]">scale</span>
+              </span>
             </div>
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-[#F7F8F5] border border-[#E0E5E2] rounded-lg text-xs font-bold text-[#141E18]">
-              <span>6 Bulan Terakhir</span>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-extrabold text-[#1A2E22] tracking-tight tabular-nums">
+                {totalKgTersalurkan.toLocaleString('id-ID')}
+              </span>
+              <span className="text-sm font-semibold text-[#52645A]">Kg</span>
             </div>
+            <p className="text-[11px] text-[#52645A] mt-1 font-medium">
+              Target semester: <strong>{targetSemester.toLocaleString('id-ID')} Kg</strong> ({pct}%)
+            </p>
           </div>
+          <div className="mt-4 pt-3 border-t border-[#E3DDCF]">
+            <Sparkline data={monthlyData} color="#2D6A4F" isLoaded={isLoaded} />
+          </div>
+        </div>
 
-          <div className="relative mt-6 pt-4">
-            {/* Dynamic Clean Floating Tooltip */}
-            {activeLinePoint !== null && (
-              <div 
-                className="absolute z-30 pointer-events-none transition-all duration-200 ease-out -translate-x-1/2 -translate-y-full"
-                style={{ 
-                  left: `${(linePoints[activeLinePoint].x / 650) * 100}%`,
-                  top: `${(linePoints[activeLinePoint].y / 200) * 100}%`,
-                  marginTop: '-10px'
-                }}
-              >
-                <div className="bg-[#1B4332] text-white text-[11px] font-extrabold px-3 py-1.5 rounded-xl shadow-lg flex flex-col items-center gap-0.5 whitespace-nowrap border border-white/20">
-                  <span className="text-[9px] uppercase tracking-wider text-[#A7F3D0]">{linePoints[activeLinePoint].month} 2026</span>
-                  <span className="text-xs font-black">{linePoints[activeLinePoint].label}</span>
-                </div>
-                <div className="w-2 h-2 bg-[#1B4332] rotate-45 mx-auto -mt-1 border-r border-b border-white/20" />
-              </div>
-            )}
-
-            <svg viewBox="0 0 650 200" className="w-full h-52 overflow-visible">
-              <defs>
-                <linearGradient id="creamGreenGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#52B788" stopOpacity={isLoaded ? "0.30" : "0"} />
-                  <stop offset="100%" stopColor="#52B788" stopOpacity="0.0" />
-                </linearGradient>
-              </defs>
-
-              <line x1="40" y1="30" x2="630" y2="30" stroke="#E0E5E2" strokeDasharray="4 4" strokeWidth="1" />
-              <line x1="40" y1="70" x2="630" y2="70" stroke="#E0E5E2" strokeDasharray="4 4" strokeWidth="1" />
-              <line x1="40" y1="110" x2="630" y2="110" stroke="#E0E5E2" strokeDasharray="4 4" strokeWidth="1" />
-              <line x1="40" y1="150" x2="630" y2="150" stroke="#E0E5E2" strokeDasharray="4 4" strokeWidth="1" />
-
-              <text x="10" y="34" className="text-[10px] fill-[#8A9E94] font-bold">80K</text>
-              <text x="10" y="74" className="text-[10px] fill-[#8A9E94] font-bold">60K</text>
-              <text x="10" y="114" className="text-[10px] fill-[#8A9E94] font-bold">40K</text>
-              <text x="10" y="154" className="text-[10px] fill-[#8A9E94] font-bold">20K</text>
-
-              <path
-                d={areaPath}
-                fill="url(#creamGreenGradient)"
-                className="transition-opacity duration-1000 ease-out"
-                style={{ opacity: isLoaded ? 1 : 0 }}
-              />
-
-              <path
-                d={splinePath}
-                fill="none"
-                stroke="#2D6A4F"
-                strokeWidth="3.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeDasharray="800"
-                strokeDashoffset={isLoaded ? '0' : '800'}
-                style={{ transition: 'stroke-dashoffset 1.3s cubic-bezier(0.16, 1, 0.3, 1)' }}
-              />
-
-              {linePoints.map((pt, idx) => {
-                const isActive = activeLinePoint === idx;
-                return (
-                  <g 
-                    key={idx}
-                    className="cursor-pointer"
-                    onMouseEnter={() => setActiveLinePoint(idx)}
-                    onClick={() => setActiveLinePoint(idx)}
-                  >
-                    <circle cx={pt.x} cy={pt.y} r="18" fill="transparent" />
-
-                    {isActive && (
-                      <circle 
-                        cx={pt.x} 
-                        cy={pt.y} 
-                        r="9" 
-                        fill="#2D6A4F" 
-                        opacity="0.15" 
-                      />
-                    )}
-
-                    <circle
-                      cx={pt.x}
-                      cy={pt.y}
-                      r={isActive ? "6" : "4.5"}
-                      fill={isActive ? "#2D6A4F" : "#FFFFFF"}
-                      stroke="#2D6A4F"
-                      strokeWidth={isActive ? "3" : "2"}
-                      className="transition-all duration-150"
-                    />
-                  </g>
-                );
-              })}
-            </svg>
-
-            <div className="flex justify-between pl-12 pr-4 text-[11px] font-bold text-[#8A9E94] mt-2">
-              {linePoints.map((pt, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveLinePoint(idx)}
-                  className={`cursor-pointer transition-colors ${
-                    activeLinePoint === idx ? 'text-[#2D6A4F] font-black' : 'hover:text-[#2D6A4F]'
-                  }`}
-                >
-                  {pt.month}
-                </button>
+        {/* Card 2: Nilai Sirkularitas */}
+        <div className="bg-white border border-[#E3DDCF] rounded-[16px] p-5 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[11px] font-bold text-[#8CA090] uppercase tracking-wider">Nilai Sirkularitas</span>
+              <span className="px-2 py-0.5 rounded-full bg-[#D1FAE5] text-[#2D6A4F] text-[10px] font-bold">
+                +18.2%
+              </span>
+            </div>
+            <div className="flex items-baseline gap-1">
+              <span className="text-sm font-bold text-[#52645A]">Rp</span>
+              <span className="text-3xl font-extrabold text-[#1A2E22] tracking-tight tabular-nums">
+                {nilaiSirkularitas.toLocaleString('id-ID')}
+              </span>
+            </div>
+            <p className="text-[11px] text-[#52645A] mt-1 font-medium">
+              Rata-rata aktual Rp 1.400 / Kg HVS
+            </p>
+          </div>
+          <div className="mt-4 pt-3 border-t border-[#E3DDCF]">
+            {/* Animated mini bars */}
+            <div className="flex gap-1.5 items-end" style={{ height: 32 }}>
+              {[30, 50, 70, 55, 80, 95].map((v, i) => (
+                <div
+                  key={i}
+                  className="flex-1 rounded-t-sm"
+                  style={{
+                    height: isLoaded ? `${(v / 95) * 100}%` : '0%',
+                    background: i === 5 ? '#2D6A4F' : '#D8F3DC',
+                    transition: `height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 60}ms`
+                  }}
+                  title={`Batch ${i + 1}`}
+                />
               ))}
             </div>
           </div>
         </div>
 
-        {/* Right: Komposisi Jenis Kertas Donut Chart */}
-        <div className="lg:col-span-4 bg-white rounded-2xl p-6 border border-[#E0E5E2] shadow-xs flex flex-col justify-between">
-          <div className="pb-3 border-b border-[#E0E5E2]/70">
-            <h2 className="text-sm font-black text-[#141E18]">Komposisi Jenis Kertas</h2>
-            <p className="text-[11px] text-[#4A5C52] font-medium mt-0.5">Sentuh segmen untuk melihat detail jenis kertas</p>
+        {/* Card 3: Kapasitas Drop Point */}
+        <div className="bg-white border border-[#E3DDCF] rounded-[16px] p-5 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[11px] font-bold text-[#8CA090] uppercase tracking-wider">Kapasitas Drop Point</span>
+              <span className="px-2 py-0.5 rounded-full bg-[#E6ECDD] text-[#005138] text-[10px] font-bold">
+                80% Terpakai
+              </span>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-extrabold text-[#1A2E22] tracking-tight tabular-nums">
+                8 <span className="text-xl text-[#8CA090] font-medium">/ 10</span>
+              </span>
+              <span className="text-xs font-semibold text-[#52645A]">Tong Terisi</span>
+            </div>
+            <p className="text-[11px] text-[#52645A] mt-1 font-medium">
+              Drop point GSG siap angkut mitra
+            </p>
           </div>
-
-          <div className="relative flex items-center justify-center my-3">
-            <svg viewBox="0 0 160 160" className="w-38 h-38 transform -rotate-90">
-              <circle cx="80" cy="80" r="60" fill="none" stroke="#F1EEE5" strokeWidth="18" />
-              
-              {categories.map((c) => {
-                const isHovered = hoveredCategory?.id === c.id;
-                return (
-                  <circle
-                    key={c.id}
-                    cx="80"
-                    cy="80"
-                    r="60"
-                    fill="none"
-                    stroke={c.color}
-                    strokeWidth={isHovered ? "22" : "18"}
-                    strokeDasharray={c.dasharray}
-                    strokeDashoffset={isLoaded ? c.dashoffset : "-400"}
-                    className="cursor-pointer transition-all duration-300 ease-out"
-                    onMouseEnter={() => setHoveredCategory(c)}
-                    onMouseLeave={() => setHoveredCategory(null)}
-                  />
-                );
-              })}
-            </svg>
-
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none transition-all duration-200 px-2 text-center">
-              {hoveredCategory ? (
-                <>
-                  <span className="text-[10px] font-bold text-[#8A9E94] uppercase tracking-wider">{hoveredCategory.name}</span>
-                  <span className="text-lg font-black tracking-tight" style={{ color: hoveredCategory.color }}>
-                    {hoveredCategory.pct}%
-                  </span>
-                  <span className="text-[10px] font-bold text-[#141E18]">{hoveredCategory.amount}</span>
-                </>
-              ) : (
-                <>
-                  <span className="text-base font-black text-[#141E18] tracking-tight tabular-nums">52.180</span>
-                  <span className="text-[9px] font-black text-[#2D6A4F] uppercase tracking-wider">Total Kg</span>
-                </>
-              )}
+          <div className="mt-4 pt-3 border-t border-[#E3DDCF] space-y-1.5">
+            <div className="w-full bg-[#ECE6D7] rounded-full h-2 overflow-hidden">
+              <div
+                className="bg-[#2D6A4F] h-full rounded-full"
+                style={{
+                  width: isLoaded ? '80%' : '0%',
+                  transition: 'width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                }}
+              />
+            </div>
+            <div className="flex justify-between items-center text-[10px] text-[#8CA090] font-medium">
+              <span>94.2% Sortir Bersih</span>
+              <span className="font-bold text-[#2D6A4F]">Timbangan OK</span>
             </div>
           </div>
+        </div>
 
-          <div className="space-y-1.5 mt-1 pt-2 border-t border-[#E0E5E2]/70">
-            {categories.map((c) => {
-              const isHovered = hoveredCategory?.id === c.id;
-              return (
-                <div 
-                  key={c.id} 
-                  className={`flex items-center justify-between text-xs p-1.5 rounded-lg cursor-pointer transition-all ${
-                    isHovered ? 'bg-[#E8F5EE] scale-102 font-bold' : 'hover:bg-[#F7F8F5]'
-                  }`}
-                  onMouseEnter={() => setHoveredCategory(c)}
-                  onMouseLeave={() => setHoveredCategory(null)}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: c.color }} />
-                    <span className={`font-semibold ${isHovered ? 'text-[#2D6A4F] font-black' : 'text-[#141E18]'}`}>{c.name}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-[#8A9E94]">{c.pct}%</span>
-                    <span className="font-black text-[#141E18] tabular-nums">{c.amount}</span>
-                  </div>
-                </div>
-              );
-            })}
+        {/* Card 4: Dampak Lingkungan */}
+        <div className="bg-white border border-[#E3DDCF] rounded-[16px] p-5 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[11px] font-bold text-[#8CA090] uppercase tracking-wider">Dampak Ekologis (ESG)</span>
+              <span className="px-2 py-0.5 rounded-full bg-[#D8F3DC] text-[#005138] text-[10px] font-bold">
+                Terverifikasi
+              </span>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-extrabold text-[#005138] tracking-tight tabular-nums">
+                {totalPohon}
+              </span>
+              <span className="text-sm font-semibold text-[#52645A]">Pohon</span>
+              <span className="text-xs text-[#8CA090] font-medium">•</span>
+              <span className="text-sm font-bold text-[#1A2E22] tabular-nums">
+                {totalAirBersih.toLocaleString('id-ID')}
+              </span>
+              <span className="text-[11px] text-[#52645A]">L Air</span>
+            </div>
+            <p className="text-[11px] text-[#52645A] mt-1 font-medium">
+              Formula standar daur ulang per 1.000 Kg
+            </p>
+          </div>
+          <div className="mt-4 pt-3 border-t border-[#E3DDCF]">
+            <div className="flex gap-1.5 items-end" style={{ height: 32 }}>
+              {[20, 45, 30, 60, 50, 80].map((v, i) => (
+                <div
+                  key={i}
+                  className="flex-1 rounded-t-sm"
+                  style={{
+                    height: isLoaded ? `${(v / 80) * 100}%` : '0%',
+                    background: i === 5 ? '#005138' : '#B7E4C7',
+                    transition: `height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 60}ms`
+                  }}
+                  title={`Bulan ${i + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
+
       </div>
 
-      {/* ─── 6. DUAL BAR CHART (NO AWKWARD GAP, CLEAN PROPORTIONS & FLOATING STATS STRIP) & INTERACTIVE MAP ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        
-        {/* Left: Setor vs Salur Mitra Bar Chart (Tightened gap, dedicated info strip, taller bars) */}
-        <div className="lg:col-span-5 bg-white rounded-2xl p-6 border border-[#E0E5E2] shadow-xs flex flex-col">
-          
-          {/* Header */}
-          <div className="pb-3 border-b border-[#E0E5E2]/70">
-            <div className="flex items-center justify-between mb-1">
-              <h3 className="text-sm font-black text-[#141E18]">Setor vs Salur Mitra</h3>
-              <div className="flex items-center gap-3 text-[10px] font-black">
-                <span className="flex items-center gap-1.5 text-[#2D6A4F]">
-                  <span className="w-2.5 h-2.5 rounded-xs bg-[#2D6A4F]" /> Setor
-                </span>
-                <span className="flex items-center gap-1.5 text-[#52B788]">
-                  <span className="w-2.5 h-2.5 rounded-xs bg-[#52B788]" /> Mitra
-                </span>
+      {/* ═══ 5. CHARTS & LEADERBOARD MAIN SECTION ═══ */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+        {/* Bar Chart: Traffic Analisis */}
+        <div className="lg:col-span-2 bg-white border border-[#E3DDCF] rounded-[16px] p-6 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-[#E3DDCF]">
+              <div>
+                <h3 className="font-bold text-[#1A2E22] text-base">Traffic Analisis Serapan Kertas (Kg)</h3>
+                <p className="text-xs text-[#52645A]">Distribusi material daur ulang semester berjalan</p>
+              </div>
+              <div className="flex items-center gap-4 text-xs font-semibold text-[#52645A] shrink-0">
+                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#2D6A4F]" />HVS</span>
+                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#8A5309]" />Kardus</span>
+                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#40916C]" />Campur</span>
               </div>
             </div>
-            <p className="text-[11px] text-[#4A5C52]">Perbandingan serapan tonase limbah kertas per bulan</p>
-          </div>
 
-          {/* Dedicated Info Banner at the Top of Chart (Solves "Keterangan terlalu mepet" completely!) */}
-          <div className="mt-3 min-h-[38px] flex items-center">
-            {hoveredBarIndex !== null ? (
-              <div className="w-full flex items-center justify-between px-3 py-1.5 rounded-xl bg-[#141E18] text-white text-[11px] font-bold shadow-sm animate-speech-bubble">
-                <div className="flex items-center gap-2">
-                  <span className="text-[#A7F3D0] uppercase font-black tracking-wide">{barData[hoveredBarIndex].month} 2026:</span>
-                  <span>Setor: <strong className="text-[#52B788]">{barData[hoveredBarIndex].setorKg}</strong></span>
-                  <span className="text-white/30">|</span>
-                  <span>Mitra: <strong className="text-[#A7F3D0]">{barData[hoveredBarIndex].mitraKg}</strong></span>
-                </div>
-                <span className="text-[10px] text-[#FDE68A] bg-white/10 px-2 py-0.5 rounded-md font-extrabold">
-                  Serapan {barData[hoveredBarIndex].eff}
-                </span>
+            {/* Chart Area */}
+            <div className="relative ml-8">
+              {/* Y-Axis Labels */}
+              <div className="absolute -left-8 top-0 bottom-8 flex flex-col justify-between text-[10px] font-bold text-[#8CA090] pointer-events-none">
+                {['320', '240', '160', '80'].map(v => <span key={v}>{v}</span>)}
               </div>
-            ) : (
-              <div className="w-full flex items-center justify-between px-3 py-1.5 rounded-xl bg-[#F7F8F5] border border-[#E0E5E2] text-[#4A5C52] text-[11px] font-medium">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#2D6A4F]" />
-                  Arahkan kursor pada batang untuk melihat rincian
-                </span>
-                <span className="text-[10px] font-bold text-[#2D6A4F]">Rata-rata 83%</span>
-              </div>
-            )}
-          </div>
 
-          {/* Balanced Bars Container (Bars now gracefully fill the height without empty void!) */}
-          <div className="relative flex-1 flex flex-col justify-end mt-4 pt-4 pb-1 min-h-[220px]">
-            
-            {/* Faint Background Gridlines */}
-            <div className="absolute inset-x-2 top-4 bottom-8 flex flex-col justify-between pointer-events-none opacity-40">
-              <div className="border-b border-dashed border-[#E0E5E2] w-full" />
-              <div className="border-b border-dashed border-[#E0E5E2] w-full" />
-              <div className="border-b border-dashed border-[#E0E5E2] w-full" />
-            </div>
+              {/* Gridlines & Bars Container */}
+              <div className="border-l border-b border-[#E3DDCF] relative" style={{ height: 210 }}>
+                {[25, 50, 75].map(p => (
+                  <div key={p} className="absolute w-full border-t border-dashed border-[#E3DDCF]" style={{ bottom: `${p}%` }} />
+                ))}
 
-            {/* Bars Row */}
-            <div className="h-48 flex items-end justify-between gap-3 px-2 relative z-10">
-              {barData.map((b, i) => {
-                const isHovered = hoveredBarIndex === i;
-                return (
-                  <div 
-                    key={i} 
-                    className="flex-1 flex flex-col items-center gap-2 h-full justify-end cursor-pointer group"
-                    onMouseEnter={() => setHoveredBarIndex(i)}
-                    onMouseLeave={() => setHoveredBarIndex(null)}
-                  >
-                    <div className={`w-full flex items-end justify-center gap-1.5 h-40 p-1 rounded-lg transition-all ${
-                      isHovered ? 'bg-[#E8F5EE]/80' : ''
-                    }`}>
-                      {/* Bar Setor */}
-                      <div 
-                        className={`w-3.5 bg-[#2D6A4F] rounded-t-sm transition-all duration-700 ease-out ${
-                          isHovered ? 'brightness-110 shadow-xs' : ''
-                        }`}
-                        style={{ height: isLoaded ? `${b.setor}%` : '0%' }} 
-                      />
-                      {/* Bar Mitra */}
-                      <div 
-                        className={`w-3.5 bg-[#52B788] rounded-t-sm transition-all duration-700 ease-out ${
-                          isHovered ? 'brightness-110 shadow-xs' : ''
-                        }`}
-                        style={{ height: isLoaded ? `${b.mitra}%` : '0%' }} 
-                      />
+                <div className="absolute inset-0 flex items-end justify-around px-4 pb-0 gap-3">
+                  {[
+                    { m: 'Jan', hvs: 55, kds: 40, mix: 25 },
+                    { m: 'Feb', hvs: 85, kds: 65, mix: 35 },
+                    { m: 'Mar', hvs: 130, kds: 90, mix: 70 },
+                    { m: 'Apr', hvs: 110, kds: 80, mix: 50 },
+                    { m: 'Mei', hvs: 115, kds: 85, mix: 50 },
+                    { m: 'Jun', hvs: 145, kds: 100, mix: 65 },
+                  ].map((d, idx) => (
+                    <div key={idx} className="flex flex-col items-center flex-1 h-full justify-end group relative">
+                      {/* Floating Tooltip */}
+                      <div className="absolute -top-10 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-[#1A2E22] text-white text-[10px] font-bold px-2.5 py-1 rounded-md pointer-events-none whitespace-nowrap shadow-md z-30 -translate-y-1 group-hover:translate-y-0">
+                        Total: {d.hvs + d.kds + d.mix} Kg (HVS {d.hvs}, Kardus {d.kds})
+                      </div>
+
+                      {/* Bar Group with isLoaded Transition */}
+                      <div className="flex gap-1 items-end w-full justify-center" style={{ height: '88%' }}>
+                        <div
+                          className="flex-1 max-w-[12px] bg-[#8A5309] rounded-t-sm hover:brightness-110 transition-all cursor-pointer"
+                          style={{
+                            height: isLoaded ? `${(d.kds / 320) * 100}%` : '0%',
+                            transition: `height 1s cubic-bezier(0.34, 1.56, 0.64, 1) ${idx * 75}ms`
+                          }}
+                          title={`Kardus: ${d.kds} Kg`}
+                        />
+                        <div
+                          className="flex-1 max-w-[12px] bg-[#2D6A4F] rounded-t-sm hover:brightness-110 transition-all cursor-pointer"
+                          style={{
+                            height: isLoaded ? `${(d.hvs / 320) * 100}%` : '0%',
+                            transition: `height 1s cubic-bezier(0.34, 1.56, 0.64, 1) ${idx * 75 + 30}ms`
+                          }}
+                          title={`HVS: ${d.hvs} Kg`}
+                        />
+                        <div
+                          className="flex-1 max-w-[12px] bg-[#40916C] rounded-t-sm hover:brightness-110 transition-all cursor-pointer"
+                          style={{
+                            height: isLoaded ? `${(d.mix / 320) * 100}%` : '0%',
+                            transition: `height 1s cubic-bezier(0.34, 1.56, 0.64, 1) ${idx * 75 + 60}ms`
+                          }}
+                          title={`Campur: ${d.mix} Kg`}
+                        />
+                      </div>
+                      <span className="text-[11px] font-bold text-[#8CA090] mt-2 mb-1 group-hover:text-[#2D6A4F] transition-colors">{d.m}</span>
                     </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
 
-                    <span className={`text-[11px] transition-colors ${
-                      isHovered ? 'font-black text-[#2D6A4F]' : 'font-bold text-[#8A9E94]'
-                    }`}>
-                      {b.month}
-                    </span>
+          {/* Clean Insight Footer */}
+          <div className="mt-5 p-3.5 rounded-[10px] bg-[#FAFAF7] border border-[#E3DDCF] flex items-center gap-3">
+            <span className="material-symbols-outlined text-[#2D6A4F] text-[20px] shrink-0">insights</span>
+            <p className="text-xs text-[#1A2E22] font-medium leading-relaxed">
+              <strong className="font-bold">Tren Sirkularitas:</strong> Kenaikan serapan tertinggi terjadi pada bulan <strong>Maret (+56%)</strong> seiring masa arsip semester genap.
+            </p>
+          </div>
+        </div>
+
+        {/* Circular Donut Chart: Komposisi Kertas */}
+        <div className="lg:col-span-1 bg-white border border-[#E3DDCF] rounded-[16px] p-6 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="flex justify-between items-start mb-4 pb-4 border-b border-[#E3DDCF]">
+              <div>
+                <h3 className="font-bold text-[#1A2E22] text-base">Komposisi Material</h3>
+                <p className="text-xs text-[#52645A]">Proporsi jenis kertas semester ini</p>
+              </div>
+              <span className="text-[11px] font-semibold text-[#8CA090]">Semester Genap</span>
+            </div>
+
+            {/* Circular Donut Gauge with Animated Stroke */}
+            <div className="flex justify-center my-4">
+              <div className="relative" style={{ width: 170, height: 170 }}>
+                <svg width={170} height={170} viewBox="0 0 170 170" style={{ transform: 'rotate(-90deg)' }}>
+                  <circle cx="85" cy="85" r="65" fill="none" stroke="#FAFAF7" strokeWidth="22" />
+                  {/* HVS: 44.7% */}
+                  <circle
+                    cx="85" cy="85" r="65" fill="none" stroke="#2D6A4F" strokeWidth="22"
+                    strokeDasharray={isLoaded ? `${0.447 * 2 * Math.PI * 65} ${2 * Math.PI * 65}` : `0 ${2 * Math.PI * 65}`}
+                    style={{ transition: 'stroke-dasharray 1.3s cubic-bezier(0.34, 1.56, 0.64, 1) 150ms' }}
+                  />
+                  {/* Kardus: 35.9% */}
+                  <circle
+                    cx="85" cy="85" r="65" fill="none" stroke="#8A5309" strokeWidth="22"
+                    strokeDasharray={isLoaded ? `${0.359 * 2 * Math.PI * 65} ${2 * Math.PI * 65}` : `0 ${2 * Math.PI * 65}`}
+                    strokeDashoffset={`-${0.447 * 2 * Math.PI * 65}`}
+                    style={{ transition: 'stroke-dasharray 1.3s cubic-bezier(0.34, 1.56, 0.64, 1) 300ms' }}
+                  />
+                  {/* Campur: 19.4% */}
+                  <circle
+                    cx="85" cy="85" r="65" fill="none" stroke="#40916C" strokeWidth="22"
+                    strokeDasharray={isLoaded ? `${0.194 * 2 * Math.PI * 65} ${2 * Math.PI * 65}` : `0 ${2 * Math.PI * 65}`}
+                    strokeDashoffset={`-${(0.447 + 0.359) * 2 * Math.PI * 65}`}
+                    style={{ transition: 'stroke-dasharray 1.3s cubic-bezier(0.34, 1.56, 0.64, 1) 450ms' }}
+                  />
+                </svg>
+
+                {/* Center Stat Label */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <div className="text-2xl font-extrabold text-[#1A2E22] tabular-nums">1.085</div>
+                  <div className="text-[10px] text-[#8CA090] font-bold uppercase tracking-wider">Total Kg</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Category Breakdown Table */}
+            <div className="space-y-2 mt-4">
+              {[
+                { abbr: 'HVS', label: 'Kertas HVS & Arsip', kg: 485, pct: '44.7%', color: '#2D6A4F', bg: '#D8F3DC' },
+                { abbr: 'KDS', label: 'Kardus Box Corrugated', kg: 390, pct: '35.9%', color: '#92400E', bg: '#FEF3C7' },
+                { abbr: 'MIX', label: 'Kertas Campuran Bersih', kg: 210, pct: '19.4%', color: '#005138', bg: '#E6ECDD' },
+              ].map(cat => (
+                <div key={cat.abbr} className="flex items-center justify-between p-2 rounded-[8px] hover:bg-[#FAFAF7] transition-colors">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: cat.color }} />
+                    <span className="text-xs font-semibold text-[#1A2E22]">{cat.label}</span>
                   </div>
-                );
-              })}
+                  <div className="text-right">
+                    <span className="text-xs font-bold text-[#1A2E22] tabular-nums mr-2">{cat.kg} Kg</span>
+                    <span className="text-[10px] font-bold text-[#8CA090]">{cat.pct}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Right: Full Interactive Logistics Partner Map (7 cols) */}
-        <div className="lg:col-span-7 bg-white rounded-2xl p-6 border border-[#E0E5E2] shadow-xs flex flex-col justify-between">
-          
-          {/* Map Header with Reset Button */}
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <h3 className="text-sm font-black text-[#141E18]">Peta Sebaran Mitra &amp; Drop Point</h3>
-              <p className="text-[11px] text-[#4A5C52]">Klik salah satu lokasi untuk melihat info logistik &amp; armada</p>
+      </div>
+
+      {/* ═══ 6. SPATIOUS LOGISTICS NETWORK & DROP POINT MAP SECTION ═══ */}
+      <div className="bg-white border border-[#E3DDCF] rounded-[16px] p-6 shadow-xs space-y-5">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pb-4 border-b border-[#E3DDCF]">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-8 h-8 rounded-[8px] bg-[#E6ECDD] text-[#005138] flex items-center justify-center">
+                <span className="material-symbols-outlined text-[18px]">map</span>
+              </span>
+              <h3 className="font-bold text-[#1A2E22] text-base">Peta Jaringan Logistik & Sebaran Mitra Industri</h3>
             </div>
+            <p className="text-xs text-[#52645A]">
+              Pantau koridor rute penyaluran sampah kertas UPJ. Klik mitra industri pada daftar untuk mengarahkan peta langsung ke lokasi mitra tersebut.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={handleResetMap}
-              className="text-[11px] font-bold text-[#2D6A4F] hover:underline flex items-center gap-1 bg-[#E8F5EE] px-2.5 py-1 rounded-full cursor-pointer hover:bg-[#D8F3DC] transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAFAF7] hover:bg-[#E6ECDD] text-[#005138] text-xs font-bold border border-[#E3DDCF] transition-colors"
+              title="Reset tampilan peta ke seluruh jaringan"
             >
-              <span className="material-symbols-outlined text-sm">refresh</span>
-              <span>Reset Peta</span>
+              <span className="material-symbols-outlined text-[15px]">zoom_out_map</span>
+              Tampilkan Semua Rute
             </button>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6ECDD] text-[#005138] text-xs font-bold border border-[#2D6A4F]/20">
+              <span className="w-2 h-2 rounded-full bg-[#2D6A4F] animate-pulse" />
+              3 Mitra Industri Aktif
+            </span>
           </div>
+        </div>
 
-          {/* Clickable Location Selector Pills */}
-          <div className="flex gap-2 overflow-x-auto pb-2 mb-2 scrollbar-none">
-            {MITRA_PARTNERS.map((mitra) => {
-              const isSelected = selectedMitraId === mitra.id;
-              return (
-                <button
-                  key={mitra.id}
-                  onClick={() => handleSelectMitra(mitra)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
-                    isSelected 
-                      ? 'bg-[#2D6A4F] text-white shadow-xs scale-102' 
-                      : 'bg-[#F7F8F5] text-[#4A5C52] border border-[#E0E5E2] hover:bg-[#E8F5EE] hover:text-[#2D6A4F]'
+        {/* Quick Filter Partner Tabs */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+          <span className="text-[11px] font-bold text-[#8CA090] uppercase tracking-wider shrink-0 mr-1">Fokus Cepat:</span>
+          {MITRA_PARTNERS.map(mitra => {
+            const isSelected = selectedMitraId === mitra.id;
+            return (
+              <button
+                key={mitra.id}
+                onClick={() => handleSelectMitra(mitra)}
+                className={`px-3 py-1.5 rounded-full font-bold text-xs transition-all shrink-0 flex items-center gap-1.5 border ${isSelected
+                  ? 'bg-[#005138] text-white border-[#005138] shadow-xs'
+                  : 'bg-[#FAFAF7] text-[#52645A] border-[#E3DDCF] hover:border-[#2D6A4F] hover:text-[#1A2E22]'
                   }`}
-                >
-                  <span className="material-symbols-outlined text-base">
-                    {mitra.iconName}
-                  </span>
-                  <span>{mitra.name}</span>
-                </button>
-              );
-            })}
-          </div>
+              >
+                <span className="material-symbols-outlined text-[14px]">{mitra.iconName}</span>
+                {mitra.name}
+                <span className="text-[10px] opacity-75">({mitra.distance})</span>
+              </button>
+            );
+          })}
+        </div>
 
-          {/* Interactive Leaflet Map with Smooth Fly Controller */}
-          <div className="w-full rounded-xl overflow-hidden border border-[#E0E5E2] relative z-0" style={{ height: '200px' }}>
-            <MapContainer 
-              center={mapTarget.coords} 
-              zoom={mapTarget.zoom} 
-              zoomControl={false} 
+        {/* Map and Route Info Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+          {/* Interactive Leaflet Map Area (7 Columns on Desktop) */}
+          <div className="lg:col-span-7 rounded-[14px] overflow-hidden border border-[#E3DDCF] relative h-[420px] sm:h-[460px] shadow-inner bg-[#FAFAF7]">
+            <MapContainer
+              center={[-6.292137, 106.725419]}
+              zoom={12}
+              scrollWheelZoom={false}
               style={{ height: '100%', width: '100%', zIndex: 1 }}
             >
-              <MapFlyController 
-                coords={mapTarget.coords} 
-                zoom={mapTarget.zoom} 
-                triggerKey={mapTarget.triggerKey} 
-              />
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                maxZoom={19}
               />
 
-              {MITRA_PARTNERS.map((mitra) => (
-                <Marker 
-                  key={mitra.id} 
-                  position={mitra.coords} 
-                  icon={mitra.iconType}
+              {/* Skala jarak */}
+              <MapScaleControl />
+
+              {/* Radius layanan penjemputan di sekitar Drop Point UPJ */}
+              <Circle
+                center={[-6.292137, 106.725419]}
+                radius={5200}
+                pathOptions={{
+                  color: '#C27D3A',
+                  weight: 1.5,
+                  opacity: 0.55,
+                  fillColor: '#C27D3A',
+                  fillOpacity: 0.05,
+                  dashArray: '5, 8',
+                }}
+              />
+
+              {/* Dynamic Fly Controller */}
+              <MapFlyController
+                coords={mapTarget.coords}
+                zoom={mapTarget.zoom}
+                triggerKey={mapTarget.triggerKey}
+              />
+
+              {/* Route connecting UPJ to Bintaro */}
+              <Polyline
+                positions={[
+                  [-6.292137, 106.725419],
+                  [-6.2500, 106.7600]
+                ]}
+                pathOptions={{
+                  color: selectedMitraId === 'mitra-bintaro' ? '#8A5309' : '#2D6A4F',
+                  weight: selectedMitraId === 'mitra-bintaro' ? 5 : 3.5,
+                  dashArray: '6, 8',
+                  opacity: selectedMitraId === 'mitra-bintaro' ? 1 : 0.75,
+                }}
+              />
+
+              {/* Route connecting UPJ to Serpong */}
+              <Polyline
+                positions={[
+                  [-6.292137, 106.725419],
+                  [-6.3000, 106.7000]
+                ]}
+                pathOptions={{
+                  color: selectedMitraId === 'mitra-serpong' ? '#005138' : '#8A5309',
+                  weight: selectedMitraId === 'mitra-serpong' ? 5 : 3.5,
+                  dashArray: '6, 8',
+                  opacity: selectedMitraId === 'mitra-serpong' ? 1 : 0.75,
+                }}
+              />
+
+              {/* Route connecting UPJ to Ciputat */}
+              <Polyline
+                positions={[
+                  [-6.292137, 106.725419],
+                  [-6.3150, 106.7450]
+                ]}
+                pathOptions={{
+                  color: selectedMitraId === 'mitra-ciputat' ? '#2D6A4F' : '#52B788',
+                  weight: selectedMitraId === 'mitra-ciputat' ? 5 : 3.5,
+                  dashArray: '6, 8',
+                  opacity: selectedMitraId === 'mitra-ciputat' ? 1 : 0.75,
+                }}
+              />
+
+              {/* Markers for all logistics partners */}
+              {MITRA_PARTNERS.map(partner => (
+                <Marker
+                  key={partner.id}
+                  position={partner.coords}
+                  zIndexOffset={partner.type === 'drop_point' ? 1000 : 0}
+                  icon={
+                    partner.type === 'drop_point'
+                      ? markerIconDropPoint
+                      : buildMitraIcon(partner.color, partner.iconName, avatarFor(partner))
+                  }
                   eventHandlers={{
-                    click: () => handleSelectMitra(mitra),
+                    click: () => handleSelectMitra(partner),
                   }}
                 >
-                  <Popup className="font-sans font-bold text-xs">
-                    <div className="space-y-1">
-                      <p className="font-extrabold text-[#141E18]">{mitra.name}</p>
-                      <p className="text-[10px] text-[#4A5C52]">{mitra.category}</p>
-                      <p className="text-[10px] text-[#2D6A4F] font-bold">{mitra.capacity}</p>
+                  <Popup className="font-sans">
+                    <div className="p-1 min-w-[210px]">
+                      <div className="text-[10px] font-bold uppercase tracking-wide" style={{ color: partner.color }}>
+                        {partner.category}
+                      </div>
+                      <div className="text-xs font-extrabold text-[#1A2E22]">{partner.name}</div>
+                      <p className="text-[11px] text-[#52645A] mt-0.5">{partner.address}</p>
+                      <div className="mt-2 pt-1.5 border-t border-gray-100 flex items-center justify-between text-[10px]">
+                        <span className="font-semibold text-[#1A2E22]">{partner.capacity}</span>
+                        <span className={`px-1.5 py-0.5 rounded font-bold ${partner.badgeClass}`}>
+                          {badgeFor(partner)}
+                        </span>
+                      </div>
                     </div>
                   </Popup>
                 </Marker>
               ))}
             </MapContainer>
+
+            {/* Floating Map Legend Overlay */}
+            <div className="absolute bottom-3 left-3 z-[1000] bg-white/95 backdrop-blur-md px-3.5 py-2.5 rounded-[10px] border border-[#E3DDCF] shadow-sm text-[10px] space-y-1.5 pointer-events-auto">
+              <div className="font-bold text-[#1A2E22] uppercase tracking-wider text-[9px] mb-1">Titik Logistik Sirkular:</div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#2D6A4F] shrink-0" />
+                <span className="font-semibold text-[#1A2E22]">{APP_BRAND.dropPointUtama.nama}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#8A5309] shrink-0" />
+                <span className="font-medium text-[#1A2E22]">PT Mandiri Daur Lestari (Bintaro, 4.2 km)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#005138] shrink-0" />
+                <span className="font-medium text-[#1A2E22]">Pabrik Kertas Kraft (Serpong, 8.7 km)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#2D6A4F] shrink-0" />
+                <span className="font-medium text-[#1A2E22]">CV Berkah Daur (Ciputat, 5.4 km)</span>
+              </div>
+            </div>
           </div>
 
-          {/* Detail Card of Currently Selected Location */}
-          <div className="mt-3 p-3 rounded-xl bg-[#F7F8F5] border border-[#E0E5E2] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#2D6A4F] text-base">
-                  {selectedPartner.iconName}
-                </span>
-                <span className="text-xs font-black text-[#141E18]">{selectedPartner.name}</span>
-                <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${selectedPartner.badgeClass}`}>
-                  {selectedPartner.badge}
-                </span>
+          {/* Interactive Industrial Partners List Panel (5 Columns on Desktop) */}
+          <div className="lg:col-span-5 flex flex-col justify-between space-y-2.5">
+            <div className="space-y-2.5 max-h-[460px] overflow-y-auto pr-1">
+              <div className="text-[11px] font-bold text-[#8CA090] uppercase tracking-wider flex items-center justify-between px-1">
+                <span>Daftar Mitra & Drop Point ({MITRA_PARTNERS.length})</span>
+                <span className="text-[10px] text-[#2D6A4F] font-semibold lowercase">klik untuk arahkan peta</span>
               </div>
-              <p className="text-[11px] text-[#4A5C52] mt-0.5">{selectedPartner.address}</p>
-              <div className="flex flex-wrap gap-1.5 mt-1.5">
-                {selectedPartner.acceptedTypes.map((t, idx) => (
-                  <span key={idx} className="text-[9px] font-bold px-2 py-0.5 rounded-md bg-white border border-[#E0E5E2] text-[#2D6A4F]">
-                    ✓ {t}
-                  </span>
-                ))}
-              </div>
+
+              {MITRA_PARTNERS.map(partner => {
+                const isSelected = selectedMitraId === partner.id;
+                const isHub = partner.type === 'drop_point';
+                return (
+                  <div
+                    key={partner.id}
+                    onClick={() => handleSelectMitra(partner)}
+                    className={`p-3.5 rounded-[12px] border transition-all cursor-pointer text-left relative group ${
+                      isHub
+                        ? 'bg-gradient-to-br from-[#FFF6E8] via-[#FDF0DC] to-[#FAE7CB] border-[#C27D3A]/45 shadow-[0_10px_26px_rgba(126,85,59,0.14)] ring-1 ring-[#C27D3A]/25'
+                        : isSelected
+                          ? 'bg-[#E6ECDD]/45 border-[#2D6A4F] shadow-sm ring-1 ring-[#2D6A4F]'
+                          : 'bg-white border-[#E3DDCF] hover:border-[#2D6A4F] hover:bg-[#FAFAF7]'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2 mb-1.5">
+                      <div className="flex items-center gap-2 min-w-0">
+                        {avatarFor(partner) ? (
+                          <img
+                            src={avatarFor(partner)}
+                            alt={`Foto profil ${partner.name}`}
+                            className="w-8 h-8 rounded-full object-cover shrink-0 ring-2 ring-white border border-[#E3DDCF]"
+                          />
+                        ) : (
+                          <span
+                            className={`flex items-center justify-center shrink-0 ${
+                              isHub
+                                ? 'w-9 h-9 rounded-[10px] bg-gradient-to-br from-[#C27D3A] to-[#8A5309] text-white shadow-sm'
+                                : 'w-7 h-7 rounded-[8px]'
+                            }`}
+                            style={
+                              isHub
+                                ? undefined
+                                : {
+                                    backgroundColor: isSelected ? partner.color : '#FAFAF7',
+                                    color: isSelected ? '#FFFFFF' : partner.color,
+                                  }
+                            }
+                          >
+                            <span className="material-symbols-outlined text-[16px]">{partner.iconName}</span>
+                          </span>
+                        )}
+                        <div className="min-w-0">
+                          <div className="text-xs font-bold text-[#1A2E22] flex items-center gap-1.5">
+                            {partner.name}
+                            {isSelected && (
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#2D6A4F] animate-ping" />
+                            )}
+                          </div>
+                          <div className="text-[10px] font-medium text-[#8CA090]">{partner.category}</div>
+                        </div>
+                      </div>
+
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border shrink-0 ${partner.badgeClass}`}>
+                        {badgeFor(partner)}
+                      </span>
+                    </div>
+
+                    <p className="text-[11px] text-[#52645A] line-clamp-1 mb-1.5">
+                      <span className="font-semibold text-[#1A2E22]">Alamat:</span> {partner.address}
+                    </p>
+
+                    {/* Titik koordinat lokasi pada peta */}
+                    <p className="mb-2 flex items-center gap-1.5 font-mono text-[10px] text-[#52645A]">
+                      <span className="material-symbols-outlined text-[12px] text-[#C27D3A]">my_location</span>
+                      <span className="font-semibold text-[#1A2E22]">
+                        {partner.coords[0].toFixed(4)}, {partner.coords[1].toFixed(4)}
+                      </span>
+                      {isHub && (
+                        <span className="font-sans text-[9px] font-bold uppercase tracking-wide text-[#A0632B]">
+                          titik kumpul drop point
+                        </span>
+                      )}
+                    </p>
+
+                    <div className="pt-2 border-t border-[#E3DDCF]/60 flex items-center justify-between text-[10px]">
+                      <div className="flex items-center gap-2 text-[#52645A]">
+                        <span className="inline-flex items-center gap-1 font-semibold text-[#1A2E22]">
+                          <span className="material-symbols-outlined text-[13px] text-[#2D6A4F]">pin_drop</span>
+                          {partner.distance}
+                        </span>
+                        <span>•</span>
+                        <span>{partner.armada}</span>
+                      </div>
+
+                      <button
+                        type="button"
+                        className={`px-2.5 py-1 rounded-[6px] font-bold text-[10px] flex items-center gap-1 transition-colors ${isSelected
+                          ? 'bg-[#2D6A4F] text-white'
+                          : 'bg-[#FAFAF7] text-[#2D6A4F] group-hover:bg-[#E6ECDD]'
+                          }`}
+                      >
+                        <span className="material-symbols-outlined text-[12px]">location_searching</span>
+                        {isSelected ? 'Aktif di Peta' : 'Arahkan Peta'}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            <div className="text-left sm:text-right shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#E0E5E2]">
-              <p className="text-[10px] font-bold text-[#8A9E94] uppercase tracking-wider">{selectedPartner.distance}</p>
-              <p className="text-xs font-black text-[#2D6A4F] mt-0.5">{selectedPartner.capacity}</p>
-              <p className="text-[10px] text-[#4A5C52] font-medium">{selectedPartner.jadwal}</p>
-            </div>
+            {/* Quick Action Button */}
+            <button
+              onClick={() => setActiveRoute('/admin/unit-tong')}
+              className="w-full py-2.5 px-4 rounded-[10px] bg-[#005138] hover:bg-[#2D6A4F] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors shrink-0"
+            >
+              <span className="material-symbols-outlined text-[18px]">alt_route</span>
+              Kelola Alokasi Drop Point & Tong
+            </button>
           </div>
         </div>
       </div>
-
-      {/* ─── 7. LEADERBOARD PERINGKAT UNIT TERAKTIF KAMPUS ─── */}
-      <div className="bg-white rounded-2xl p-6 border border-[#E0E5E2] shadow-xs">
-        <div className="flex items-center justify-between mb-4">
+      {/* ═══ 7. UNIT LEADERBOARD RANKINGS ═══ */}
+      <div className="bg-white border border-[#E3DDCF] rounded-[16px] p-6 shadow-xs">
+        <div className="flex justify-between items-center mb-4 pb-4 border-b border-[#E3DDCF]">
           <div>
-            <h3 className="text-sm font-black text-[#141E18]">Peringkat Unit Teraktif Kampus</h3>
-            <p className="text-[11px] text-[#4A5C52]">Kontribusi pemilahan limbah kertas per fakultas/prodi</p>
+            <h3 className="font-bold text-[#1A2E22] text-base">Peringkat Keaktifan Unit Kampus</h3>
+            <p className="text-xs text-[#52645A]">Distribusi serapan kertas dan perolehan Eco-Points unit</p>
           </div>
-          <button 
+          <button
             onClick={() => setActiveRoute('/leaderboard')}
-            className="text-xs font-bold text-[#2D6A4F] hover:underline flex items-center gap-1 cursor-pointer"
+            className="text-xs font-bold text-[#2D6A4F] hover:underline flex items-center gap-1"
           >
-            <span>Lihat Papan Skor</span>
-            <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            Lihat Semua Peringkat <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
           </button>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="text-[#8A9E94] border-b border-[#E0E5E2] pb-2 font-bold uppercase tracking-wider text-[10px]">
-                <th className="py-2.5 font-bold">Peringkat</th>
-                <th className="py-2.5 font-bold">Unit / Fakultas</th>
-                <th className="py-2.5 font-bold">Total Kertas Disetor</th>
-                <th className="py-2.5 font-bold">Eco-Points</th>
-                <th className="py-2.5 font-bold text-right">Status Tong</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#E0E5E2]/60">
-              {rankedUnits.slice(0, 5).map((u, idx) => (
-                <tr key={u.id} className="hover:bg-[#F7F8F5] transition-colors">
-                  <td className="py-3 font-black text-[#141E18]">
-                    <span className={`w-6 h-6 rounded-full inline-flex items-center justify-center font-black text-[11px] ${
-                      idx === 0 ? 'bg-[#FEF3C7] text-[#D97706]' : idx === 1 ? 'bg-[#E8F5EE] text-[#2D6A4F]' : 'text-[#8A9E94]'
-                    }`}>
-                      #{idx + 1}
-                    </span>
-                  </td>
-                  <td className="py-3 font-bold text-[#141E18]">{u.name}</td>
-                  <td className="py-3 font-black text-[#2D6A4F] tabular-nums">{u.kg} Kg</td>
-                  <td className="py-3 font-bold text-[#C4934F] tabular-nums">{u.points} Poin</td>
-                  <td className="py-3 text-right">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E8F5EE] text-[#2D6A4F]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#2D6A4F]" /> Aktif Terlayani
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="grid grid-cols-12 text-[10px] text-[#8CA090] font-bold uppercase tracking-wider mb-2 px-2">
+          <span className="col-span-1">#</span>
+          <span className="col-span-5 sm:col-span-6">Nama Unit</span>
+          <span className="col-span-3 sm:col-span-3 text-center">Tersalurkan (Kg)</span>
+          <span className="col-span-3 sm:col-span-2 text-right">Eco-Points</span>
+        </div>
+
+        <div className="space-y-1.5">
+          {rankedUnits.slice(0, 5).map((u, i) => (
+            <div key={u.id} className="grid grid-cols-12 items-center px-2 py-2.5 rounded-[10px] hover:bg-[#FAFAF7] transition-colors group">
+              <span className={`col-span-1 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-extrabold ${i === 0 ? 'bg-[#2D6A4F] text-white' : i === 1 ? 'bg-[#40916C] text-white' : 'bg-[#ECE6D7] text-[#52645A]'
+                }`}>
+                {i + 1}
+              </span>
+              <div className="col-span-5 sm:col-span-6 pr-4 min-w-0">
+                <div className="text-xs font-bold text-[#1A2E22] truncate group-hover:text-[#2D6A4F] transition-colors">{u.nama_unit}</div>
+                <div className="w-full bg-[#ECE6D7] rounded-full overflow-hidden mt-1.5" style={{ height: 4 }}>
+                  <div
+                    className="h-full rounded-full bg-[#2D6A4F]"
+                    style={{
+                      width: isLoaded ? `${(u.kg / (rankedUnits[0]?.kg || 1)) * 100}%` : '0%',
+                      transition: `width 1s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 100}ms`
+                    }}
+                  />
+                </div>
+              </div>
+              <span className="col-span-3 sm:col-span-3 text-center text-xs font-bold text-[#1A2E22] tabular-nums">{u.kg} Kg</span>
+              <span className="col-span-3 sm:col-span-2 text-right text-xs font-extrabold text-[#2D6A4F] tabular-nums">{u.points} pts</span>
+            </div>
+          ))}
         </div>
       </div>
 

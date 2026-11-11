@@ -1,191 +1,521 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { PaperCategoryCards, PaperGuideModal } from '../components/PaperGuideModal';
+import { getTongState, TONG_STATE_META, TongState } from '../lib/tong';
+import { Tong } from '../types';
+
+type FilterState = 'semua' | TongState;
+
+const FILTER_LABEL: Record<FilterState, string> = {
+  semua: 'Semua',
+  kosong: 'Kosong',
+  terisi: 'Terisi',
+  siap_pickup: 'Siap jemput',
+};
 
 export const UnitStatusView: React.FC = () => {
-  const { currentUser, units, tongList, emptyTong, submitLaporan } = useApp();
-  const currentUnit = units.find(u => u.id === currentUser?.unit_id) || units.find(u => u.inisial === 'FTD') || units[0];
-  const assignedTong = tongList.find(t => t.unit_id === currentUnit.id) || tongList[0];
+  const { currentUser, units, tongList, emptyTong, submitLaporan, showToast, setActiveRoute, setPreselectTongId } =
+    useApp();
 
-  const [showReportModal, setShowReportModal] = useState(false);
-  const [reportReason, setReportReason] = useState('Tong Penuh & Butuh Penjadwalan Cepat');
+  const currentUnit =
+    units.find(u => u.id === currentUser?.unit_id) ||
+    units.find(u => u.inisial === 'FTD') ||
+    units[0] ||
+    {
+      id: 'unit-ftd',
+      nama_unit: 'Fakultas Teknik & Desain',
+      inisial: 'FTD',
+    };
+
+  const assignedTongs = useMemo(
+    () =>
+      [...tongList]
+        .filter(t => t.unit_id === currentUnit.id)
+        .sort((a, b) => a.nomor.localeCompare(b.nomor)),
+    [tongList, currentUnit.id]
+  );
+
+  const [filter, setFilter] = useState<FilterState>('semua');
+  const [reportTongId, setReportTongId] = useState<string | null>(null);
+  const [reportReason, setReportReason] = useState('Tong penuh & butuh penjadwalan cepat');
   const [reportDetail, setReportDetail] = useState('');
   const [reportSuccess, setReportSuccess] = useState(false);
-  const [selectedReportTong, setSelectedReportTong] = useState(assignedTong);
+  const [emptyTongId, setEmptyTongId] = useState<string | null>(null);
+  const [isEmptying, setIsEmptying] = useState(false);
+  const [guideCategory, setGuideCategory] = useState<string | null>(null);
+  const [showGuide, setShowGuide] = useState(false);
 
-  const handleReport = (e: React.FormEvent) => {
+  const reportTong = assignedTongs.find(t => t.id === reportTongId) || null;
+  const emptyTarget = assignedTongs.find(t => t.id === emptyTongId) || null;
+
+  const totalBerat = assignedTongs.reduce((acc, t) => acc + t.berat_kg, 0);
+  const totalKapasitas = assignedTongs.reduce((acc, t) => acc + t.kapasitas_max_kg, 0);
+  const sisaKapasitas = Math.max(0, totalKapasitas - totalBerat);
+  const totalPercent = totalKapasitas > 0 ? Math.min(100, Math.round((totalBerat / totalKapasitas) * 100)) : 0;
+  const emptyCount = assignedTongs.filter(t => getTongState(t) === 'kosong').length;
+  const filledCount = assignedTongs.filter(t => t.berat_kg > 0).length;
+  const readyCount = assignedTongs.filter(t => getTongState(t) === 'siap_pickup').length;
+
+  const counts: Record<FilterState, number> = {
+    semua: assignedTongs.length,
+    kosong: emptyCount,
+    terisi: filledCount,
+    siap_pickup: readyCount,
+  };
+
+  // Filter "Terisi" = tong yang sudah ada isinya (termasuk yang sudah siap jemput).
+  const filteredTongs = useMemo(() => {
+    if (filter === 'semua') return assignedTongs;
+    if (filter === 'terisi') return assignedTongs.filter(t => t.berat_kg > 0);
+    return assignedTongs.filter(t => getTongState(t) === filter);
+  }, [filter, assignedTongs]);
+
+  const summaryCards = [
+    {
+      label: 'Total tong',
+      value: `${assignedTongs.length}`,
+      sub: `${emptyCount} kosong · ${filledCount + readyCount} terisi`,
+      icon: 'inventory_2',
+    },
+    {
+      label: 'Kertas di tong',
+      value: `${totalBerat.toLocaleString('id-ID')} Kg`,
+      sub: `dari ${totalKapasitas.toLocaleString('id-ID')} Kg kapasitas`,
+      icon: 'scale',
+    },
+    {
+      label: 'Siap dijemput',
+      value: `${readyCount}`,
+      sub: 'Kuota minimal 10 Kg terpenuhi',
+      icon: 'local_shipping',
+    },
+    {
+      label: 'Sisa kapasitas',
+      value: `${sisaKapasitas.toLocaleString('id-ID')} Kg`,
+      sub: 'Ruang untuk setoran berikutnya',
+      icon: 'space_dashboard',
+    },
+  ];
+
+  const openReport = (tong: Tong) => {
+    setReportTongId(tong.id);
+    setReportReason('Tong penuh & butuh penjadwalan cepat');
+    setReportDetail('');
+    setReportSuccess(false);
+  };
+
+  const handleTongSelect = (tong: Tong) => {
+    setPreselectTongId(tong.id);
+    setActiveRoute('/unit/setor-kertas');
+  };
+
+  const handleReport = async (e: React.FormEvent) => {
     e.preventDefault();
-    submitLaporan({
-      tongNama: selectedReportTong.nama_tong,
+    if (!reportTong) return;
+
+    await submitLaporan({
+      tongNama: reportTong.nama_tong,
       unitNama: currentUnit.nama_unit,
       alasan: reportReason,
-      detail: reportDetail || 'Permintaan pengecekan fisik tong di Gedung Serbaguna.',
-      level: 'sedang'
+      detail: reportDetail.trim() || `Permintaan pengecekan fisik ${reportTong.nama_tong} di ${reportTong.lokasi_spesifik}.`,
+      level: 'sedang',
+      tong_id: reportTong.id,
     });
+
     setReportSuccess(true);
     setTimeout(() => {
       setReportSuccess(false);
-      setShowReportModal(false);
-    }, 1500);
+      setReportTongId(null);
+    }, 1600);
+  };
+
+  const handleEmptyTong = async () => {
+    if (!emptyTarget) return;
+    setIsEmptying(true);
+    try {
+      await emptyTong(emptyTarget.id);
+      showToast(`${emptyTarget.nama_tong} dikosongkan. Berat direset ke 0 Kg.`, 'success');
+      setEmptyTongId(null);
+    } catch {
+      showToast('Tong gagal dikosongkan. Coba lagi.', 'error');
+    } finally {
+      setIsEmptying(false);
+    }
   };
 
   return (
-    <div className="w-full pb-20 max-w-xl mx-auto space-y-4 font-sans text-[#1A2E22]">
-
-      {/* Header Bar */}
-      <div className="flex items-center justify-between px-1 py-1">
-        <div className="flex items-center gap-3">
-          <div>
-            <div className="text-[11px] font-bold text-[#52645A] tracking-tight">
-              Status & Monitoring Unit
-            </div>
-            <h1 className="text-base font-extrabold text-[#1A2E22] tracking-tight leading-tight">
-              Status Penyetoran & Tong
-            </h1>
-          </div>
+    <div className="w-full max-w-xl mx-auto space-y-4 pb-24 font-sans text-[#1A2E22]">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-3 px-1 py-1">
+        <div className="min-w-0">
+          <p className="text-[11px] font-medium text-[#8CA090]">Monitoring unit · {currentUnit.inisial}</p>
+          <h1 className="mt-1 text-[26px] font-extrabold leading-tight tracking-tight text-[#1A2E22]">
+            Status tong
+          </h1>
+          <p className="mt-1 text-[12px] font-medium leading-relaxed text-[#52645A]">
+            Pantau kapasitas wadah dan laporkan kendala di titik jemput.
+          </p>
         </div>
-
-        <span className="text-[10px] font-extrabold px-3 py-1 rounded-full bg-[#2D6A4F]/10 text-[#2D6A4F] border border-[#2D6A4F]/20">
-          Live Sync
+        <span className="mt-1 inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#2D6A4F]/15 bg-[#D8F3DC] px-2.5 py-1 text-[10px] font-extrabold text-[#174630]">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#2D6A4F]" />
+          Live sync
         </span>
       </div>
 
-      {/* Status Capacity Cards */}
-      <div className="space-y-6">
-        {tongList
-          .filter(t => t.unit_id === currentUnit.id)
-          .sort((a, b) => a.nomor.localeCompare(b.nomor))
-          .map(tong => {
-            const percentage = Math.min(100, Math.round((tong.berat_kg / tong.kapasitas_max_kg) * 100));
-            return (
-              <div key={tong.id} className="space-y-4">
-                {/* Vibrant Green Header Banner */}
-                <div className="w-full rounded-[28px] p-6 text-white bg-[#2D6A4F] shadow-md shadow-[#2D6A4F]/20 relative overflow-hidden">
-                  <div className="absolute -right-10 -bottom-10 w-36 h-36 rounded-full bg-white/10 blur-xl pointer-events-none" />
-                  <div className="flex items-center justify-between relative z-10">
-                    <div>
-                      <span className="text-[10px] font-extrabold text-white/80 uppercase tracking-widest block">
-                        STATUS WADAH FISIK TONG
-                      </span>
-                      <h2 className="text-xl font-black text-white leading-tight mt-0.5">
-                        {tong.nama_tong} ({tong.nomor})
-                      </h2>
-                      <p className="text-xs text-white/90 mt-1 leading-relaxed font-medium">
-                        Lokasi Wadah: {tong.lokasi_spesifik}
-                      </p>
-                    </div>
-                    <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 ml-3">
-                      <span className="material-symbols-outlined text-[28px] text-white">inventory_2</span>
-                    </div>
+      {/* Ringkasan */}
+      <section aria-label="Ringkasan tong" className="space-y-3">
+        <div className="relative overflow-hidden rounded-2xl border border-[#DDE7E0] bg-[#F2F7F4]">
+          <div className="grid grid-cols-2">
+            {summaryCards.map((card, idx) => (
+              <div
+                key={card.label}
+                className={`bg-white/80 p-4 ${idx < 2 ? 'border-b' : ''} ${
+                  idx % 2 === 0 ? 'border-r' : ''
+                } border-[#DDE7E0]`}
+              >
+                <span
+                  className="material-symbols-outlined text-[21px] text-[#2D6A4F]"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  {card.icon}
+                </span>
+                <div className="mt-2">
+                  <div className="text-[11px] font-medium leading-snug text-[#52645A]">{card.label}</div>
+                  <div className="mt-0.5 text-[19px] font-extrabold leading-tight tracking-tight text-[#1A2E22] tabular-nums">
+                    {card.value}
                   </div>
-                </div>
-
-                {/* Status Capacity Card */}
-                <div className="bg-white rounded-[24px] p-5 shadow-xs border border-black/5 space-y-4">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-[#52645A] font-medium">Akumulasi Berat di Tong Fisik</span>
-                    <strong className="text-[#2D6A4F] font-extrabold">
-                      {tong.berat_kg} / {tong.kapasitas_max_kg} Kg ({percentage}%)
-                    </strong>
-                  </div>
-
-                  <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 ${percentage > 80 ? 'bg-amber-600' : 'bg-[#2D6A4F]'
-                        }`}
-                      style={{ width: `${Math.max(tong.berat_kg > 0 ? 5 : 0, percentage)}%` }}
-                    />
-                  </div>
-
-                  <div className="p-3.5 bg-[#F5F6F3] rounded-2xl border border-black/5 flex items-center justify-between text-xs font-medium">
-                    <div className="flex items-center gap-2 text-[#52645A]">
-                      <span className="material-symbols-outlined text-[18px] text-[#2D6A4F]">rule</span>
-                      <span>Penjagaan Kuota Minimum Jemput: <strong>10 Kg</strong></span>
-                    </div>
-                    <span className={`font-extrabold ${tong.berat_kg >= 10 ? 'text-[#2D6A4F]' : 'text-amber-700'}`}>
-                      {tong.berat_kg >= 10 ? '✅ Kuota Terpenuhi' : `Kurang ${10 - tong.berat_kg} Kg`}
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setReportReason('Tong Penuh & Butuh Penjadwalan Cepat');
-                        setSelectedReportTong(tong);
-                        setShowReportModal(true);
-                      }}
-                      className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-[#F5F6F3] hover:bg-gray-200 text-[#1A2E22] border border-black/5 font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap"
-                    >
-                      <span className="material-symbols-outlined text-[18px] text-amber-700">report_problem</span>
-                      <span>Laporkan Kendala Wadah</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => emptyTong(tong.id)}
-                      className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-[#2D6A4F] hover:bg-[#1A4235] text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer whitespace-nowrap"
-                      title="Simulasi penjemputan pabrik (Reset 0 Kg)"
-                    >
-                      <span className="material-symbols-outlined text-[18px]">refresh</span>
-                      <span>Pengosongan Wadah (Reset 0 Kg)</span>
-                    </button>
-                  </div>
+                  <div className="mt-0.5 text-[10px] font-medium leading-snug text-[#8CA090]">{card.sub}</div>
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+
+        {assignedTongs.length > 0 && (
+          <div className="rounded-2xl border border-[#2D6A4F]/10 bg-white p-4 shadow-xs">
+            <div className="flex items-center justify-between gap-2 text-[11px]">
+              <span className="font-medium text-[#52645A]">Kapasitas gabungan seluruh tong</span>
+              <span className="font-extrabold text-[#1A2E22] tabular-nums">{totalPercent}%</span>
+            </div>
+            <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-[#DDE7E0]">
+              <div
+                className={`h-full rounded-full transition-all duration-500 ${
+                  totalPercent >= 80 ? 'bg-[#E9A23B]' : 'bg-[#2D6A4F]'
+                }`}
+                style={{ width: `${Math.max(totalBerat > 0 ? 4 : 0, totalPercent)}%` }}
+              />
+            </div>
+            <div className="mt-2 flex items-center justify-between gap-2 text-[10px] font-medium text-[#6B7C70]">
+              <span>{totalBerat.toLocaleString('id-ID')} Kg terisi</span>
+              <span>{sisaKapasitas.toLocaleString('id-ID')} Kg tersedia</span>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* Filter */}
+      <section className="space-y-3" aria-label="Daftar tong unit">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-sm font-extrabold text-[#1A2E22]">Wadah unit</h2>
+          <span className="text-[11px] font-semibold text-[#8CA090]">
+            {filteredTongs.length} dari {assignedTongs.length} tong
+          </span>
+        </div>
+        <p className="-mt-1.5 px-1 text-[11px] font-medium leading-relaxed text-[#6B7C70]">
+          Pilih tong pada daftar di bawah untuk langsung menyetor kertas ke wadah tersebut.
+        </p>
+
+        <div className="flex gap-1.5 overflow-x-auto pb-1" role="group" aria-label="Filter status tong">
+          {(Object.keys(FILTER_LABEL) as FilterState[]).map(key => {
+            const active = filter === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setFilter(key)}
+                aria-pressed={active}
+                className={`inline-flex min-h-[36px] shrink-0 items-center gap-1.5 rounded-full border px-3 text-[11px] font-bold transition-colors ${
+                  active
+                    ? 'border-[#174630] bg-[#174630] text-white'
+                    : 'border-[#2D6A4F]/15 bg-white text-[#52645A] hover:bg-[#F2F7F4]'
+                }`}
+              >
+                {FILTER_LABEL[key]}
+                <span
+                  className={`rounded-full px-1.5 py-0.5 text-[9px] font-extrabold tabular-nums ${
+                    active ? 'bg-white/20 text-white' : 'bg-[#F2F7F4] text-[#52645A]'
+                  }`}
+                >
+                  {counts[key]}
+                </span>
+              </button>
             );
           })}
-      </div>
+        </div>
 
-      {/* Report Modal */}
-      {showReportModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-sm rounded-[32px] p-6 space-y-4 shadow-2xl animate-in zoom-in-95">
-            <h3 className="text-base font-extrabold text-[#1A2E22] text-center">Laporkan Kendala Tong</h3>
+        {assignedTongs.length === 0 ? (
+          <div className="rounded-[24px] border border-dashed border-[#2D6A4F]/25 bg-white p-7 text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#F2F7F4] text-[#2D6A4F]">
+              <span className="material-symbols-outlined text-2xl">inventory_2</span>
+            </div>
+            <p className="mt-3 text-sm font-extrabold text-[#1A2E22]">Belum ada tong terdaftar</p>
+            <p className="mx-auto mt-1 max-w-[300px] text-[12px] leading-relaxed text-[#52645A]">
+              Hubungi admin drop point untuk mengaktifkan wadah unit {currentUnit.inisial}. Setelah aktif,
+              status dan kapasitas tong akan muncul di sini.
+            </p>
+          </div>
+        ) : filteredTongs.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-[#2D6A4F]/20 bg-white p-6 text-center">
+            <p className="text-[13px] font-extrabold text-[#1A2E22]">Tidak ada tong dengan status ini</p>
+            <p className="mt-1 text-[11px] font-medium text-[#52645A]">
+              Coba pilih filter lain untuk melihat seluruh wadah.
+            </p>
+            <button
+              type="button"
+              onClick={() => setFilter('semua')}
+              className="mt-3 inline-flex min-h-[38px] items-center rounded-full bg-[#F2F7F4] px-4 text-[11px] font-extrabold text-[#2D6A4F] transition-colors hover:bg-[#D8F3DC]"
+            >
+              Tampilkan semua
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-2.5">
+            {filteredTongs.map(tong => {
+              const state = getTongState(tong);
+              const meta = TONG_STATE_META[state];
+              const percent = Math.min(
+                100,
+                Math.round((tong.berat_kg / Math.max(1, tong.kapasitas_max_kg)) * 100)
+              );
+              const sisa = Math.max(0, tong.kapasitas_max_kg - tong.berat_kg);
+
+              return (
+                <article
+                  key={tong.id}
+                  className="overflow-hidden rounded-[22px] border border-[#2D6A4F]/10 bg-white shadow-xs"
+                >
+                  <div className="space-y-3 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#2D6A4F]/8 bg-[#F2F7F4] text-[#2D6A4F]">
+                          <span className="material-symbols-outlined text-[22px]">inventory_2</span>
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="truncate text-[13px] font-extrabold text-[#1A2E22]">{tong.nama_tong}</h3>
+                          <p className="mt-0.5 flex items-start gap-1 text-[10px] font-medium text-[#6B7C70]">
+                            <span className="material-symbols-outlined mt-0.5 text-[13px]">location_on</span>
+                            <span className="line-clamp-2">{tong.lokasi_spesifik}</span>
+                          </p>
+                        </div>
+                      </div>
+                      <span className={`shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-extrabold ${meta.className}`}>
+                        {meta.label}
+                      </span>
+                    </div>
+
+                    <div>
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="text-[11px] font-medium text-[#52645A]">
+                          Terisi <strong className="font-extrabold text-[#1A2E22] tabular-nums">{tong.berat_kg} Kg</strong>
+                        </span>
+                        <span className="text-[10px] font-semibold text-[#8CA090] tabular-nums">
+                          {tong.berat_kg} / {tong.kapasitas_max_kg} Kg
+                        </span>
+                      </div>
+                      <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-[#DDE7E0]">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            percent >= 80 ? 'bg-[#E9A23B]' : 'bg-[#2D6A4F]'
+                          }`}
+                          style={{ width: `${Math.max(tong.berat_kg > 0 ? 4 : 0, percent)}%` }}
+                        />
+                      </div>
+                      <div className="mt-1.5 flex items-center justify-between gap-2 text-[10px] font-medium">
+                        <span className="text-[#6B7C70]">{percent}% terpakai</span>
+                        <span className={sisa > 0 ? 'text-[#2D6A4F]' : 'text-[#C0392B]'}>
+                          {sisa > 0 ? `Sisa ${sisa} Kg` : 'Wadah penuh'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {tong.catatan && (
+                      <div className="flex items-start gap-2 rounded-xl bg-[#F7FAF8] px-3 py-2">
+                        <span className="material-symbols-outlined mt-0.5 text-[14px] text-[#8CA090]">info</span>
+                        <p className="line-clamp-2 text-[10px] font-medium leading-relaxed text-[#52645A]">
+                          {tong.catatan}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 gap-2 pt-0.5">
+                      <button
+                        type="button"
+                        onClick={() => handleTongSelect(tong)}
+                        className="flex min-h-[44px] items-center justify-center gap-1.5 rounded-full bg-[#2D6A4F] px-3 text-[11px] font-extrabold text-white shadow-xs transition-colors hover:bg-[#1A4235]"
+                      >
+                        <span className="material-symbols-outlined text-[17px]">add_circle</span>
+                        Setor ke tong
+                      </button>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openReport(tong)}
+                          className="flex min-h-[44px] items-center justify-center gap-1.5 rounded-full border border-[#2D6A4F]/15 bg-white px-3 text-[11px] font-extrabold text-[#1A2E22] transition-colors hover:bg-[#F2F7F4]"
+                        >
+                          <span className="material-symbols-outlined text-[17px] text-[#B45309]">report_problem</span>
+                          Laporkan
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setEmptyTongId(tong.id)}
+                          disabled={tong.berat_kg <= 0}
+                          title={tong.berat_kg <= 0 ? 'Tong sudah kosong' : 'Kosongkan setelah armada menjemput'}
+                          className="flex min-h-[44px] items-center justify-center gap-1.5 rounded-full bg-[#F2F7F4] px-3 text-[11px] font-extrabold text-[#1A2E22] transition-colors hover:bg-[#DDE7E0] disabled:cursor-not-allowed disabled:opacity-45"
+                        >
+                          <span className="material-symbols-outlined text-[17px]">refresh</span>
+                          Kosongkan
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* Kategori kertas */}
+      <section className="space-y-3" aria-label="Kategori kertas">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span
+              className="material-symbols-outlined text-lg text-[#2D6A4F]"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              category
+            </span>
+            <h2 className="text-sm font-extrabold text-[#1A2E22]">Kategori kertas</h2>
+          </div>
+          <button
+            type="button"
+            onClick={() => setActiveRoute('/unit/setor-kertas')}
+            className="text-[11px] font-bold text-[#2D6A4F] hover:underline"
+          >
+            Mulai setor
+          </button>
+        </div>
+
+        <p className="px-1 text-[11px] font-medium leading-relaxed text-[#52645A]">
+          Pastikan jenis kertas sesuai sebelum setoran dikirim ke mitra industri.
+        </p>
+
+        <PaperCategoryCards
+          onSelect={category => {
+            setGuideCategory(category);
+            setShowGuide(true);
+          }}
+        />
+      </section>
+
+      {/* Panduan kategori kertas */}
+      <PaperGuideModal
+        open={showGuide}
+        category={guideCategory}
+        unitInisial={currentUnit.inisial}
+        onClose={() => {
+          setShowGuide(false);
+          setGuideCategory(null);
+        }}
+      />
+
+      {/* Report modal */}
+      {reportTong && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F241A]/60 p-4 backdrop-blur-xs"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="laporan-tong-title"
+          onClick={e => {
+            if (e.target === e.currentTarget) setReportTongId(null);
+          }}
+        >
+          <div className="w-full max-w-sm animate-in zoom-in-95 space-y-4 rounded-[24px] border border-[#2D6A4F]/15 bg-white p-5 shadow-2xl">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FEF3C7] text-[#B45309]">
+                  <span className="material-symbols-outlined text-[21px]">report_problem</span>
+                </span>
+                <div>
+                  <h3 id="laporan-tong-title" className="text-sm font-extrabold text-[#1A2E22]">
+                    Laporkan kendala
+                  </h3>
+                  <p className="text-[10px] font-medium text-[#8CA090]">{reportTong.nama_tong}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setReportTongId(null)}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-[#8CA090] transition-colors hover:bg-[#F2F7F4] hover:text-[#1A2E22]"
+                aria-label="Tutup laporan"
+              >
+                <span className="material-symbols-outlined text-[19px]">close</span>
+              </button>
+            </div>
 
             <form onSubmit={handleReport} className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-[#52645A] block mb-1">Alasan</label>
+                <label htmlFor="alasan-laporan" className="mb-1 block text-[11px] font-bold text-[#52645A]">
+                  Alasan
+                </label>
                 <select
+                  id="alasan-laporan"
                   value={reportReason}
                   onChange={e => setReportReason(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-black/5 bg-[#F5F6F3] text-xs font-bold text-[#1A2E22]"
+                  className="min-h-[44px] w-full rounded-xl border border-[#2D6A4F]/15 bg-[#F7FAF8] px-3 text-[12px] font-semibold text-[#1A2E22] outline-none focus:border-[#2D6A4F] focus:ring-2 focus:ring-[#2D6A4F]/15"
                 >
-                  <option>Tong Penuh & Butuh Penjadwalan Cepat</option>
-                  <option>Tong Rusak / Engsel Macet</option>
-                  <option>Timbangan Digital Tidak Terkoneksi</option>
+                  <option>Tong penuh & butuh penjadwalan cepat</option>
+                  <option>Tong rusak / engsel macet</option>
+                  <option>Timbangan digital tidak terkoneksi</option>
+                  <option>Kertas terkontaminasi basah / minyak</option>
                 </select>
               </div>
 
               <div>
-                <label className="text-xs font-bold text-[#52645A] block mb-1">Detail Tambahan</label>
+                <label htmlFor="detail-laporan" className="mb-1 block text-[11px] font-bold text-[#52645A]">
+                  Detail tambahan <span className="font-medium text-[#8CA090]">(opsional)</span>
+                </label>
                 <textarea
+                  id="detail-laporan"
                   rows={3}
                   value={reportDetail}
                   onChange={e => setReportDetail(e.target.value)}
-                  placeholder="Catatan detail untuk admin drop point..."
-                  className="w-full p-2.5 rounded-xl border border-black/5 bg-[#F5F6F3] text-xs font-medium text-[#1A2E22]"
+                  placeholder="Catatan untuk admin drop point..."
+                  className="w-full rounded-xl border border-[#2D6A4F]/15 bg-[#F7FAF8] p-3 text-[12px] font-medium leading-relaxed text-[#1A2E22] outline-none placeholder:text-[#9AA99E] focus:border-[#2D6A4F] focus:ring-2 focus:ring-[#2D6A4F]/15"
                 />
               </div>
 
               {reportSuccess && (
-                <div className="p-2 rounded-xl bg-emerald-100 text-emerald-800 text-xs font-bold text-center">
-                  Laporan berhasil dikirim ke Admin!
+                <div className="flex items-center gap-2 rounded-xl bg-[#D8F3DC] px-3 py-2.5 text-[11px] font-bold text-[#174630]" role="status">
+                  <span className="material-symbols-outlined text-[17px]">check_circle</span>
+                  Laporan berhasil dikirim ke admin.
                 </div>
               )}
 
-              <div className="flex gap-2 pt-2">
+              <div className="flex gap-2 pt-1">
                 <button
                   type="button"
-                  onClick={() => setShowReportModal(false)}
-                  className="flex-1 py-2.5 rounded-full bg-[#F5F6F3] text-xs font-bold text-[#52645A]"
+                  onClick={() => setReportTongId(null)}
+                  className="min-h-[44px] flex-1 rounded-full border border-[#CFC9B8] bg-white text-[12px] font-bold text-[#52645A] transition-colors hover:bg-[#FAFAF7]"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 rounded-full bg-[#2D6A4F] hover:bg-[#1A4235] text-xs font-bold text-white shadow-xs"
+                  disabled={reportSuccess}
+                  className="min-h-[44px] flex-1 rounded-full bg-[#2D6A4F] text-[12px] font-extrabold text-white shadow-xs transition-colors hover:bg-[#1A4235] disabled:opacity-60"
                 >
-                  Kirim Laporan
+                  Kirim laporan
                 </button>
               </div>
             </form>
@@ -193,6 +523,53 @@ export const UnitStatusView: React.FC = () => {
         </div>
       )}
 
+      {/* Empty tong confirmation */}
+      {emptyTarget && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F241A]/60 p-4 backdrop-blur-xs"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="kosongkan-tong-title"
+          onClick={e => {
+            if (e.target === e.currentTarget && !isEmptying) setEmptyTongId(null);
+          }}
+        >
+          <div className="w-full max-w-sm rounded-[24px] border border-[#2D6A4F]/15 bg-white p-5 shadow-2xl">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#F2F7F4] text-[#2D6A4F]">
+              <span className="material-symbols-outlined text-[22px]">refresh</span>
+            </div>
+            <h3 id="kosongkan-tong-title" className="mt-3 text-base font-extrabold text-[#1A2E22]">
+              Kosongkan {emptyTarget.nama_tong}?
+            </h3>
+            <p className="mt-1 text-[12px] leading-relaxed text-[#52645A]">
+              Berat tong akan direset ke 0 Kg dan listing aktif ditandai selesai. Gunakan aksi ini setelah
+              armada mitra benar-benar menjemput kertas.
+            </p>
+            <div className="mt-3 rounded-xl bg-[#F7FAF8] px-3 py-2.5 text-[11px] font-semibold text-[#1A2E22]">
+              Berat saat ini: <span className="font-extrabold tabular-nums">{emptyTarget.berat_kg} Kg</span>
+            </div>
+            <div className="mt-4 flex gap-2.5">
+              <button
+                type="button"
+                onClick={() => setEmptyTongId(null)}
+                disabled={isEmptying}
+                className="min-h-[46px] flex-1 rounded-full border border-[#CFC9B8] bg-white text-[12px] font-bold text-[#1A2E22] transition-colors hover:bg-[#FAFAF7] disabled:opacity-50"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleEmptyTong}
+                disabled={isEmptying}
+                className="flex min-h-[46px] flex-1 items-center justify-center gap-1.5 rounded-full bg-[#2D6A4F] text-[12px] font-extrabold text-white transition-colors hover:bg-[#1A4235] disabled:opacity-60"
+              >
+                {isEmptying && <span className="material-symbols-outlined animate-spin text-[16px]">progress_activity</span>}
+                {isEmptying ? 'Memproses...' : 'Ya, kosongkan'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

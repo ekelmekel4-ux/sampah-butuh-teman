@@ -128,7 +128,7 @@ export const LandingAuthView: React.FC = () => {
             className={`w-full text-left p-3.5 rounded-xl shadow-xs transition-all relative overflow-hidden border ${
               selectedRole === 'unit'
                 ? 'bg-white border-[#005138]'
-                : 'bg-[#F7F3EA] border-transparent opacity-85 hover:opacity-100'
+                : 'bg-[#FAFAF7] border-transparent opacity-85 hover:opacity-100'
             }`}
           >
             {selectedRole === 'unit' && (
@@ -170,7 +170,7 @@ export const LandingAuthView: React.FC = () => {
             className={`w-full text-left p-3.5 rounded-xl shadow-xs transition-all relative overflow-hidden border ${
               selectedRole === 'mitra'
                 ? 'bg-white border-[#7E553B]'
-                : 'bg-[#F7F3EA] border-transparent opacity-85 hover:opacity-100'
+                : 'bg-[#FAFAF7] border-transparent opacity-85 hover:opacity-100'
             }`}
           >
             {selectedRole === 'mitra' && (
@@ -218,7 +218,7 @@ export const LandingAuthView: React.FC = () => {
                   <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Nama Unit / Fakultas
                   </label>
-                  <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
+                  <div className="flex items-center bg-[#FAFAF7] rounded-lg px-3 py-2.5">
                     <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">domain</span>
                     <input
                       type="text"
@@ -235,7 +235,7 @@ export const LandingAuthView: React.FC = () => {
                   <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Penanggung Jawab (PIC)
                   </label>
-                  <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
+                  <div className="flex items-center bg-[#FAFAF7] rounded-lg px-3 py-2.5">
                     <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">badge</span>
                     <input
                       type="text"
@@ -252,7 +252,7 @@ export const LandingAuthView: React.FC = () => {
                   <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Email Institusi Resmi
                   </label>
-                  <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
+                  <div className="flex items-center bg-[#FAFAF7] rounded-lg px-3 py-2.5">
                     <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">alternate_email</span>
                     <input
                       type="email"
@@ -269,7 +269,7 @@ export const LandingAuthView: React.FC = () => {
                   <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Nomor WhatsApp PIC
                   </label>
-                  <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
+                  <div className="flex items-center bg-[#FAFAF7] rounded-lg px-3 py-2.5">
                     <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">call</span>
                     <input
                       type="tel"
@@ -290,7 +290,7 @@ export const LandingAuthView: React.FC = () => {
                   <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Nama PT / Entitas Pabrik
                   </label>
-                  <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
+                  <div className="flex items-center bg-[#FAFAF7] rounded-lg px-3 py-2.5">
                     <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">corporate_fare</span>
                     <input
                       type="text"
@@ -306,7 +306,7 @@ export const LandingAuthView: React.FC = () => {
                   <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Nomor Induk Berusaha (NIB / Izin)
                   </label>
-                  <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
+                  <div className="flex items-center bg-[#FAFAF7] rounded-lg px-3 py-2.5">
                     <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">verified</span>
                     <input
                       type="text"
@@ -322,7 +322,7 @@ export const LandingAuthView: React.FC = () => {
                   <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Email Logistik Perusahaan
                   </label>
-                  <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
+                  <div className="flex items-center bg-[#FAFAF7] rounded-lg px-3 py-2.5">
                     <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">mail</span>
                     <input
                       type="email"
@@ -338,7 +338,7 @@ export const LandingAuthView: React.FC = () => {
                   <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     WhatsApp Dispatcher Logistik
                   </label>
-                  <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
+                  <div className="flex items-center bg-[#FAFAF7] rounded-lg px-3 py-2.5">
                     <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">local_shipping</span>
                     <input
                       type="tel"
@@ -359,7 +359,7 @@ export const LandingAuthView: React.FC = () => {
                   <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                     Email Akun Terdaftar
                   </label>
-                  <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5">
+                  <div className="flex items-center bg-[#FAFAF7] rounded-lg px-3 py-2.5">
                     <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">mail</span>
                     <input
                       type="email"
@@ -379,7 +379,7 @@ export const LandingAuthView: React.FC = () => {
               <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                 Kata Sandi
               </label>
-              <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5 relative">
+              <div className="flex items-center bg-[#FAFAF7] rounded-lg px-3 py-2.5 relative">
                 <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">lock</span>
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -407,7 +407,7 @@ export const LandingAuthView: React.FC = () => {
                 <label className="block text-xs font-semibold text-[#1A2E22] mb-1">
                   Konfirmasi Kata Sandi
                 </label>
-                <div className="flex items-center bg-[#F7F3EA] rounded-lg px-3 py-2.5 relative">
+                <div className="flex items-center bg-[#FAFAF7] rounded-lg px-3 py-2.5 relative">
                   <span className="material-symbols-outlined text-[#8CA090] mr-2 text-lg">lock_reset</span>
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
@@ -479,6 +479,91 @@ export const LandingAuthView: React.FC = () => {
               {successNotice}
             </div>
           )}
+
+          {/* Demo Quick Access Card */}
+          <div className="mt-4 pt-4 border-t border-[#E6E2D9]">
+
+            {/* Notice banner */}
+            <div className="flex items-start gap-2 mb-3 p-2.5 rounded-xl bg-[#FFFBEB] border border-[#FCD34D]/60">
+              <span className="material-symbols-outlined text-[#D97706] text-base shrink-0 mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>
+                construction
+              </span>
+              <p className="text-[10px] text-[#92400E] leading-relaxed">
+                <span className="font-bold">Login belum diimplementasi.</span> Gunakan tombol di bawah untuk langsung masuk sebagai role tertentu dalam mode demo.
+              </p>
+            </div>
+
+            {/* Header */}
+            <div className="flex items-center gap-1.5 mb-2">
+              <span className="material-symbols-outlined text-[#8CA090] text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
+              <span className="text-[10px] font-bold text-[#8CA090] uppercase tracking-wider">Pilih Role untuk Masuk Demo</span>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              {/* Demo: Unit Kampus */}
+              <button
+                type="button"
+                onClick={async () => {
+                  await login('penyalur@ft.univ.ac.id');
+                  setRole('unit');
+                  setSuccessNotice('Demo: Masuk sebagai Unit Kampus...');
+                  setTimeout(() => setActiveRoute('/unit/beranda'), 800);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-[#1B4332] bg-gradient-to-r from-[#E6ECDD] to-[#E6ECDD] hover:from-[#D7E5CB]/40 hover:to-[#D7E5CB]/30 active:scale-[0.98] transition-all shadow-sm group"
+              >
+                <div className="w-9 h-9 rounded-xl bg-[#1B4332] flex items-center justify-center shrink-0 shadow-sm">
+                  <span className="material-symbols-outlined text-white text-base" style={{ fontVariationSettings: "'FILL' 1" }}>account_balance</span>
+                </div>
+                <div className="flex-1 text-left min-w-0">
+                  <p className="text-xs font-bold text-[#1B4332]">Unit Kampus</p>
+                  <p className="text-[9px] text-[#3F4943]">Penyalur · Fakultas / Biro</p>
+                </div>
+                <span className="material-symbols-outlined text-[#1B4332] text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+              </button>
+
+              {/* Demo: Mitra Industri */}
+              <button
+                type="button"
+                onClick={async () => {
+                  await login('logistik@daurlestari.co.id');
+                  setRole('perusahaan');
+                  setSuccessNotice('Demo: Masuk sebagai Mitra Industri...');
+                  setTimeout(() => setActiveRoute('/perusahaan/dashboard'), 800);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-[#7E553B] bg-gradient-to-r from-[#FAFAF7] to-[#FFF3E0] hover:from-[#FFDBC8]/50 hover:to-[#FFDBC8]/30 active:scale-[0.98] transition-all shadow-sm group"
+              >
+                <div className="w-9 h-9 rounded-xl bg-[#7E553B] flex items-center justify-center shrink-0 shadow-sm">
+                  <span className="material-symbols-outlined text-white text-base" style={{ fontVariationSettings: "'FILL' 1" }}>factory</span>
+                </div>
+                <div className="flex-1 text-left min-w-0">
+                  <p className="text-xs font-bold text-[#7E553B]">Mitra Industri</p>
+                  <p className="text-[9px] text-[#3F4943]">Penerima · Pabrik Daur Ulang</p>
+                </div>
+                <span className="material-symbols-outlined text-[#7E553B] text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+              </button>
+
+              {/* Demo: Admin */}
+              <button
+                type="button"
+                onClick={async () => {
+                  await login('admin@sampahbutuhteman.id');
+                  setRole('admin');
+                  setSuccessNotice('Demo: Masuk sebagai Admin...');
+                  setTimeout(() => setActiveRoute('/admin/dashboard'), 800);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-[#496E4B] bg-gradient-to-r from-[#E8ECDD] to-[#E8ECDD] hover:from-[#CED8C2]/50 hover:to-[#CED8C2]/30 active:scale-[0.98] transition-all shadow-sm group"
+              >
+                <div className="w-9 h-9 rounded-xl bg-[#496E4B] flex items-center justify-center shrink-0 shadow-sm">
+                  <span className="material-symbols-outlined text-white text-base" style={{ fontVariationSettings: "'FILL' 1" }}>admin_panel_settings</span>
+                </div>
+                <div className="flex-1 text-left min-w-0">
+                  <p className="text-xs font-bold text-[#496E4B]">Admin Panel</p>
+                  <p className="text-[9px] text-[#3F4943]">Superadmin · Dashboard Sistem</p>
+                </div>
+                <span className="material-symbols-outlined text-[#496E4B] text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -519,7 +604,7 @@ export const LandingAuthView: React.FC = () => {
 
       {/* Live Campus Metric Badge */}
       <div className="px-4 mt-6">
-        <div className="p-3.5 rounded-xl bg-[#F7F3EA] border border-[#2D6A4F]/10 flex items-center gap-3">
+        <div className="p-3.5 rounded-xl bg-[#FAFAF7] border border-[#2D6A4F]/10 flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-[#9CF2B5] flex items-center justify-center text-[#157140] shrink-0">
             <span className="material-symbols-outlined text-xl">workspace_premium</span>
           </div>

@@ -89,7 +89,7 @@ export const AdminUnitTongView: React.FC = () => {
 
         {/* Stats Row */}
         <div className="grid grid-cols-3 gap-2">
-          <div className="p-2.5 bg-[#F7F3EA] rounded-xl text-center">
+          <div className="p-2.5 bg-[#FAFAF7] rounded-xl text-center">
             <span className="text-lg font-extrabold text-[#2D6A4F] block">{units.length}</span>
             <span className="text-[10px] text-[#52645A]">Total Unit</span>
           </div>
@@ -326,7 +326,7 @@ export const AdminUnitTongView: React.FC = () => {
             </div>
 
             <div className="space-y-2 text-xs">
-              <div className="flex items-start gap-2.5 p-2 rounded-lg bg-[#F7F3EA]">
+              <div className="flex items-start gap-2.5 p-2 rounded-lg bg-[#FAFAF7]">
                 <span className="material-symbols-outlined text-[#2D6A4F] text-base shrink-0 mt-0.5">
                   move_to_inbox
                 </span>
@@ -336,7 +336,7 @@ export const AdminUnitTongView: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-start gap-2.5 p-2 rounded-lg bg-[#F7F3EA]">
+              <div className="flex items-start gap-2.5 p-2 rounded-lg bg-[#FAFAF7]">
                 <span className="material-symbols-outlined text-[#C27D3A] text-base shrink-0 mt-0.5">
                   local_shipping
                 </span>
@@ -346,7 +346,7 @@ export const AdminUnitTongView: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-start gap-2.5 p-2 rounded-lg bg-[#F7F3EA]">
+              <div className="flex items-start gap-2.5 p-2 rounded-lg bg-[#FAFAF7]">
                 <span className="material-symbols-outlined text-[#2D6A4F] text-base shrink-0 mt-0.5">
                   inventory_2
                 </span>
@@ -482,7 +482,7 @@ export const AdminUnitTongView: React.FC = () => {
                         setActionNotice(`Notifikasi pengisian tong dikirim ke PIC ${unit.nama_unit}.`);
                         setTimeout(() => setActionNotice(null), 3000);
                       }}
-                      className="py-2 px-3 rounded-lg bg-[#F7F3EA] text-[#52645A] text-[11px] font-semibold hover:bg-[#ECE8DF] flex items-center justify-center gap-1 transition-all cursor-pointer"
+                      className="py-2 px-3 rounded-lg bg-[#FAFAF7] text-[#52645A] text-[11px] font-semibold hover:bg-[#ECE8DF] flex items-center justify-center gap-1 transition-all cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-xs">notifications</span>
                       Notif PIC
@@ -492,7 +492,7 @@ export const AdminUnitTongView: React.FC = () => {
                         setActionNotice(`Status tong ${tong?.nama_tong || unit.tong_nama} berhasil di-reset ke Kosong.`);
                         setTimeout(() => setActionNotice(null), 3000);
                       }}
-                      className="py-2 px-3 rounded-lg bg-[#F7F3EA] text-[#52645A] text-[11px] font-semibold hover:bg-[#ECE8DF] flex items-center justify-center gap-1 transition-all cursor-pointer"
+                      className="py-2 px-3 rounded-lg bg-[#FAFAF7] text-[#52645A] text-[11px] font-semibold hover:bg-[#ECE8DF] flex items-center justify-center gap-1 transition-all cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-xs">refresh</span>
                       Reset Tong

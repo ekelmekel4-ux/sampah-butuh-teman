@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { APP_BRAND } from '../data/initialData';
+import { QcChips } from '../components/QcChips';
 
 type TabMode = 'saran' | 'manual';
 
@@ -16,7 +17,6 @@ export const PerusahaanMatchingView: React.FC = () => {
     matchings,
     listings,
     units,
-    confirmPickup,
     setSelectedMatchingId,
     setSelectedListingId,
     setActiveRoute,
@@ -24,17 +24,10 @@ export const PerusahaanMatchingView: React.FC = () => {
 
   const [tabMode, setTabMode] = useState<TabMode>('saran');
   const [filterKategori, setFilterKategori] = useState<string>('semua');
-  const [successCelebration, setSuccessCelebration] = useState<string | null>(null);
 
   // --- Tab Saran Sistem ---
   const pendingMatchings = matchings.filter(m => m.status === 'menunggu_diambil');
   const primaryMatch = pendingMatchings[0] || matchings[0];
-
-  const handleConfirmPickupClick = (matchingId: string) => {
-    confirmPickup(matchingId);
-    setSuccessCelebration('Kertas berhasil diambil! Pembayaran telah ditransfer ke Dompet Unit dan Status Tong kembali KOSONG.');
-    setTimeout(() => setSuccessCelebration(null), 4500);
-  };
 
   const handleJadwalkan = (matchingId: string) => {
     setSelectedMatchingId(matchingId);
@@ -58,7 +51,7 @@ export const PerusahaanMatchingView: React.FC = () => {
     <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
 
       {/* Top Banner: Company Demand State */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-3">
+      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#C27D3A]/10 space-y-3">
         <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-11 h-11 rounded-xl bg-[#C27D3A] text-white flex items-center justify-center shrink-0 shadow-sm">
@@ -71,29 +64,29 @@ export const PerusahaanMatchingView: React.FC = () => {
                   MDL-2024-K09
                 </span>
               </div>
-              <span className="text-[11px] text-[#0D6D3C] font-semibold flex items-center gap-1 mt-0.5">
-                <span className="w-2 h-2 rounded-full bg-[#157140] animate-pulse" />
+              <span className="text-[11px] text-[#92400E] font-semibold flex items-center gap-1 mt-0.5">
+                <span className="w-2 h-2 rounded-full bg-[#A0632B] animate-pulse" />
                 Sistem Matching Otomatis Aktif
               </span>
             </div>
           </div>
           <button
             onClick={() => setActiveRoute('/perusahaan/permintaan-baru')}
-            className="px-2.5 py-1.5 rounded-lg bg-[#F7F3EA] text-[#C27D3A] text-xs font-bold hover:bg-[#ECE8DF] transition-all flex items-center gap-1"
+            className="px-2.5 py-1.5 rounded-lg bg-[#FAFAF7] text-[#C27D3A] text-xs font-bold hover:bg-[#ECE8DF] transition-all flex items-center gap-1"
           >
             <span className="material-symbols-outlined text-sm">edit</span>
             <span>Ubah Kuota</span>
           </button>
         </div>
 
-        <div className="p-3 bg-[#F7F3EA] rounded-xl text-xs space-y-1">
+        <div className="p-3 bg-[#FAFAF7] rounded-xl text-xs space-y-1">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-[#52645A] gap-1">
             <span>Permintaan Aktif:</span>
             <strong className="text-[#1A2E22]">Min 100 kg/minggu (HVS/Arsip & Kardus)</strong>
           </div>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-[#52645A] gap-1">
             <span>Kriteria QC:</span>
-            <strong className="text-[#005138]">Kadar Air ≤12%, Terikat Rapi & Bebas Residu</strong>
+            <strong className="text-[#1B4332]">Kadar Air ≤12%, Terikat Rapi & Bebas Residu</strong>
           </div>
         </div>
       </div>
@@ -103,13 +96,13 @@ export const PerusahaanMatchingView: React.FC = () => {
         <button
           onClick={() => setTabMode('saran')}
           className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-            tabMode === 'saran' ? 'bg-white text-[#2D6A4F] shadow-xs' : 'text-[#52645A]'
+            tabMode === 'saran' ? 'bg-white text-[#C27D3A] shadow-xs' : 'text-[#52645A]'
           }`}
         >
           <span className="material-symbols-outlined text-sm">auto_awesome</span>
           Saran Sistem
           {pendingMatchings.length > 0 && (
-            <span className="px-1.5 py-0.2 bg-[#9CF2B5] text-[#157140] text-[9px] font-extrabold rounded-full">
+            <span className="px-1.5 py-0.2 bg-[#FEF3C7] text-[#A0632B] text-[9px] font-extrabold rounded-full">
               {pendingMatchings.length}
             </span>
           )}
@@ -117,7 +110,7 @@ export const PerusahaanMatchingView: React.FC = () => {
         <button
           onClick={() => setTabMode('manual')}
           className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-            tabMode === 'manual' ? 'bg-white text-[#2D6A4F] shadow-xs' : 'text-[#52645A]'
+            tabMode === 'manual' ? 'bg-white text-[#C27D3A] shadow-xs' : 'text-[#52645A]'
           }`}
         >
           <span className="material-symbols-outlined text-sm">search</span>
@@ -132,19 +125,19 @@ export const PerusahaanMatchingView: React.FC = () => {
       {tabMode === 'saran' && (
         <>
           {/* System Smart Match Recommendations */}
-          <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-3">
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#C27D3A]/10 space-y-3">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2 min-w-0">
-                <span className="material-symbols-outlined text-[#2D6A4F] text-lg">auto_awesome</span>
+                <span className="material-symbols-outlined text-[#C27D3A] text-lg">auto_awesome</span>
                 <h3 className="text-sm font-bold text-[#1A2E22]">Pencocokan Otomatis Sistem</h3>
               </div>
-              <span className="text-[10px] font-bold text-[#157140] bg-[#9CF2B5] px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-bold text-[#A0632B] bg-[#FEF3C7] px-2 py-0.5 rounded-full">
                 {pendingMatchings.length} Rekomendasi
               </span>
             </div>
 
             {pendingMatchings.length === 0 && (
-              <div className="p-4 bg-[#F7F3EA] rounded-xl text-center text-xs text-[#52645A] space-y-1">
+              <div className="p-4 bg-[#FAFAF7] rounded-xl text-center text-xs text-[#52645A] space-y-1">
                 <span className="material-symbols-outlined text-2xl text-gray-300 block">inbox</span>
                 <span>Belum ada rekomendasi saat ini. Coba jelajah listing manual di tab sebelah.</span>
               </div>
@@ -153,16 +146,16 @@ export const PerusahaanMatchingView: React.FC = () => {
             <div className="space-y-3">
               {pendingMatchings.map((match, idx) => (
                 <div key={match.id} className={`p-3.5 rounded-xl border space-y-2.5 ${
-                  idx === 0 ? 'bg-[#F7F3EA] border-[#2D6A4F]/20' : 'bg-[#F7F3EA] border-gray-200'
+                  idx === 0 ? 'bg-[#FAFAF7] border-[#C27D3A]/20' : 'bg-[#FAFAF7] border-gray-200'
                 }`}>
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                     <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${
-                      match.skor_kecocokan >= 95 ? 'bg-[#9CF2B5] text-[#157140]' : 'bg-[#A4F3CC] text-[#002114]'
+                      match.skor_kecocokan >= 95 ? 'bg-[#FEF3C7] text-[#A0632B]' : 'bg-[#FDE68A] text-[#A0632B]'
                     }`}>
                       <span className="material-symbols-outlined text-xs">verified</span>
                       {match.skor_kecocokan}% Kecocokan Kriteria
                     </span>
-          <span className="text-xs font-bold text-[#2D6A4F]">{match.tong_nama}</span>
+          <span className="text-xs font-bold text-[#C27D3A]">{match.tong_nama}</span>
                   </div>
 
                   <div className="flex items-start gap-3">
@@ -176,8 +169,8 @@ export const PerusahaanMatchingView: React.FC = () => {
                           className="w-16 h-16 rounded-lg object-cover shrink-0 border border-white shadow-xs"
                         />
                       ) : (
-                        <div className="w-16 h-16 rounded-lg bg-[#A4F3CC] flex items-center justify-center shrink-0">
-                          <span className="material-symbols-outlined text-[#005138] text-2xl">inventory_2</span>
+                        <div className="w-16 h-16 rounded-lg bg-[#FDE68A] flex items-center justify-center shrink-0">
+                          <span className="material-symbols-outlined text-[#A0632B] text-2xl">inventory_2</span>
                         </div>
                       );
                     })()}
@@ -187,7 +180,7 @@ export const PerusahaanMatchingView: React.FC = () => {
                       <span className="text-[10px] text-[#C27D3A] font-semibold block mt-1">
                         📍 Drop Point Gedung Serbaguna Kampus UPJ
                       </span>
-                      <span className="text-[10px] text-[#005138] font-bold block mt-0.5">
+                      <span className="text-[10px] text-[#A0632B] font-bold block mt-0.5">
                         Rp {match.nilai_rupiah.toLocaleString('id-ID')}
                       </span>
                     </div>
@@ -197,7 +190,7 @@ export const PerusahaanMatchingView: React.FC = () => {
                     <button
                       onClick={() => handleJadwalkan(match.id)}
                       className={`py-2.5 px-3 rounded-lg text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition-all ${
-                        idx === 0 ? 'bg-[#2D6A4F] hover:bg-[#005138]' : 'bg-[#C27D3A] hover:bg-[#633E25]'
+                        idx === 0 ? 'bg-[#C27D3A] hover:bg-[#A0632B]' : 'bg-[#C27D3A] hover:bg-[#92400E]'
                       }`}
                     >
                       <span className="material-symbols-outlined text-sm">schedule</span>
@@ -221,7 +214,7 @@ export const PerusahaanMatchingView: React.FC = () => {
 
           {/* Confirmed Pickup Schedule Card */}
           {primaryMatch && (
-            <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-3.5">
+            <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#C27D3A]/10 space-y-3.5">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-gray-100 pb-2 gap-2">
                 <div>
                   <span className="text-[10px] font-bold text-[#C27D3A] uppercase tracking-wider block">
@@ -231,7 +224,7 @@ export const PerusahaanMatchingView: React.FC = () => {
                 </div>
                 <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
                   primaryMatch.status === 'sudah_diambil'
-                    ? 'bg-[#9CF2B5] text-[#157140]'
+                    ? 'bg-[#FEF3C7] text-[#A0632B]'
                     : 'bg-[#FFDBC8] text-[#C27D3A]'
                 }`}>
                   {primaryMatch.status === 'sudah_diambil' ? '✓ Sudah Selesai Diambil' : '• Menunggu Diambil'}
@@ -239,10 +232,10 @@ export const PerusahaanMatchingView: React.FC = () => {
               </div>
 
               {/* Date, Time, Driver */}
-              <div className="p-3 bg-[#F7F3EA] rounded-xl space-y-2 text-xs">
+              <div className="p-3 bg-[#FAFAF7] rounded-xl space-y-2 text-xs">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
                   <span className="text-[#52645A] flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-base text-[#2D6A4F]">calendar_today</span>
+                    <span className="material-symbols-outlined text-base text-[#C27D3A]">calendar_today</span>
                     Tanggal & Jam:
                   </span>
                   <strong className="text-[#1A2E22]">
@@ -263,8 +256,14 @@ export const PerusahaanMatchingView: React.FC = () => {
               {/* Drop Point Map */}
               <div className="space-y-2">
                 <span className="text-xs font-bold text-[#1A2E22] block">Alamat Drop Point Pengambilan:</span>
-                <div className="rounded-xl overflow-hidden border border-[#2D6A4F]/15 bg-[#F7F3EA]">
-                  <div className="relative h-32 w-full bg-gray-100">
+                <a
+                  href={APP_BRAND.dropPointUtama.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Buka lokasi Drop Point Kampus UPJ di Google Maps"
+                  className="group block rounded-xl overflow-hidden border border-[#C27D3A]/15 bg-[#FAFAF7] shadow-xs hover:border-[#C27D3A]/35 transition-colors focus-visible:outline-2 focus-visible:outline-[#C27D3A] focus-visible:outline-offset-2"
+                >
+                  <div className="relative h-48 sm:h-56 w-full bg-gray-100">
                     <img
                       src={APP_BRAND.dropPointUtama.mapImg}
                       alt="Denah Drop Point Serbaguna"
@@ -272,21 +271,27 @@ export const PerusahaanMatchingView: React.FC = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-2.5">
                       <span className="text-white text-xs font-bold flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[#9CF2B5] text-sm">location_on</span>
+                        <span className="material-symbols-outlined text-[#FEF3C7] text-sm">location_on</span>
                         Drop Point Gedung Serbaguna Kampus (Sayap Barat)
                       </span>
                     </div>
                   </div>
-                  <div className="p-2 text-[11px] text-[#52645A] flex justify-between items-center">
-                    <span>Ramp truk 6-roda & timbangan digital siap pakai</span>
-                    <span className="text-[#2D6A4F] font-bold">Akses Gerbang Barat</span>
+                  <div className="p-2 text-[11px] text-[#52645A] flex items-center justify-between gap-2">
+                    <span>Ramp truk 6-roda · Akses Gerbang Barat</span>
+                    <span className="shrink-0 inline-flex items-center gap-1 text-[#C27D3A] font-bold">
+                      <span className="material-symbols-outlined text-[14px]">map</span>
+                      Google Maps
+                      <span className="material-symbols-outlined text-[14px] transition-transform group-hover:translate-x-0.5">
+                        arrow_forward
+                      </span>
+                    </span>
                   </div>
-                </div>
+                </a>
               </div>
 
               {/* Tong position */}
-              <div className="p-3 bg-[#F7F3EA] rounded-xl flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[#A4F3CC] flex items-center justify-center text-[#005138] font-bold text-sm">
+              <div className="p-3 bg-[#FAFAF7] rounded-xl flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-[#FDE68A] flex items-center justify-center text-[#A0632B] font-bold text-sm">
                   {primaryMatch.unit_id.slice(5, 8).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -301,29 +306,27 @@ export const PerusahaanMatchingView: React.FC = () => {
 
               {/* CTA */}
               {primaryMatch.status !== 'sudah_diambil' ? (
-                <button
-                  onClick={() => handleConfirmPickupClick(primaryMatch.id)}
-                  className="w-full py-3.5 px-4 rounded-xl bg-[#005138] hover:bg-[#2D6A4F] active:scale-[0.98] text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-md transition-all"
-                >
-                  <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
-                    task_alt
-                  </span>
-                  <span>Konfirmasi Selesai & Bayar ke Dompet Unit</span>
-                </button>
+                <div className="p-3.5 bg-[#FAFAF7] border border-[#C27D3A]/25 rounded-xl space-y-2.5">
+                  <p className="flex items-center gap-2 text-xs font-bold text-[#A0632B]">
+                    <span className="material-symbols-outlined text-base">qr_code_2</span>
+                    Kertas ditandai terambil saat QR tong discan
+                  </p>
+                  <p className="text-[11px] leading-relaxed text-[#52645A]">
+                    Tidak ada konfirmasi manual. Scan QR di loker tong untuk menandai pengambilan dan
+                    mengosongkan tong secara otomatis.
+                  </p>
+                  <button
+                    onClick={() => setActiveRoute('/perusahaan/riwayat')}
+                    className="w-full min-h-[44px] rounded-[10px] bg-[#A0632B] hover:bg-[#C27D3A] text-white text-xs font-bold flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-base">qr_code_scanner</span>
+                    Buka Riwayat &amp; Scan QR
+                  </button>
+                </div>
               ) : (
-                <div className="p-3 bg-[#9CF2B5]/30 border border-[#157140]/30 rounded-xl text-xs text-[#157140] font-bold text-center flex items-center justify-center gap-2">
+                <div className="p-3 bg-[#FEF3C7]/30 border border-[#A0632B]/30 rounded-xl text-xs text-[#A0632B] font-bold text-center flex items-center justify-center gap-2">
                   <span className="material-symbols-outlined text-base">verified</span>
                   <span>Kertas telah berhasil diambil & diverifikasi!</span>
-                </div>
-              )}
-
-              {successCelebration && (
-                <div className="p-3.5 bg-[#2D6A4F] text-white rounded-xl text-xs font-bold text-center animate-in zoom-in-95 space-y-1 shadow-lg">
-                  <div className="flex items-center justify-center gap-1.5 text-[#A4F3CC]">
-                    <span className="material-symbols-outlined text-base">eco</span>
-                    <span>PENGAMBILAN TONG SELESAI!</span>
-                  </div>
-                  <p className="text-[11px] font-normal text-white/90">{successCelebration}</p>
                 </div>
               )}
             </div>
@@ -335,8 +338,8 @@ export const PerusahaanMatchingView: React.FC = () => {
       {tabMode === 'manual' && (
         <>
           {/* Info banner */}
-          <div className="p-3 bg-[#F7F3EA] border border-[#2D6A4F]/15 rounded-xl text-xs text-[#52645A] flex items-start gap-2">
-            <span className="material-symbols-outlined text-[#2D6A4F] text-base shrink-0 mt-0.5">info</span>
+          <div className="p-3 bg-[#FAFAF7] border border-[#C27D3A]/15 rounded-xl text-xs text-[#52645A] flex items-start gap-2">
+            <span className="material-symbols-outlined text-[#C27D3A] text-base shrink-0 mt-0.5">info</span>
             <span>
               Mode Jelajah Manual: Anda bisa memilih listing kertas mana pun yang tersedia tanpa perlu menunggu saran dari sistem.
             </span>
@@ -349,7 +352,7 @@ export const PerusahaanMatchingView: React.FC = () => {
                 key={kat}
                 onClick={() => setFilterKategori(kat)}
                 className={`flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold transition-all ${
-                  filterKategori === kat ? 'bg-white text-[#2D6A4F] shadow-xs' : 'text-[#52645A]'
+                  filterKategori === kat ? 'bg-white text-[#C27D3A] shadow-xs' : 'text-[#52645A]'
                 }`}
               >
                 {kat === 'semua' ? 'Semua' : KATEGORI_LABELS[kat]}
@@ -363,7 +366,7 @@ export const PerusahaanMatchingView: React.FC = () => {
               Menampilkan <strong className="text-[#1A2E22]">{filteredListings.length}</strong> listing tersedia
             </span>
             {filterKategori !== 'semua' && (
-              <button onClick={() => setFilterKategori('semua')} className="text-xs text-[#2D6A4F] font-semibold flex items-center gap-0.5">
+              <button onClick={() => setFilterKategori('semua')} className="text-xs text-[#C27D3A] font-semibold flex items-center gap-0.5">
                 <span className="material-symbols-outlined text-sm">close</span>
                 Reset filter
               </button>
@@ -385,7 +388,7 @@ export const PerusahaanMatchingView: React.FC = () => {
                 return (
                   <div
                     key={listing.id}
-                    className="bg-white rounded-2xl overflow-hidden shadow-sm border border-[#2D6A4F]/8"
+                    className="bg-white rounded-2xl overflow-hidden shadow-sm border border-[#C27D3A]/8"
                   >
                     {/* Foto thumbnail */}
                     <div className="relative h-36 bg-gray-100">
@@ -395,13 +398,6 @@ export const PerusahaanMatchingView: React.FC = () => {
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                      <div className="absolute top-2 right-2">
-                        <span className={`text-[10px] font-bold px-2 py-1 rounded-full backdrop-blur-sm ${
-                          listing.status === 'siap_pickup' ? 'bg-[#9CF2B5] text-[#157140]' : 'bg-yellow-50 text-yellow-700'
-                        }`}>
-                          {listing.status === 'siap_pickup' ? 'Siap Diambil' : 'Menunggu Mitra'}
-                        </span>
-                      </div>
                       <div className="absolute bottom-0 left-0 right-0 p-3">
                         <span className="text-white text-sm font-extrabold">{listing.jumlah_kg} Kg</span>
                         <span className="text-white/80 text-xs ml-2">{listing.kategori_label}</span>
@@ -420,23 +416,16 @@ export const PerusahaanMatchingView: React.FC = () => {
                         </span>
                       </div>
 
-                      {/* Kondisi preview */}
+                      {/* Status QC batch */}
                       <div className="flex flex-wrap gap-1">
-                        {listing.kondisi.slice(0, 2).map((k, i) => (
-                          <span key={i} className="text-[10px] bg-[#F7F3EA] text-[#52645A] px-2 py-0.5 rounded-full">
-                            {k.length > 30 ? k.slice(0, 30) + '...' : k}
-                          </span>
-                        ))}
-                        {listing.kondisi.length > 2 && (
-                          <span className="text-[10px] text-[#2D6A4F] font-semibold">+{listing.kondisi.length - 2} lagi</span>
-                        )}
+                        <QcChips listing={listing} />
                       </div>
 
                       {/* Actions */}
                       <div className="grid grid-cols-2 gap-2 pt-1">
                         <button
                           onClick={() => handleLihatDetail(listing.id)}
-                          className="py-2.5 px-3 rounded-lg bg-[#F7F3EA] text-[#2D6A4F] text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-[#ECE8DF] transition-all border border-[#2D6A4F]/20"
+                          className="py-2.5 px-3 rounded-lg bg-[#FAFAF7] text-[#C27D3A] text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-[#ECE8DF] transition-all border border-[#C27D3A]/20"
                         >
                           <span className="material-symbols-outlined text-sm">open_in_new</span>
                           <span>Lihat Detail</span>
@@ -446,7 +435,7 @@ export const PerusahaanMatchingView: React.FC = () => {
                           onClick={() => {
                             handleLihatDetail(listing.id);
                           }}
-                          className="py-2.5 px-3 rounded-lg bg-[#2D6A4F] hover:bg-[#005138] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="py-2.5 px-3 rounded-lg bg-[#C27D3A] hover:bg-[#A0632B] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                           <span className="material-symbols-outlined text-sm">schedule</span>
                           <span>Pilih & Jadwal</span>

@@ -2,32 +2,34 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 
 export const LoginView: React.FC = () => {
-  const { login, setAuthStep } = useApp();
+  const { login, setAuthStep, setRole, setActiveRoute } = useApp();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
-    const res = login(email, password);
+    const res = await login(email, password);
     if (!res.success) {
       setErrorMsg(res.message || 'Gagal masuk. Periksa kembali email Anda.');
     }
   };
 
-  const fillDemo = (role: 'unit' | 'perusahaan' | 'admin') => {
-    if (role === 'unit') {
-      setEmail('penyalur@ft.univ.ac.id');
-      setPassword('demo1234');
-    } else if (role === 'perusahaan') {
-      setEmail('mitra@pt-mdl.com');
-      setPassword('demo1234');
-    } else {
-      setEmail('admin.kampushijau@univ.ac.id');
-      setPassword('demo1234');
-    }
-    setErrorMsg('');
+  const loginDemo = async (role: 'unit' | 'perusahaan' | 'admin') => {
+    const emailMap = {
+      unit: 'penyalur@ft.univ.ac.id',
+      perusahaan: 'mitra@pt-mdl.com',
+      admin: 'admin.kampushijau@univ.ac.id',
+    };
+    const routeMap = {
+      unit: '/unit/beranda',
+      perusahaan: '/perusahaan/dashboard',
+      admin: '/admin/dashboard',
+    };
+    await login(emailMap[role]);
+    setRole(role);
+    setActiveRoute(routeMap[role]);
   };
 
   return (
@@ -113,17 +115,66 @@ export const LoginView: React.FC = () => {
           </form>
 
           {/* Demo Shortcuts */}
-          <div className="pt-3 border-t border-[#2D6A4F]/8 text-center flex flex-col gap-1.5">
-            <p className="text-[10px] font-bold text-[#8CA090] uppercase tracking-wider mb-1">Akses Cepat Demo</p>
-            <button type="button" onClick={() => fillDemo('unit')} className="text-xs font-extrabold text-[#2D6A4F] hover:underline">
-              ⚡ Isi Demo: Unit Kampus
-            </button>
-            <button type="button" onClick={() => fillDemo('perusahaan')} className="text-xs font-extrabold text-[#F4A261] hover:underline">
-              ⚡ Isi Demo: Mitra Industri
-            </button>
-            <button type="button" onClick={() => fillDemo('admin')} className="text-xs font-extrabold text-[#1A2E22] hover:underline">
-              ⚡ Isi Demo: Admin
-            </button>
+          <div className="pt-3 border-t border-[#2D6A4F]/8">
+            {/* Notice */}
+            <div className="flex items-start gap-2 mb-3 p-2.5 rounded-2xl bg-[#FFFBEB] border border-[#FCD34D]/60">
+              <span className="material-symbols-outlined text-[#D97706] text-base shrink-0 mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>construction</span>
+              <p className="text-[10px] text-[#92400E] leading-relaxed">
+                <span className="font-bold">Login belum diimplementasi.</span> Klik salah satu tombol di bawah untuk langsung masuk dalam mode demo.
+              </p>
+            </div>
+
+            <p className="text-[10px] font-bold text-[#8CA090] uppercase tracking-wider mb-2 flex items-center gap-1">
+              <span className="material-symbols-outlined text-[13px]" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
+              Pilih Role Demo
+            </p>
+
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => loginDemo('unit')}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl border-2 border-[#2D6A4F] bg-gradient-to-r from-[#F2F7F4] to-[#E6ECDD] hover:from-[#D8F3DC]/60 hover:to-[#D7E5CB]/40 active:scale-[0.98] transition-all shadow-sm group"
+              >
+                <div className="w-9 h-9 rounded-xl bg-[#2D6A4F] flex items-center justify-center shrink-0 shadow-sm">
+                  <span className="material-symbols-outlined text-white text-base" style={{ fontVariationSettings: "'FILL' 1" }}>account_balance</span>
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="text-xs font-bold text-[#2D6A4F]">Unit Kampus</p>
+                  <p className="text-[9px] text-[#52645A]">Penyalur · Fakultas / Biro</p>
+                </div>
+                <span className="material-symbols-outlined text-[#2D6A4F] text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => loginDemo('perusahaan')}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl border-2 border-[#C27D3A] bg-gradient-to-r from-[#FAFAF7] to-[#FFF3E0] hover:from-[#FFDBC8]/50 hover:to-[#FFDBC8]/30 active:scale-[0.98] transition-all shadow-sm group"
+              >
+                <div className="w-9 h-9 rounded-xl bg-[#C27D3A] flex items-center justify-center shrink-0 shadow-sm">
+                  <span className="material-symbols-outlined text-white text-base" style={{ fontVariationSettings: "'FILL' 1" }}>factory</span>
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="text-xs font-bold text-[#C27D3A]">Mitra Industri</p>
+                  <p className="text-[9px] text-[#52645A]">Penerima · Pabrik Daur Ulang</p>
+                </div>
+                <span className="material-symbols-outlined text-[#C27D3A] text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => loginDemo('admin')}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl border-2 border-[#496E4B] bg-gradient-to-r from-[#E8ECDD] to-[#E8ECDD] hover:from-[#CED8C2]/50 hover:to-[#CED8C2]/30 active:scale-[0.98] transition-all shadow-sm group"
+              >
+                <div className="w-9 h-9 rounded-xl bg-[#496E4B] flex items-center justify-center shrink-0 shadow-sm">
+                  <span className="material-symbols-outlined text-white text-base" style={{ fontVariationSettings: "'FILL' 1" }}>admin_panel_settings</span>
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="text-xs font-bold text-[#496E4B]">Admin Panel</p>
+                  <p className="text-[9px] text-[#52645A]">Superadmin · Dashboard Sistem</p>
+                </div>
+                <span className="material-symbols-outlined text-[#496E4B] text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+              </button>
+            </div>
           </div>
         </div>
 

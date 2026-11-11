@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { APP_BRAND } from '../data/initialData';
+import { QcChips } from '../components/QcChips';
 
 const KONDISI_ICON: Record<string, string> = {
   'Kering': 'water_drop',
@@ -21,58 +23,53 @@ export const PerusahaanListingDetailView: React.FC = () => {
   const {
     listings,
     units,
-    tongList,
     selectedListingId,
     setSelectedMatchingId,
     matchings,
-    createPermintaan,
     setActiveRoute,
     permintaanList,
   } = useApp();
 
   const listing = listings.find(l => l.id === selectedListingId) || listings[0];
   const unit = units.find(u => u.id === listing?.unit_id);
-  const tong = tongList.find(t => t.id === listing?.tong_id);
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [confirmDone, setConfirmDone] = useState(false);
-  const [showLaporModal, setShowLaporModal] = useState(false);
-  const [laporAlasan, setLaporAlasan] = useState('');
 
   if (!listing) {
     return (
       <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-red-100 text-center space-y-3">
-          <span className="material-symbols-outlined text-4xl text-red-400">inventory_2</span>
-          <h2 className="text-base font-bold text-[#1A2E22]">Listing Tidak Ditemukan</h2>
-          <p className="text-sm text-[#52645A]">
-            Silakan kembali ke halaman Matching dan pilih listing yang ingin dilihat.
+        <div className="bg-[#F7FAF7] rounded-[16px] p-6 border border-[#C27D3A]/10 text-center space-y-3">
+          <div className="w-12 h-12 mx-auto rounded-full bg-white text-[#C27D3A] flex items-center justify-center">
+            <span className="material-symbols-outlined text-2xl">inventory_2</span>
+          </div>
+          <h2 className="text-sm font-bold text-[#1A2E22]">Listing Tidak Ditemukan</h2>
+          <p className="text-xs text-[#52645A] leading-relaxed max-w-xs mx-auto">
+            Silakan kembali ke halaman Pasokan dan pilih listing yang ingin dilihat.
           </p>
           <button
             onClick={() => setActiveRoute('/perusahaan/matching')}
-            className="mt-2 px-4 py-2.5 rounded-xl bg-[#2D6A4F] text-white text-sm font-bold hover:bg-[#005138] transition-all"
+            className="min-h-[44px] px-4 rounded-[10px] bg-[#C27D3A] hover:bg-[#A0632B] text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-[#C27D3A] focus-visible:outline-offset-2"
           >
-            Kembali ke Matching
+            <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+            Kembali ke Pasokan
           </button>
         </div>
       </div>
     );
   }
 
-  // Cari apakah sudah ada matching untuk listing ini
   const existingMatch = matchings.find(m => m.listing_kertas_id === listing.id || m.id === listing.matching_id);
 
   const handlePilihDanJadwalkan = () => {
     setConfirmLoading(true);
     setTimeout(() => {
-      // Jika sudah ada matching, gunakan itu. Jika tidak, buat matching baru.
       let matchId = existingMatch?.id;
       if (!matchId && listing.matching_id) matchId = listing.matching_id;
 
       if (matchId) {
         setSelectedMatchingId(matchId);
       } else {
-        // Buat permintaan baru jika belum ada
         const perm = permintaanList[0];
         setSelectedMatchingId(perm?.id || null);
       }
@@ -84,12 +81,19 @@ export const PerusahaanListingDetailView: React.FC = () => {
     }, 600);
   };
 
-  const statusColor =
+  const statusStyles =
     listing.status === 'siap_pickup'
-      ? 'bg-[#9CF2B5] text-[#157140]'
+      ? 'bg-[#FEF3C7] text-[#A0632B] border-[#F4A261]/40'
       : listing.status === 'sudah_diambil'
-      ? 'bg-gray-100 text-gray-500'
-      : 'bg-[#FFF3E0] text-[#E65100]';
+      ? 'bg-white/85 text-[#52645A] border-white/60'
+      : 'bg-[#FEF3C7] text-[#92400E] border-[#C27D3A]/30';
+
+  const statusIcon =
+    listing.status === 'siap_pickup'
+      ? 'check_circle'
+      : listing.status === 'sudah_diambil'
+      ? 'inventory_2'
+      : 'schedule';
 
   const statusLabel =
     listing.status === 'siap_pickup'
@@ -99,196 +103,175 @@ export const PerusahaanListingDetailView: React.FC = () => {
       : 'Menunggu Mitra';
 
   return (
-    <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
-
-      {/* Back button */}
+    <div className="w-full pb-20 max-w-xl mx-auto space-y-4 font-sans text-[#1A2E22]">
       <button
         onClick={() => setActiveRoute('/perusahaan/matching')}
-        className="flex items-center gap-1.5 text-xs font-semibold text-[#2D6A4F] hover:text-[#005138] transition-colors"
+        className="inline-flex items-center gap-1.5 min-h-[44px] pl-2 pr-3 -ml-1 rounded-full text-[11px] font-bold text-[#C27D3A] hover:bg-[#FFF8EE] active:bg-[#FEF3C7] transition-colors focus-visible:outline-2 focus-visible:outline-[#C27D3A] focus-visible:outline-offset-2"
       >
-        <span className="material-symbols-outlined text-sm">arrow_back</span>
-        Kembali ke Matching
+        <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+        Kembali ke Pasokan
       </button>
 
-      {/* Foto Kertas */}
-      <div className="relative rounded-2xl overflow-hidden shadow-sm border border-[#2D6A4F]/10 bg-gray-100 h-52">
+      <section className="relative overflow-hidden rounded-[20px] bg-[#A0632B] p-5 text-white border border-[#F4A261]/30 shadow-sm">
+        <div
+          className="pointer-events-none absolute -right-10 -top-12 h-40 w-40 rounded-full bg-[#F4A261]/20 blur-2xl"
+          aria-hidden="true"
+        />
+        <div className="relative space-y-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#FDE68A]">
+                Listing Kertas
+              </p>
+              <h1 className="mt-1 text-xl font-bold tracking-tight leading-tight text-white">
+                {listing.kategori_label}
+              </h1>
+              <p className="mt-1 text-xs text-white/70 leading-relaxed">
+                Diposting {listing.tanggal_post} · {APP_BRAND.dropPointUtama.lokasiSingkat}
+              </p>
+            </div>
+            <span
+              className={`shrink-0 inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-bold ${statusStyles}`}
+            >
+              <span className="material-symbols-outlined text-[13px]">{statusIcon}</span>
+              {statusLabel}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 border-t border-white/15 pt-4">
+            <div className="min-w-0">
+              <span className="text-[11px] text-white/65 block">Berat tersedia</span>
+              <p className="text-xl font-bold tabular-nums leading-tight mt-0.5">
+                {listing.jumlah_kg.toLocaleString('id-ID')}{' '}
+                <span className="text-sm font-medium text-[#FDE68A]">Kg</span>
+              </p>
+            </div>
+            <div className="min-w-0">
+              <span className="text-[11px] text-white/65 block">Titik ambil</span>
+              <p className="text-sm font-bold leading-snug mt-0.5 truncate" title={APP_BRAND.dropPointUtama.nama}>
+                Drop Point Kampus UPJ
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="relative h-56 overflow-hidden rounded-[16px] border border-[#C27D3A]/10 bg-[#E8EDE9] shadow-sm">
         <img
           src={listing.foto}
-          alt={`Kertas ${listing.kategori_label}`}
-          className="w-full h-full object-cover"
+          alt={`Foto kertas ${listing.kategori_label}`}
+          className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-3 flex items-end justify-between">
-          <div>
-            <span className="text-white text-sm font-extrabold block leading-tight">
-              {listing.jumlah_kg} Kg
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/5 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-3.5">
+          <div className="min-w-0">
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur-sm">
+              <span className="material-symbols-outlined text-[12px]">location_on</span>
+              Drop Point Kampus UPJ
             </span>
-            <span className="text-white/80 text-xs">{listing.kategori_label}</span>
+            <p className="mt-1 text-white text-xs font-bold truncate">{APP_BRAND.dropPointUtama.lokasiSingkat}</p>
           </div>
-          <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${statusColor}`}>
-            {statusLabel}
+          <span className="shrink-0 rounded-full bg-white/20 px-2.5 py-1 text-[10px] font-bold text-white backdrop-blur-sm tabular-nums">
+            {listing.jumlah_kg.toLocaleString('id-ID')} Kg
           </span>
         </div>
       </div>
 
-      {/* Info Utama */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-3">
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <span className="text-[10px] font-bold text-[#2D6A4F] uppercase tracking-wider block">
-              Detail Listing Kertas
-            </span>
-            <h1 className="text-base font-extrabold text-[#1A2E22] mt-0.5">
-              {listing.kategori_label}
-            </h1>
-            <p className="text-xs text-[#52645A] mt-0.5">
-              Diposting: {listing.tanggal_post}
-            </p>
-          </div>
-          <div className="text-right shrink-0">
-            <span className="text-lg font-extrabold text-[#005138] block">{listing.jumlah_kg} Kg</span>
-            <span className="text-[10px] text-[#52645A]">estimasi berat</span>
-          </div>
+      <section className="rounded-[16px] border border-[#C27D3A]/10 bg-[#F7FAF7] p-4 space-y-3">
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="text-sm font-bold flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px] text-[#C27D3A]">verified</span>
+            Kondisi & Kualitas
+          </h2>
+          <span className="text-[10px] font-semibold text-[#8CA090]">
+            {listing.kondisi.length} poin
+          </span>
         </div>
+        <QcChips listing={listing} max={4} />
+        <ul className="space-y-2">
+          {listing.kondisi.map((k, idx) => (
+            <li key={idx} className="flex items-start gap-2.5 text-xs text-[#3F4943] leading-relaxed">
+              <span className="mt-0.5 w-5 h-5 rounded-full bg-white text-[#C27D3A] flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[14px]">{getKondisiIcon(k)}</span>
+              </span>
+              <span>{k}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-        <div className="h-px bg-gray-100" />
-
-        {/* Unit & Tong Info */}
-        <div className="space-y-2">
-          <h3 className="text-xs font-bold text-[#1A2E22]">Asal & Lokasi Tong</h3>
-          <div className="p-3 bg-[#F7F3EA] rounded-xl flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#A4F3CC] flex items-center justify-center text-[#005138] font-extrabold text-sm shrink-0">
-              {unit?.inisial || listing.unit_id.slice(5, 8).toUpperCase()}
+      {unit && (
+        <section className="rounded-[16px] border border-[#C27D3A]/10 bg-[#F7FAF7] p-4 space-y-3">
+          <h2 className="text-sm font-bold flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px] text-[#C27D3A]">insights</span>
+            Rekam Jejak Unit
+          </h2>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="rounded-[10px] border border-[#E0E5E2] bg-white p-2.5">
+              <span className="text-[10px] text-[#52645A] block">Total tersalurkan</span>
+              <strong className="text-sm font-bold text-[#A0632B] tabular-nums">
+                {unit.total_kg_tersalurkan.toLocaleString('id-ID')} Kg
+              </strong>
             </div>
-            <div className="flex-1 min-w-0">
-              <span className="text-xs font-bold text-[#1A2E22] block truncate">{listing.unit_nama}</span>
-              {unit && (
-                <span className="text-[11px] text-[#52645A] truncate block">{unit.lokasi_detail}</span>
-              )}
-              <div className="flex items-center gap-1.5 mt-1">
-                <span className="text-[10px] font-extrabold text-[#C27D3A] bg-[#FFDBC8] px-2 py-0.5 rounded-full">
-                  {listing.tong_nama}
-                </span>
-                {tong && (
-                  <span className="text-[10px] text-[#52645A]">{tong.lokasi_spesifik}</span>
-                )}
-              </div>
+            <div className="rounded-[10px] border border-[#E0E5E2] bg-white p-2.5">
+              <span className="text-[10px] text-[#52645A] block">Eco-Points</span>
+              <strong className="text-sm font-bold text-[#C27D3A] tabular-nums">
+                {unit.eco_points.toLocaleString('id-ID')}
+              </strong>
             </div>
           </div>
-        </div>
-
-        {/* Kondisi Kertas */}
-        <div className="space-y-2">
-          <h3 className="text-xs font-bold text-[#1A2E22]">Kondisi & Kualitas</h3>
-          <div className="space-y-1.5">
-            {listing.kondisi.map((k, idx) => (
-              <div key={idx} className="flex items-center gap-2 text-xs text-[#3F4943]">
-                <span className="material-symbols-outlined text-[#2D6A4F] text-base shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>
-                  {getKondisiIcon(k)}
-                </span>
-                <span>{k}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Stats Unit */}
-        {unit && (
-          <div className="p-3 bg-[#F7F3EA] rounded-xl text-xs space-y-1.5">
-            <div className="flex justify-between">
-              <span className="text-[#52645A]">Total disalurkan unit ini:</span>
-              <strong className="text-[#005138]">{unit.total_kg_tersalurkan} Kg</strong>
+          {unit.kontak_pic && (
+            <div className="flex items-center justify-between gap-2 rounded-[10px] bg-white px-3 py-2 text-[11px]">
+              <span className="text-[#52645A]">PIC Unit</span>
+              <strong className="text-[#1A2E22] text-right">{unit.pic_nama}</strong>
             </div>
-            <div className="flex justify-between">
-              <span className="text-[#52645A]">Eco-Points unit:</span>
-              <strong className="text-[#C27D3A]">{unit.eco_points} Poin</strong>
-            </div>
-            {unit.kontak_pic && (
-              <div className="flex justify-between">
-                <span className="text-[#52645A]">PIC Unit:</span>
-                <strong className="text-[#1A2E22]">{unit.pic_nama}</strong>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+          )}
+        </section>
+      )}
 
-      {/* CTA */}
       {listing.status !== 'sudah_diambil' ? (
-        <div className="space-y-2">
+        <section className="rounded-[16px] border border-[#C27D3A]/12 bg-[#FFF8EE] p-4 space-y-2.5">
+          <div className="flex items-start gap-2.5">
+            <span className="w-8 h-8 rounded-full bg-white text-[#C27D3A] flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[17px]">event_available</span>
+            </span>
+            <div className="min-w-0">
+              <p className="text-xs font-bold">Siap menjadwalkan pengambilan?</p>
+              <p className="text-[11px] text-[#52645A] leading-relaxed mt-0.5">
+                Pilih listing ini untuk mengatur tanggal, armada, dan pembayaran ke dompet unit.
+              </p>
+            </div>
+          </div>
+
           {!confirmDone ? (
             <button
               onClick={handlePilihDanJadwalkan}
               disabled={confirmLoading}
-              className="w-full py-3.5 px-4 rounded-xl bg-[#005138] hover:bg-[#2D6A4F] active:scale-[0.98] text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-60"
+              className="w-full min-h-[48px] px-4 rounded-[10px] bg-[#A0632B] hover:bg-[#C27D3A] active:scale-[0.99] text-white text-sm font-bold flex items-center justify-center gap-2 shadow-sm transition-all focus-visible:outline-2 focus-visible:outline-[#C27D3A] focus-visible:outline-offset-2 disabled:opacity-60 disabled:cursor-wait"
             >
               {confirmLoading ? (
                 <>
-                  <span className="material-symbols-outlined text-lg animate-spin">progress_activity</span>
-                  <span>Memproses...</span>
+                  <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+                  Memproses...
                 </>
               ) : (
                 <>
-                  <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
-                    event_available
-                  </span>
-                  <span>Pilih Listing Ini & Buat Jadwal Pengambilan</span>
+                  <span className="material-symbols-outlined text-[18px]">schedule</span>
+                  Pilih Listing & Buat Jadwal
                 </>
               )}
             </button>
           ) : (
-            <div className="p-3.5 bg-[#2D6A4F] text-white rounded-xl text-xs font-bold text-center flex items-center justify-center gap-2 animate-in zoom-in-95">
-              <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>task_alt</span>
-              <span>Berhasil! Mengalihkan ke halaman jadwal...</span>
+            <div className="min-h-[48px] rounded-[10px] bg-[#FEF3C7] px-4 text-[#A0632B] text-xs font-bold flex items-center justify-center gap-2 animate-in zoom-in-95">
+              <span className="material-symbols-outlined text-[18px]">task_alt</span>
+              Berhasil! Mengalihkan ke halaman jadwal...
             </div>
           )}
 
-          <button
-            onClick={() => setShowLaporModal(true)}
-            className="w-full py-2.5 rounded-xl bg-white border border-red-200 text-red-600 text-xs font-semibold hover:bg-red-50 flex items-center justify-center gap-1.5 transition-all"
-          >
-            <span className="material-symbols-outlined text-sm">flag</span>
-            Laporkan Listing Bermasalah
-          </button>
-        </div>
+        </section>
       ) : (
-        <div className="p-4 bg-gray-50 border border-gray-200 rounded-2xl text-center text-sm text-gray-500 font-semibold">
+        <div className="rounded-[16px] border border-[#E0E5E2] bg-[#FFF8EE] p-4 text-center text-xs font-semibold text-[#52645A]">
           Listing ini sudah diambil oleh mitra lain.
-        </div>
-      )}
-
-      {/* Modal Laporan */}
-      {showLaporModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-3 shadow-2xl animate-in zoom-in-95">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-sm text-[#1A2E22] flex items-center gap-2">
-                <span className="material-symbols-outlined text-red-500 text-base">flag</span>
-                Laporkan Listing Ini
-              </h3>
-              <button onClick={() => setShowLaporModal(false)} className="text-gray-400 hover:text-gray-700">✕</button>
-            </div>
-            <textarea
-              value={laporAlasan}
-              onChange={e => setLaporAlasan(e.target.value)}
-              placeholder="Jelaskan masalah yang ditemukan (mis: foto tidak sesuai, berat tidak akurat, kontaminan...)"
-              rows={3}
-              className="w-full p-3 rounded-xl border border-gray-200 bg-gray-50 text-xs outline-none resize-none"
-            />
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowLaporModal(false)}
-                className="flex-1 py-2 rounded-lg bg-gray-100 text-xs font-semibold text-gray-600"
-              >Batal</button>
-              <button
-                onClick={() => {
-                  setShowLaporModal(false);
-                  setLaporAlasan('');
-                }}
-                className="flex-1 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-xs font-bold text-white"
-              >Kirim Laporan</button>
-            </div>
-          </div>
         </div>
       )}
     </div>

@@ -1,26 +1,36 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 
-export const PerusahaanPermintaanView: React.FC = () => {
-  const { createPermintaan, setActiveRoute } = useApp();
+/** Header satu langkah di dalam card form: nomor + judul + keterangan opsional. */
+const StepHeader: React.FC<{ n: number; title: string; hint?: string }> = ({ n, title, hint }) => (
+  <div className="flex items-center gap-2">
+    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#C27D3A]/12 text-[11px] font-extrabold text-[#A0632B]">
+      {n}
+    </span>
+    <span className="text-xs font-bold text-[#1A2E22]">{title}</span>
+    {hint && <span className="ml-auto text-[10px] font-semibold text-[#C27D3A]">{hint}</span>}
+  </div>
+);
 
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([
-    'HVS / Arsip Putih',
-    'Kardus Box Corrugated'
-  ]);
-  const [kuotaKg, setKuotaKg] = useState<number>(100);
+export const PerusahaanPermintaanView: React.FC = () => {
+  const { createPermintaan, setActiveRoute, currentUser } = useApp();
+
+  // Form kosong untuk akun baru: tidak ada pilihan yang sudah terisi/terpilih sebelumnya
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [kuotaKg, setKuotaKg] = useState<number>(0);
   const [kadarAir, setKadarAir] = useState<number>(12);
 
   const [qcRequirements, setQcRequirements] = useState<{ [key: string]: boolean }>({
-    terikat: true,
-    bebasMinyak: true,
-    bebasKlip: true
+    terikat: false,
+    bebasMinyak: false,
+    bebasKlip: false
   });
 
-  const [selectedDays, setSelectedDays] = useState<string[]>(['Senin', 'Selasa', 'Rabu', 'Kamis']);
-  const [waktu, setWaktu] = useState<string>('13:00 - 16:00 WIB');
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [waktu, setWaktu] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [successToast, setSuccessToast] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const toggleType = (type: string) => {
     setSelectedTypes(prev =>
@@ -43,6 +53,25 @@ export const PerusahaanPermintaanView: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg(null);
+
+    if (selectedTypes.length === 0) {
+      setErrorMsg('Pilih minimal satu jenis kertas yang dibutuhkan.');
+      return;
+    }
+    if (kuotaKg < 50) {
+      setErrorMsg('Atur target kuota minimal 50 Kg per siklus.');
+      return;
+    }
+    if (selectedDays.length === 0) {
+      setErrorMsg('Pilih minimal satu hari penjemputan.');
+      return;
+    }
+    if (!waktu.trim()) {
+      setErrorMsg('Isi jendela waktu operasional (contoh: 13:00 - 16:00 WIB).');
+      return;
+    }
+
     setIsSubmitting(true);
 
     setTimeout(() => {
@@ -74,7 +103,7 @@ export const PerusahaanPermintaanView: React.FC = () => {
   return (
     <div className="w-full pb-20 max-w-xl mx-auto space-y-4">
       {/* Company Context Header Card */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 flex items-start gap-3">
+      <div className="bg-[#FFF8EE] rounded-2xl p-4 shadow-sm border border-[#C27D3A]/10 flex items-start gap-3">
         <div className="w-12 h-12 rounded-xl bg-[#C27D3A] text-white flex items-center justify-center shrink-0 shadow-sm">
           <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
             factory
@@ -82,15 +111,17 @@ export const PerusahaanPermintaanView: React.FC = () => {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FFDBC8] text-[#C27D3A]">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#A0632B]">
               MITRA INDUSTRI AKTIF
             </span>
-            <span className="text-[10px] text-[#52645A] font-semibold">
-              ID: MDL-2024-K09
-            </span>
+            {currentUser?.perusahaan_id && (
+              <span className="text-[10px] text-[#52645A] font-semibold">
+                ID: {currentUser.perusahaan_id}
+              </span>
+            )}
           </div>
           <h2 className="text-base font-bold text-[#1A2E22] truncate mt-1">
-            PT Mandiri Daur Lestari
+            {currentUser?.nama?.replace(' (Dispatcher)', '').replace(/\(NIB:.*\)/, '').trim() || 'Mitra Industri'}
           </h2>
           <p className="text-xs text-[#52645A] truncate">
             Mitra Pengolah Daur Ulang Kertas Terverifikasi
@@ -99,26 +130,36 @@ export const PerusahaanPermintaanView: React.FC = () => {
       </div>
 
       {/* Main Demand Form */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-4 shadow-sm border border-[#2D6A4F]/10 space-y-4">
-        <div className="border-b border-gray-100 pb-2">
-          <h3 className="text-sm font-bold text-[#1A2E22]">Buat Permintaan Pasokan Kertas</h3>
-          <p className="text-xs text-[#52645A] mt-0.5">
-            Tentukan kuota dan spesifikasi bahan baku untuk matching dengan tong unit kampus.
-          </p>
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#C27D3A]/10">
+          <div className="border-b border-gray-100 pb-2">
+            <h3 className="text-sm font-bold text-[#1A2E22]">Buat Permintaan Pasokan Kertas</h3>
+            <p className="text-xs text-[#52645A] mt-0.5">
+              Tentukan kuota dan spesifikasi bahan baku untuk matching dengan tong unit kampus.
+            </p>
+          </div>
         </div>
 
+        {errorMsg && (
+          <div
+            role="alert"
+            className="flex items-start gap-2 rounded-[10px] border border-[#E76F51]/30 bg-[#E76F51]/10 p-3 text-xs font-semibold text-[#B04030]"
+          >
+            <span className="material-symbols-outlined text-base shrink-0">error</span>
+            <span>{errorMsg}</span>
+          </div>
+        )}
+
         {/* 1. Jenis Kertas */}
-        <div className="space-y-2">
-          <label className="text-xs font-bold text-[#1A2E22] block">
-            1. Jenis Kertas yang Dibutuhkan (Pilih satu atau lebih)
-          </label>
+        <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#C27D3A]/10 space-y-2">
+          <StepHeader n={1} title="Jenis Kertas yang Dibutuhkan" hint="Pilih satu atau lebih" />
 
           <div className="grid grid-cols-2 gap-2">
             {[
-              { id: 'HVS / Arsip Putih', sub: 'Grade A, Kantor & Kampus', icon: 'description' },
-              { id: 'Kardus Box Corrugated', sub: 'Tebal, Packaging', icon: 'inventory_2' },
-              { id: 'Koran / Buram', sub: 'Percetakan & Cetak', icon: 'newspaper' },
-              { id: 'Campuran Bersih', sub: 'Sortir Pabrik Kering', icon: 'layers' }
+              { id: 'HVS / Arsip Putih', sub: 'Grade A, Kantor & Kampus', icon: 'description', fg: '#C27D3A', tint: '#FEF3C7' },
+              { id: 'Kardus Box Corrugated', sub: 'Tebal, Packaging', icon: 'inventory_2', fg: '#C27D3A', tint: '#FBEADB' },
+              { id: 'Koran / Buram', sub: 'Percetakan & Cetak', icon: 'newspaper', fg: '#C85C42', tint: '#FDEBE3' },
+              { id: 'Campuran Bersih', sub: 'Sortir Pabrik Kering', icon: 'layers', fg: '#5B7A90', tint: '#E7EFF4' }
             ].map(item => {
               const active = selectedTypes.includes(item.id);
               return (
@@ -129,11 +170,16 @@ export const PerusahaanPermintaanView: React.FC = () => {
                   className={`p-3 rounded-xl text-left transition-all border ${
                     active
                       ? 'bg-[#C27D3A] text-white border-[#C27D3A] shadow-xs'
-                      : 'bg-[#F7F3EA] text-[#1A2E22] border-transparent hover:bg-[#ECE8DF]'
+                      : 'bg-[#FFFCF5] text-[#1A2E22] border-[#E7E0CF] hover:border-[#D8CDB2] hover:bg-[#FFF6E8]'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="material-symbols-outlined text-xl">{item.icon}</span>
+                    <span
+                      className="w-8 h-8 rounded-lg flex items-center justify-center"
+                      style={{ backgroundColor: active ? 'rgba(255,255,255,0.16)' : item.tint, color: active ? '#FFFFFF' : item.fg }}
+                    >
+                      <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
+                    </span>
                     {active && <span className="material-symbols-outlined text-sm">check_circle</span>}
                   </div>
                   <div className="text-xs font-bold leading-tight">{item.id}</div>
@@ -144,37 +190,36 @@ export const PerusahaanPermintaanView: React.FC = () => {
               );
             })}
           </div>
-        </div>
+        </section>
 
         {/* 2. Target Kuota Pasokan Mingguan */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-center text-xs">
-            <label className="font-bold text-[#1A2E22]">2. Target Kuota Pasokan Mingguan</label>
-            <span className="text-[10px] text-[#C27D3A] font-semibold">Min 50 Kg per siklus</span>
-          </div>
+        <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#C27D3A]/10 space-y-2">
+          <StepHeader n={2} title="Target Kuota Pasokan Mingguan" hint="Min 50 Kg per siklus" />
 
-          <div className="bg-[#F7F3EA] p-3 rounded-xl flex items-center justify-between">
+          <div className="bg-[#FFF8EE] p-3 rounded-xl flex items-center justify-between">
             <button
               type="button"
-              onClick={() => setKuotaKg(prev => Math.max(50, prev - 25))}
-              className="w-10 h-10 rounded-lg bg-white text-[#1A2E22] flex items-center justify-center font-bold text-lg shadow-xs active:scale-95 transition-all"
+              onClick={() => setKuotaKg(prev => (prev <= 50 ? 0 : prev - 25))}
+              aria-label="Kurangi kuota"
+              className="w-10 h-10 rounded-lg bg-white text-[#C27D3A] flex items-center justify-center font-bold text-lg shadow-xs active:scale-95 transition-all"
             >
               −
             </button>
 
             <div className="text-center">
-              <div className="text-2xl font-extrabold text-[#C27D3A]">
+              <div className="text-2xl font-extrabold text-[#C27D3A] tabular-nums">
                 {kuotaKg} <span className="text-sm font-normal text-[#1A2E22]">Kg</span>
               </div>
               <span className="text-[10px] text-[#52645A]">
-                Rekomendasi pikap: Armada L300 / Pickup
+                {kuotaKg === 0 ? 'Atur kuota minimal 50 Kg per siklus' : 'Rekomendasi pikap: Armada L300 / Pickup'}
               </span>
             </div>
 
             <button
               type="button"
-              onClick={() => setKuotaKg(prev => prev + 25)}
-              className="w-10 h-10 rounded-lg bg-[#C27D3A] text-white flex items-center justify-center font-bold text-lg shadow-xs active:scale-95 transition-all"
+              onClick={() => setKuotaKg(prev => (prev === 0 ? 50 : prev + 25))}
+              aria-label="Tambah kuota"
+              className="w-10 h-10 rounded-lg bg-[#C27D3A] hover:bg-[#A0632B] text-white flex items-center justify-center font-bold text-lg shadow-xs active:scale-95 transition-all"
             >
               +
             </button>
@@ -191,22 +236,20 @@ export const PerusahaanPermintaanView: React.FC = () => {
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all ${
                   kuotaKg === val
                     ? 'bg-[#C27D3A] text-white'
-                    : 'bg-[#ECE8DF] text-[#1A2E22] hover:bg-[#E6E2D9]'
+                    : 'bg-[#F3EFE2] text-[#1A2E22] hover:bg-[#EAE3CF]'
                 }`}
               >
                 {val} Kg
               </button>
             ))}
           </div>
-        </div>
+        </section>
 
         {/* 3. Parameter & Kriteria Kualitas */}
-        <div className="space-y-2.5">
-          <label className="text-xs font-bold text-[#1A2E22] block">
-            3. Parameter & Kriteria Kualitas
-          </label>
+        <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#C27D3A]/10 space-y-2.5">
+          <StepHeader n={3} title="Parameter & Kriteria Kualitas" />
 
-          <div className="p-3 rounded-xl bg-[#F7F3EA] space-y-2">
+          <div className="p-3 rounded-xl bg-[#FFF8EE] space-y-2">
             <div className="flex justify-between items-center text-xs">
               <span className="text-[#52645A]">Toleransi Kadar Air Maksimal</span>
               <strong className="text-[#C27D3A]">{kadarAir}% (Kering Optimal)</strong>
@@ -231,7 +274,7 @@ export const PerusahaanPermintaanView: React.FC = () => {
               Syarat Wajib QC Kampus (Checklist):
             </span>
 
-            <label className="flex items-start gap-2.5 p-2 rounded-lg bg-[#F7F3EA] cursor-pointer text-xs">
+            <label className="flex items-start gap-2.5 p-2 rounded-lg bg-[#FFF8EE] cursor-pointer text-xs">
               <input
                 type="checkbox"
                 checked={qcRequirements.terikat}
@@ -241,7 +284,7 @@ export const PerusahaanPermintaanView: React.FC = () => {
               <span className="text-[#1A2E22]">Kertas sudah terikat rapi per tumpukan</span>
             </label>
 
-            <label className="flex items-start gap-2.5 p-2 rounded-lg bg-[#F7F3EA] cursor-pointer text-xs">
+            <label className="flex items-start gap-2.5 p-2 rounded-lg bg-[#FFF8EE] cursor-pointer text-xs">
               <input
                 type="checkbox"
                 checked={qcRequirements.bebasMinyak}
@@ -251,7 +294,7 @@ export const PerusahaanPermintaanView: React.FC = () => {
               <span className="text-[#1A2E22]">Bebas kotoran minyak, cairan, & sisa makanan</span>
             </label>
 
-            <label className="flex items-start gap-2.5 p-2 rounded-lg bg-[#F7F3EA] cursor-pointer text-xs">
+            <label className="flex items-start gap-2.5 p-2 rounded-lg bg-[#FFF8EE] cursor-pointer text-xs">
               <input
                 type="checkbox"
                 checked={qcRequirements.bebasKlip}
@@ -261,13 +304,11 @@ export const PerusahaanPermintaanView: React.FC = () => {
               <span className="text-[#1A2E22]">Bebas klip kawat tebal & lakban jilid plastik</span>
             </label>
           </div>
-        </div>
+        </section>
 
         {/* 4. Jadwal Armada & Titik Jemput */}
-        <div className="space-y-2">
-          <label className="text-xs font-bold text-[#1A2E22] block">
-            4. Jadwal Armada & Titik Jemput
-          </label>
+        <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#C27D3A]/10 space-y-2">
+          <StepHeader n={4} title="Jadwal Armada & Titik Jemput" />
 
           <div className="space-y-2">
             <div className="flex items-center gap-1.5 flex-wrap">
@@ -280,8 +321,8 @@ export const PerusahaanPermintaanView: React.FC = () => {
                     onClick={() => toggleDay(d)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                       active
-                        ? 'bg-[#2D6A4F] text-white'
-                        : 'bg-[#F7F3EA] text-[#52645A] hover:bg-[#ECE8DF]'
+                        ? 'bg-[#C27D3A] text-white'
+                        : 'bg-[#F3EFE2] text-[#52645A] hover:bg-[#EAE3CF]'
                     }`}
                   >
                     {d}
@@ -291,48 +332,49 @@ export const PerusahaanPermintaanView: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="p-2.5 rounded-lg bg-[#F7F3EA]">
+              <div className="p-2.5 rounded-lg bg-[#F7F3E8]">
                 <span className="text-[10px] text-[#52645A] block">Jendela Waktu Operasional</span>
                 <input
                   type="text"
                   value={waktu}
                   onChange={e => setWaktu(e.target.value)}
-                  className="w-full bg-transparent font-bold text-[#1A2E22] outline-none"
+                  placeholder="Contoh: 13:00 - 16:00 WIB"
+                  className="w-full bg-transparent font-bold text-[#1A2E22] outline-none placeholder:font-normal placeholder:text-[#8CA090]"
                 />
               </div>
 
-              <div className="p-2.5 rounded-lg bg-[#F7F3EA]">
+              <div className="p-2.5 rounded-lg bg-[#F7F3E8]">
                 <span className="text-[10px] text-[#52645A] block">Titik Kumpul Terpusat</span>
-                <span className="font-bold text-[#2D6A4F] truncate block">
+                <span className="font-bold text-[#C27D3A] truncate block">
                   Drop Point Serbaguna (Sayap Barat)
                 </span>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Impact Calculation Preview */}
-        <div className="p-3 rounded-xl bg-gradient-to-r from-[#A4F3CC]/20 to-[#FFDBC8]/20 border border-[#2D6A4F]/15 space-y-1.5">
-          <div className="text-[10px] font-bold text-[#005138] uppercase tracking-wider">
+        <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#FEF3C7] via-[#FFF6E8] to-[#FBEADB] border border-[#C27D3A]/20 shadow-sm space-y-1.5">
+          <div className="text-[10px] font-bold text-[#A0632B] uppercase tracking-wider">
             Estimasi Nilai Dampak Edukasi
           </div>
           <div className="flex justify-between items-center text-xs">
             <span className="text-[#52645A]">Kontribusi Dana Riset Kampus:</span>
-            <strong className="text-[#005138]">
+            <strong className="text-[#A0632B] tabular-nums">
               Rp {danaRiset.toLocaleString('id-ID')}
             </strong>
           </div>
           <div className="flex justify-between items-center text-xs">
             <span className="text-[#52645A]">Alokasi Eco-Points Unit:</span>
-            <strong className="text-[#C27D3A]">+{ecoPoints} Poin</strong>
+            <strong className="text-[#C27D3A] tabular-nums">+{ecoPoints} Poin</strong>
           </div>
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={isSubmitting || selectedTypes.length === 0}
-          className="w-full py-3.5 px-4 rounded-xl bg-[#C27D3A] hover:bg-[#633E25] active:scale-[0.98] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-50"
+          disabled={isSubmitting}
+          className="w-full py-3.5 px-4 rounded-xl bg-[#C27D3A] hover:bg-[#A0632B] active:scale-[0.98] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-50"
         >
           {isSubmitting ? (
             <>
@@ -350,7 +392,7 @@ export const PerusahaanPermintaanView: React.FC = () => {
         </button>
 
         {successToast && (
-          <div className="p-3 bg-[#9CF2B5]/30 border border-[#157140]/30 rounded-xl text-xs text-[#157140] font-semibold text-center animate-in fade-in">
+          <div className="p-3 bg-[#FEF3C7]/30 border border-[#A0632B]/30 rounded-xl text-xs text-[#A0632B] font-semibold text-center animate-in fade-in">
             Permintaan pasokan aktif! Mengalihkan ke sistem matching...
           </div>
         )}

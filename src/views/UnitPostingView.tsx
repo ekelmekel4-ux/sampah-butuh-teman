@@ -105,7 +105,7 @@ export const UnitPostingView: React.FC = () => {
 
         {/* Eco-Points & Rank Stats */}
         <div className="grid grid-cols-2 gap-2 pt-1">
-          <div className="bg-[#F7F3EA] rounded-xl p-3 flex items-center gap-3">
+          <div className="bg-[#FAFAF7] rounded-xl p-3 flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-[#A4F3CC] flex items-center justify-center text-[#005138]">
               <span className="material-symbols-outlined text-xl">eco</span>
             </div>
@@ -119,7 +119,7 @@ export const UnitPostingView: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-[#F7F3EA] rounded-xl p-3 flex items-center gap-3">
+          <div className="bg-[#FAFAF7] rounded-xl p-3 flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-[#FFDBC8] flex items-center justify-center text-[#C27D3A]">
               <span className="material-symbols-outlined text-xl">military_tech</span>
             </div>
@@ -162,7 +162,7 @@ export const UnitPostingView: React.FC = () => {
               className={`p-3 rounded-xl text-left transition-all border ${
                 kategori === 'hvs'
                   ? 'bg-[#2D6A4F] text-white border-[#2D6A4F] shadow-xs'
-                  : 'bg-[#F7F3EA] text-[#1A2E22] border-transparent hover:bg-[#ECE8DF]'
+                  : 'bg-[#FAFAF7] text-[#1A2E22] border-transparent hover:bg-[#ECE8DF]'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
@@ -184,7 +184,7 @@ export const UnitPostingView: React.FC = () => {
               className={`p-3 rounded-xl text-left transition-all border ${
                 kategori === 'kardus'
                   ? 'bg-[#C27D3A] text-white border-[#C27D3A] shadow-xs'
-                  : 'bg-[#F7F3EA] text-[#1A2E22] border-transparent hover:bg-[#ECE8DF]'
+                  : 'bg-[#FAFAF7] text-[#1A2E22] border-transparent hover:bg-[#ECE8DF]'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
@@ -206,7 +206,7 @@ export const UnitPostingView: React.FC = () => {
               className={`p-3 rounded-xl text-left transition-all border ${
                 kategori === 'koran'
                   ? 'bg-[#2D6A4F] text-white border-[#2D6A4F] shadow-xs'
-                  : 'bg-[#F7F3EA] text-[#1A2E22] border-transparent hover:bg-[#ECE8DF]'
+                  : 'bg-[#FAFAF7] text-[#1A2E22] border-transparent hover:bg-[#ECE8DF]'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
@@ -228,7 +228,7 @@ export const UnitPostingView: React.FC = () => {
               className={`p-3 rounded-xl text-left transition-all border ${
                 kategori === 'campur'
                   ? 'bg-[#2D6A4F] text-white border-[#2D6A4F] shadow-xs'
-                  : 'bg-[#F7F3EA] text-[#1A2E22] border-transparent hover:bg-[#ECE8DF]'
+                  : 'bg-[#FAFAF7] text-[#1A2E22] border-transparent hover:bg-[#ECE8DF]'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
@@ -252,7 +252,7 @@ export const UnitPostingView: React.FC = () => {
             <span className="text-[10px] text-[#0D6D3C] font-semibold">Kelipatan 5 Kg disarankan</span>
           </div>
 
-          <div className="bg-[#F7F3EA] p-3 rounded-xl flex items-center justify-between">
+          <div className="bg-[#FAFAF7] p-3 rounded-xl flex items-center justify-between">
             <button
               type="button"
               onClick={handleDecrement}
@@ -286,7 +286,7 @@ export const UnitPostingView: React.FC = () => {
             Standar Kerapihan Kertas
           </label>
 
-          <label className="flex items-start gap-3 p-3 rounded-xl bg-[#F7F3EA] cursor-pointer hover:bg-[#ECE8DF] transition-colors">
+          <label className="flex items-start gap-3 p-3 rounded-xl bg-[#FAFAF7] cursor-pointer hover:bg-[#ECE8DF] transition-colors">
             <input
               type="checkbox"
               checked={isTied}
@@ -306,7 +306,7 @@ export const UnitPostingView: React.FC = () => {
             </div>
           </label>
 
-          <label className="flex items-start gap-3 p-3 rounded-xl bg-[#F7F3EA] cursor-pointer hover:bg-[#ECE8DF] transition-colors">
+          <label className="flex items-start gap-3 p-3 rounded-xl bg-[#FAFAF7] cursor-pointer hover:bg-[#ECE8DF] transition-colors">
             <input
               type="checkbox"
               checked={isClean}
@@ -331,7 +331,7 @@ export const UnitPostingView: React.FC = () => {
             <span className="text-[10px] text-[#52645A]">1 Foto wajib</span>
           </div>
 
-          <div className="rounded-xl overflow-hidden border border-[#2D6A4F]/15 bg-[#F7F3EA]">
+          <div className="rounded-xl overflow-hidden border border-[#2D6A4F]/15 bg-[#FAFAF7]">
             <div className="relative h-44 w-full bg-gray-100">
               <img
                 src={photoUrl}
@@ -361,7 +361,7 @@ export const UnitPostingView: React.FC = () => {
         </div>
 
         {/* 5. Alokasi Tong Otomatis (Central Drop Point Concept) */}
-        <div className="p-3.5 rounded-xl bg-[#F7F3EA] border border-[#2D6A4F]/20 space-y-2">
+        <div className="p-3.5 rounded-xl bg-[#FAFAF7] border border-[#2D6A4F]/20 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#1A2E22] flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#2D6A4F]"></span>
@@ -422,7 +422,7 @@ export const UnitPostingView: React.FC = () => {
       </div>
 
       {/* Motivational Research Banner */}
-      <div className="p-3.5 rounded-xl bg-gradient-to-r from-[#F7F3EA] to-[#ECE8DF] border border-[#2D6A4F]/10 flex items-center gap-3">
+      <div className="p-3.5 rounded-xl bg-gradient-to-r from-[#FAFAF7] to-[#ECE8DF] border border-[#2D6A4F]/10 flex items-center gap-3">
         <div className="w-9 h-9 rounded-full bg-[#FFDBC8] flex items-center justify-center text-[#C27D3A] shrink-0">
           <span className="material-symbols-outlined text-lg">school</span>
         </div>
@@ -450,7 +450,7 @@ export const UnitPostingView: React.FC = () => {
           {unitListings.map(item => (
             <div
               key={item.id}
-              className="p-3 rounded-xl bg-[#F7F3EA] border border-gray-100 space-y-2"
+              className="p-3 rounded-xl bg-[#FAFAF7] border border-gray-100 space-y-2"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-start gap-2.5">

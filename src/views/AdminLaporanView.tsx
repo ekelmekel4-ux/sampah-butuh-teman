@@ -71,7 +71,7 @@ export const AdminLaporanView: React.FC = () => {
             <span className="text-lg font-extrabold text-[#157140] block">{selesaiCount}</span>
             <span className="text-[10px] text-[#52645A]">Selesai</span>
           </div>
-          <div className="p-2.5 bg-[#F7F3EA] rounded-xl text-center">
+          <div className="p-2.5 bg-[#FAFAF7] rounded-xl text-center">
             <span className="text-lg font-extrabold text-[#2D6A4F] block">{laporanList.length}</span>
             <span className="text-[10px] text-[#52645A]">Total</span>
           </div>
@@ -182,7 +182,7 @@ export const AdminLaporanView: React.FC = () => {
                   </div>
 
                   {/* Detail Masalah */}
-                  <div className="p-2.5 rounded-xl bg-[#F7F3EA] text-xs text-[#3F4943] leading-relaxed">
+                  <div className="p-2.5 rounded-xl bg-[#FAFAF7] text-xs text-[#3F4943] leading-relaxed">
                     {lap.detail}
                   </div>
 
