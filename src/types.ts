@@ -9,6 +9,10 @@ export interface User {
   unit_id?: string;
   perusahaan_id?: string;
   avatar_url?: string;
+  alamat?: string;
+  kota?: string;
+  kode_pos?: string;
+  koordinat?: { lat: number; lng: number };
 }
 
 export interface UnitKampus {
@@ -103,8 +107,19 @@ export interface MatchingTransaksi {
   tanggal_selesai?: string;
   rating?: number;
   komentar?: string;
+  /** Hasil QC yang dicatat mitra saat menilai kertas yang diterima. */
+  qc_penilaian?: string[];
+  /** Nama mitra (perusahaan) yang memberikan penilaian. */
+  rating_oleh?: string;
+  /** Waktu penilaian diberikan. */
+  rating_at?: string;
   foto_timbangan?: string;
   foto_struk?: string;
+  verification_nonce?: string;
+  verification_status?: 'belum_diverifikasi' | 'terverifikasi' | 'ditolak';
+  verified_at?: string;
+  verified_by?: string;
+  last_verification_note?: string;
 }
 
 export interface LaporanMasalah {
