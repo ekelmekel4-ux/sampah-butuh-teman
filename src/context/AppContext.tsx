@@ -61,21 +61,36 @@ interface AppContextType {
     nib: string;
     email: string;
     kontakDispatcher: string;
+    alamat: string;
+    kota: string;
+    kodePos?: string;
+    koordinat: { lat: number; lng: number };
   }) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   setRole: (role: UserRole) => void;
+  updateProfile: (data: Partial<Pick<User, 'nama' | 'email' | 'kontak' | 'avatar_url' | 'alamat' | 'kota' | 'kode_pos' | 'koordinat'>>) => Promise<{ success: boolean; message?: string }>;
+  updateUnitProfile: (
+    unitData: Partial<Pick<UnitKampus, 'nama_unit' | 'inisial' | 'jenis' | 'lokasi_detail' | 'pic_nama' | 'kontak_pic'>>,
+    userData?: Partial<Pick<User, 'nama' | 'email' | 'kontak' | 'avatar_url'>>
+  ) => Promise<{ success: boolean; message?: string }>;
   units: UnitKampus[];
   tongList: Tong[];
   listings: ListingKertas[];
   permintaanList: PermintaanKertas[];
   matchings: MatchingTransaksi[];
   laporanList: LaporanMasalah[];
+  /** Semua akun terdaftar (untuk foto profil mitra di peta admin). */
+  profiles: User[];
   activeRoute: string;
   setActiveRoute: (route: string) => void;
   selectedMatchingId: string | null;
   setSelectedMatchingId: (id: string | null) => void;
   selectedListingId: string | null;
   setSelectedListingId: (id: string | null) => void;
+  preselectTongId: string | null;
+  setPreselectTongId: (id: string | null) => void;
+  leaderboardUnitId: string | null;
+  setLeaderboardUnitId: (id: string | null) => void;
   createListing: (data: {
     unitId: string;
     tongId?: string;
@@ -94,7 +109,6 @@ interface AppContextType {
     waktuOperasional: string;
   }) => Promise<PermintaanKertas | null>;
   schedulePickup: (matchingId: string, tanggal: string, jam: string, nopol?: string, driver?: string) => Promise<void>;
-  confirmPickup: (matchingId: string) => Promise<void>;
   confirmUnitPlaced: (listingId: string) => Promise<void>;
   emptyTong: (tongId: string) => Promise<void>;
   requestSecondTong: (unitId: string) => Promise<Tong | null>;
@@ -114,7 +128,11 @@ interface AppContextType {
     alasan: string;
     detail: string;
     level: 'kritis' | 'sedang';
-  }) => Promise<void>;
+    listing_kertas_id?: string;
+    matching_id?: string;
+    tong_id?: string;
+    foto?: string[];
+  }) => Promise<{ success: boolean; message?: string }>;
   resetDemoData: () => void;
   totalKgTersalurkan: number;
   totalPohon: number;
@@ -126,6 +144,12 @@ interface AppContextType {
   markNotificationAsRead: (id: string) => void;
   clearAllNotifications: () => void;
   payTransaction: (matchingId: string, metode?: string) => Promise<{ success: boolean; message: string }>;
+  verifyQrCode: (matchingId: string, scannedCode: string) => Promise<{ success: boolean; message: string }>;
+  rateTransaction: (
+    matchingId: string,
+    payload: { rating: number; qc: string[]; catatan: string }
+  ) => Promise<{ success: boolean; message: string }>;
+  getVerificationCode: (matching: MatchingTransaksi) => string;
   withdrawUnitBalance: (unitId: string, jumlah: number, bank: string, norek: string) => Promise<{ success: boolean; message: string }>;
   toastNotification: { message: string; type: 'success' | 'info' | 'error' } | null;
   showToast: (message: string, type?: 'success' | 'info' | 'error') => void;
@@ -146,12 +170,42 @@ const STORAGE_KEYS = {
   NOTIFIKASI: 'sbt_notifikasi_v3',
 };
 
+/** Kuota minimal (Kg) agar batch kertas di tong siap dijemput mitra. */
+const KUOTA_JEMPUT = 10;
+
 const DEFAULT_SALDO_MAP: Record<string, number> = {
   'unit-ftd': 180000,
   'unit-feb': 120000,
   'unit-baa': 82500,
   'unit-fikom': 50000,
   'perusahaan-mdl': 0,
+};
+
+const randomNonce = () =>
+  `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`.toUpperCase();
+
+const qrChecksum = (matchingId: string, nonce: string) => {
+  let hash = 0;
+  const input = `${matchingId}:${nonce}`;
+  for (let i = 0; i < input.length; i++) {
+    hash = ((hash * 31) + input.charCodeAt(i)) >>> 0;
+  }
+  return hash.toString(36).toUpperCase().padStart(4, '0').slice(-4);
+};
+
+const getExpectedNonce = (m: MatchingTransaksi) =>
+  m.verification_nonce || `DEMO-${m.id.replace(/[^A-Z0-9]/gi, '').slice(-6).toUpperCase()}`;
+
+const buildVerificationCode = (m: MatchingTransaksi) => {
+  const nonce = getExpectedNonce(m);
+  return `SBT-V1:${m.id}:${nonce}:${qrChecksum(m.id, nonce)}`;
+};
+
+const parseVerificationCode = (raw: string) => {
+  const code = raw.trim().toUpperCase();
+  const found = code.match(/^SBT-V1:([^:]+):([^:]+):([A-Z0-9]{4})$/);
+  if (!found) return null;
+  return { matchingId: found[1], nonce: found[2], checksum: found[3] };
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -184,6 +238,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [selectedMatchingId, setSelectedMatchingId] = useState<string | null>(null);
   const [selectedListingId, setSelectedListingId] = useState<string | null>(null);
+  const [preselectTongId, setPreselectTongId] = useState<string | null>(null);
+  const [leaderboardUnitId, setLeaderboardUnitId] = useState<string | null>(null);
 
   const [units, setUnits] = useState<UnitKampus[]>(INITIAL_UNITS);
   const [tongList, setTongList] = useState<Tong[]>(INITIAL_TONG);
@@ -199,6 +255,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [laporanList, setLaporanList] = useState<LaporanMasalah[]>(INITIAL_LAPORAN);
+  // Akun-akun yang terdaftar (dipakai admin untuk memuat foto profil mitra).
+  const [profiles, setProfiles] = useState<User[]>([]);
 
   const [saldoMap, setSaldoMap] = useState<Record<string, number>>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.SALDO_MAP);
@@ -304,10 +362,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             metode_pembayaran: map.get(m.id)?.metode_pembayaran || m.metode_pembayaran,
             tanggal_bayar: map.get(m.id)?.tanggal_bayar || m.tanggal_bayar,
             nomor_referensi_bayar: map.get(m.id)?.nomor_referensi_bayar || m.nomor_referensi_bayar,
+            verification_nonce: map.get(m.id)?.verification_nonce || m.verification_nonce,
+            verification_status: map.get(m.id)?.verification_status || m.verification_status,
+            verified_at: map.get(m.id)?.verified_at || m.verified_at,
+            verified_by: map.get(m.id)?.verified_by || m.verified_by,
+            last_verification_note: map.get(m.id)?.last_verification_note || m.last_verification_note,
+            rating: map.get(m.id)?.rating ?? m.rating,
+            komentar: map.get(m.id)?.komentar ?? m.komentar,
+            qc_penilaian: map.get(m.id)?.qc_penilaian ?? m.qc_penilaian,
+            rating_oleh: map.get(m.id)?.rating_oleh ?? m.rating_oleh,
+            rating_at: map.get(m.id)?.rating_at ?? m.rating_at,
           }));
         });
       }
       if (data.laporanList && data.laporanList.length > 0) setLaporanList(data.laporanList);
+      const akun = await db.fetchProfiles();
+      if (akun.length > 0) setProfiles(akun);
 
       if (currentUser) {
          const ownerId = currentUser.role === 'unit' ? currentUser.unit_id : currentUser.perusahaan_id;
@@ -331,9 +401,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     refreshData();
   }, [currentUser]);
 
+  // Admin perlu data paling fresh (mis. laporan baru dari unit/mitra) setiap membuka menu admin.
+  useEffect(() => {
+    if (activeRoute.startsWith('/admin')) {
+      refreshData();
+    }
+  }, [activeRoute]);
+
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.ROLE, role);
   }, [role]);
+
+  // Setiap kali pindah halaman, scroll kembali ke paling atas.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [activeRoute]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.IS_LOGGED_IN, String(isLoggedIn));
@@ -459,7 +541,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return { success: true };
   };
 
-  const registerPenerima = async ({ namaPt, nib, email, kontakDispatcher }: any) => {
+  const registerPenerima = async ({ namaPt, nib, email, kontakDispatcher, alamat, kota, kodePos, koordinat }: any) => {
     const perusahaanId = `perusahaan-${Date.now().toString().slice(-4)}`;
     const newUser: User = {
       id: `user-${perusahaanId}`,
@@ -468,7 +550,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       role: 'perusahaan',
       kontak: kontakDispatcher,
       perusahaan_id: perusahaanId,
-      avatar_url: APP_BRAND.avatarUrl
+      avatar_url: APP_BRAND.avatarUrl,
+      alamat: alamat?.trim() || undefined,
+      kota: kota?.trim() || undefined,
+      kode_pos: kodePos?.trim() || undefined,
+      koordinat: koordinat && Number.isFinite(koordinat.lat) && Number.isFinite(koordinat.lng)
+        ? { lat: koordinat.lat, lng: koordinat.lng }
+        : undefined
     };
 
     await db.upsertProfile(newUser);
@@ -495,45 +583,153 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     else setActiveRoute('/admin/dashboard');
   };
 
+  const updateProfile = async (
+    data: Partial<Pick<User, 'nama' | 'email' | 'kontak' | 'avatar_url' | 'alamat' | 'kota' | 'kode_pos' | 'koordinat'>>
+  ) => {
+    if (!currentUser) {
+      return { success: false, message: 'Belum ada akun aktif.' };
+    }
+
+    const updatedUser: User = { ...currentUser, ...data };
+    setCurrentUser(updatedUser);
+
+    try {
+      await db.upsertProfile(updatedUser);
+    } catch (e) {
+      console.warn('[updateProfile] Supabase sync deferred (offline):', e);
+    }
+
+    return { success: true };
+  };
+
+  const updateUnitProfile = async (
+    unitData: Partial<Pick<UnitKampus, 'nama_unit' | 'inisial' | 'jenis' | 'lokasi_detail' | 'pic_nama' | 'kontak_pic'>>,
+    userData?: Partial<Pick<User, 'nama' | 'email' | 'kontak' | 'avatar_url'>>
+  ) => {
+    if (!currentUser) {
+      return { success: false, message: 'Belum ada akun unit yang aktif.' };
+    }
+
+    const unitId = currentUser.unit_id || units[0]?.id;
+    const unit = units.find(u => u.id === unitId);
+    if (!unit) {
+      return { success: false, message: 'Data unit kampus tidak ditemukan.' };
+    }
+
+    const updatedUnit: UnitKampus = { ...unit, ...unitData };
+    const updatedUser: User = { ...currentUser, ...(userData || {}) };
+
+    setUnits(prev => prev.map(u => (u.id === unit.id ? updatedUnit : u)));
+    setTongList(prev => prev.map(t => (t.unit_id === unit.id ? { ...t, unit_nama: updatedUnit.nama_unit } : t)));
+    setListings(prev => prev.map(l => (l.unit_id === unit.id ? { ...l, unit_nama: updatedUnit.nama_unit } : l)));
+    if (userData) setCurrentUser(updatedUser);
+
+    try {
+      await db.updateUnitFields(unit.id, unitData);
+      if (userData) await db.upsertProfile(updatedUser);
+
+      if (unitData.nama_unit && unitData.nama_unit !== unit.nama_unit) {
+        const unitTongs = tongList.filter(t => t.unit_id === unit.id);
+        const unitListings = listings.filter(l => l.unit_id === unit.id);
+        await Promise.all([
+          ...unitTongs.map(t => db.updateTongFields(t.id, { unit_nama: unitData.nama_unit })),
+          ...unitListings.map(l => db.updateListingFields(l.id, { unit_nama: unitData.nama_unit })),
+        ]);
+      }
+    } catch (e) {
+      console.warn('[updateUnitProfile] Supabase sync deferred (offline):', e);
+    }
+
+    return { success: true };
+  };
+
   const createListing = async ({ unitId, tongId, jumlahKg, kategori, kategoriLabel, kondisi, foto }: any) => {
     const unit = units.find(u => u.id === unitId) || units[0];
     const tong = (tongId ? tongList.find(t => t.id === tongId) : null) || tongList.find(t => t.unit_id === unit.id) || tongList[0];
 
     const newTongWeight = tong.berat_kg + jumlahKg;
-    const isQuotaMet = newTongWeight >= 10;
+    const isQuotaMet = newTongWeight >= KUOTA_JEMPUT;
+    const hargaKg = HARGA_PER_KG[kategori as KategoriKertas] ?? HARGA_DEFAULT_PER_KG;
 
+    // Model batch: satu tong = satu batch kertas yang sedang terkumpul.
+    // Setoran berikutnya digabung ke batch yang sama, bukan membuat listing baru.
     const existingListing = listings.find(l => l.tong_id === tong.id && l.status !== 'sudah_diambil');
     let resultingListing: ListingKertas;
+    let batchSiapJemput = false;
+
+    const buildMatching = (listingId: string, totalKg: number, label: string): MatchingTransaksi => {
+      const req = permintaanList[0];
+      return {
+        id: `trx-${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 90 + 10)}`,
+        listing_kertas_id: listingId,
+        permintaan_id: req?.id,
+        unit_id: unit.id,
+        unit_nama: unit.nama_unit,
+        tong_id: tong.id,
+        tong_nama: tong.nama_tong,
+        perusahaan_id: req?.perusahaan_id || 'perusahaan-mdl',
+        perusahaan_nama: req?.perusahaan_nama || 'PT Mandiri Daur Lestari',
+        jenis_kertas: `${totalKg} Kg ${label}`,
+        jumlah_kg: totalKg,
+        nilai_rupiah: totalKg * hargaKg,
+        eco_points: totalKg * 2,
+        skor_kecocokan: 96,
+        status: 'menunggu_diambil',
+        tanggal_jemput: 'Jadwal Otomatis Siap Dipilih',
+        jam_jemput: '13:00 - 16:00 WIB',
+      };
+    };
 
     if (existingListing) {
-      // Aggregate into existing listing
+      // Agregasi ke batch yang sedang terkumpul
       const updatedJumlahKg = existingListing.jumlah_kg + jumlahKg;
-      await db.updateListingFields(existingListing.id, {
-          jumlah_kg: updatedJumlahKg,
-          kategori_label: existingListing.kategori_label.includes(kategoriLabel) 
-              ? existingListing.kategori_label 
-              : existingListing.kategori_label + ', ' + kategoriLabel,
-          kondisi: [...new Set([...(existingListing.kondisi || []), ...kondisi])],
-          status: isQuotaMet ? 'siap_pickup' : 'menunggu_mitra'
-      });
-      resultingListing = { ...existingListing, jumlah_kg: updatedJumlahKg, status: isQuotaMet ? 'siap_pickup' : 'menunggu_mitra' };
+      const mergedKategoriLabel = existingListing.kategori_label.includes(kategoriLabel)
+        ? existingListing.kategori_label
+        : `${existingListing.kategori_label}, ${kategoriLabel}`;
+      const mergedKondisi = [...new Set([...(existingListing.kondisi || []), ...kondisi])];
+      const nextStatus = isQuotaMet ? 'siap_pickup' : 'menunggu_mitra';
+      batchSiapJemput = isQuotaMet && existingListing.status !== 'siap_pickup';
 
-      if (existingListing.matching_id) {
-          const existingMatch = matchings.find(m => m.id === existingListing.matching_id);
-          if (existingMatch) {
-              await db.updateMatchingFields(existingMatch.id, {
-                  jumlah_kg: existingMatch.jumlah_kg + jumlahKg,
-                  jenis_kertas: existingMatch.jenis_kertas.includes(kategoriLabel)
-                      ? existingMatch.jenis_kertas
-                      : existingMatch.jenis_kertas + ', ' + kategoriLabel,
-                  nilai_rupiah: existingMatch.nilai_rupiah + (jumlahKg * (HARGA_PER_KG[kategori as KategoriKertas] ?? HARGA_DEFAULT_PER_KG)),
-                  eco_points: existingMatch.eco_points + (jumlahKg * 2),
-                  status: isQuotaMet ? 'menunggu_diambil' : existingMatch.status
-              });
-          }
+      await db.updateListingFields(existingListing.id, {
+        jumlah_kg: updatedJumlahKg,
+        kategori_label: mergedKategoriLabel,
+        kondisi: mergedKondisi,
+        status: nextStatus,
+        ...(foto ? { foto } : {}),
+      });
+
+      resultingListing = {
+        ...existingListing,
+        jumlah_kg: updatedJumlahKg,
+        kategori_label: mergedKategoriLabel,
+        kondisi: mergedKondisi,
+        status: nextStatus,
+        foto: foto || existingListing.foto,
+      };
+
+      // Matching dibuat saat kuota jemput terpenuhi, lalu diperbarui tiap setoran berikutnya.
+      const existingMatch = existingListing.matching_id
+        ? matchings.find(m => m.id === existingListing.matching_id)
+        : null;
+
+      if (existingMatch) {
+        await db.updateMatchingFields(existingMatch.id, {
+          jumlah_kg: existingMatch.jumlah_kg + jumlahKg,
+          jenis_kertas: existingMatch.jenis_kertas.includes(kategoriLabel)
+            ? existingMatch.jenis_kertas
+            : `${existingMatch.jenis_kertas}, ${kategoriLabel}`,
+          nilai_rupiah: existingMatch.nilai_rupiah + jumlahKg * hargaKg,
+          eco_points: existingMatch.eco_points + jumlahKg * 2,
+          status: isQuotaMet ? 'menunggu_diambil' : existingMatch.status,
+        });
+      } else if (isQuotaMet) {
+        const newMatch = buildMatching(existingListing.id, updatedJumlahKg, mergedKategoriLabel);
+        await db.upsertMatching(newMatch);
+        await db.updateListingFields(existingListing.id, { matching_id: newMatch.id });
+        resultingListing.matching_id = newMatch.id;
       }
     } else {
-      // Create new listing
+      // Batch baru
       const newListingId = `list-${Date.now()}`;
       const newListing: ListingKertas = {
         id: newListingId,
@@ -552,47 +748,48 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       await db.upsertListing(newListing);
       resultingListing = newListing;
+      batchSiapJemput = isQuotaMet;
 
-      const matchingReq = permintaanList[0];
-      if (matchingReq) {
-          const newTrxId = `trx-${Date.now().toString().slice(-6)}`;
-          const newMatch: MatchingTransaksi = {
-            id: newTrxId,
-            listing_kertas_id: newListingId,
-            permintaan_id: matchingReq.id,
-            unit_id: unit.id,
-            unit_nama: unit.nama_unit,
-            tong_id: tong.id,
-            tong_nama: tong.nama_tong,
-            perusahaan_id: matchingReq.perusahaan_id || 'perusahaan-mdl',
-            perusahaan_nama: matchingReq.perusahaan_nama || 'PT Mandiri Daur Lestari',
-            jenis_kertas: `${jumlahKg} Kg ${kategoriLabel}`,
-            jumlah_kg: jumlahKg,
-            nilai_rupiah: jumlahKg * (HARGA_PER_KG[kategori as KategoriKertas] ?? HARGA_DEFAULT_PER_KG),
-            eco_points: jumlahKg * 2,
-            skor_kecocokan: 96,
-            status: isQuotaMet ? 'menunggu_diambil' : 'menunggu_diambil',
-            tanggal_jemput: 'Jadwal Otomatis Siap Dipilih',
-            jam_jemput: '13:00 - 16:00 WIB'
-          };
-          await db.upsertMatching(newMatch);
-          await db.updateListingFields(newListingId, { matching_id: newTrxId });
-          resultingListing.matching_id = newTrxId;
+      if (isQuotaMet) {
+        const newMatch = buildMatching(newListingId, jumlahKg, kategoriLabel);
+        await db.upsertMatching(newMatch);
+        await db.updateListingFields(newListingId, { matching_id: newMatch.id });
+        resultingListing.matching_id = newMatch.id;
       }
     }
 
     await db.updateTongFields(tong.id, {
-        status: isQuotaMet ? 'siap_pickup' : 'terisi',
-        berat_kg: newTongWeight,
-        tipe_kertas: kategoriLabel,
-        catatan: isQuotaMet
-          ? `Siap dijemput mitra pabrik (kuota terpenuhi: ${newTongWeight} Kg)`
-          : `Terkumpul ${newTongWeight}/10 Kg. Kurang ${10 - newTongWeight} Kg lagi untuk siap dijemput.`
+      status: isQuotaMet ? 'siap_pickup' : 'terisi',
+      berat_kg: newTongWeight,
+      tipe_kertas: kategoriLabel,
+      catatan: isQuotaMet
+        ? `Siap dijemput mitra pabrik (kuota terpenuhi: ${newTongWeight} Kg)`
+        : `Terkumpul ${newTongWeight}/${KUOTA_JEMPUT} Kg. Kurang ${KUOTA_JEMPUT - newTongWeight} Kg lagi untuk siap dijemput.`
     });
     await db.updateUnitFields(unit.id, {
-        total_kg_tersalurkan: unit.total_kg_tersalurkan + jumlahKg,
-        eco_points: unit.eco_points + jumlahKg * 2
+      total_kg_tersalurkan: unit.total_kg_tersalurkan + jumlahKg,
+      eco_points: unit.eco_points + jumlahKg * 2
     } as any);
+
+    // Kabari mitra begitu batch masuk antrean penjemputan.
+    if (batchSiapJemput) {
+      const mitraNotif: AppNotification = {
+        id: `notif-${Date.now()}-mitra`,
+        target_role: 'perusahaan',
+        target_id: 'perusahaan-mdl',
+        judul: 'Batch baru siap dijemput',
+        pesan: `${unit.nama_unit} menumpuk ${newTongWeight} Kg di ${tong.nama_tong}. Batch masuk antrean penjemputan mitra.`,
+        tipe: 'penjemputan',
+        link: '/perusahaan/pasokan',
+        dibaca: false,
+        created_at: 'Baru saja'
+      };
+      setNotifications(prev => {
+        const next = [mitraNotif, ...prev];
+        localStorage.setItem(STORAGE_KEYS.NOTIFIKASI, JSON.stringify(next));
+        return next;
+      });
+    }
 
     await refreshData();
     return resultingListing;
@@ -683,68 +880,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  const confirmPickup = async (matchingId: string) => {
-    const match = matchings.find(m => m.id === matchingId);
-    if (!match) return;
-
-    // Synchronous state updates
-    setMatchings(prev => prev.map(m => m.id === matchingId ? {
-      ...m,
-      status: 'sudah_diambil',
-      tanggal_selesai: 'Baru saja',
-      rating: 5.0,
-      komentar: 'Kertas bersih, rapi, dan terverifikasi di timbangan drop point.'
-    } : m));
-
-    if (match.listing_kertas_id) {
-      setListings(prev => prev.map(l => l.id === match.listing_kertas_id ? { ...l, status: 'sudah_diambil' } : l));
-    }
-
-    setTongList(prev => prev.map(t => t.id === match.tong_id ? {
-      ...t,
-      status: 'kosong',
-      berat_kg: Math.max(0, t.berat_kg - match.jumlah_kg),
-      jadwal_pickup: undefined,
-      catatan: 'Baru saja diangkut oleh mitra pabrik'
-    } : t));
-
-    setUnits(prev => prev.map(u => u.id === match.unit_id ? {
-      ...u,
-      total_kg_tersalurkan: u.total_kg_tersalurkan + match.jumlah_kg,
-      eco_points: u.eco_points + match.eco_points
-    } : u));
-
-    showToast(`Penjemputan ${match.jumlah_kg} Kg kertas oleh ${match.perusahaan_nama} telah dikonfirmasi!`, 'success');
-
-    // Background DB sync
-    try {
-      await db.updateMatchingFields(matchingId, {
-        status: 'sudah_diambil',
-        tanggal_selesai: 'Baru saja',
-        rating: 5.0,
-        komentar: 'Kertas bersih, rapi, dan terverifikasi di timbangan drop point.'
-      });
-      if (match.listing_kertas_id) {
-        await db.updateListingFields(match.listing_kertas_id, { status: 'sudah_diambil' });
-      }
-      await db.updateTongFields(match.tong_id, {
-        status: 'kosong',
-        berat_kg: Math.max(0, (tongList.find(t => t.id === match.tong_id)?.berat_kg || 0) - match.jumlah_kg),
-        jadwal_pickup: undefined,
-        catatan: 'Baru saja diangkut oleh mitra pabrik'
-      });
-      const unit = units.find(u => u.id === match.unit_id);
-      if (unit) {
-        await db.updateUnitFields(unit.id, {
-          total_kg_tersalurkan: unit.total_kg_tersalurkan + match.jumlah_kg,
-          eco_points: unit.eco_points + match.eco_points
-        } as any);
-      }
-    } catch (e) {
-      console.warn('[confirmPickup] Supabase sync deferred (offline):', e);
-    }
-  };
-
   const payTransaction = async (matchingId: string, metode: string = 'Transfer Dompet Kampus') => {
     const match = matchings.find(m => m.id === matchingId);
     if (!match) return { success: false, message: 'Transaksi tidak ditemukan.' };
@@ -764,14 +899,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         if (m.id === matchingId) {
           return {
             ...m,
-            status: 'sudah_diambil',
             status_pembayaran: 'lunas' as const,
             metode_pembayaran: metode,
             tanggal_bayar: nowWib,
             nomor_referensi_bayar: refNo,
-            tanggal_selesai: m.tanggal_selesai || 'Baru saja',
-            rating: m.rating || 5.0,
-            komentar: m.komentar || 'Pembayaran berhasil dikonfirmasi ke Dompet Unit.'
+            verification_nonce: m.verification_nonce || randomNonce(),
+            verification_status: 'belum_diverifikasi' as const
           };
         }
         return m;
@@ -780,16 +913,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return next;
     });
 
-    // 2. Update Listing and Tong
-    if (match.listing_kertas_id) {
-      setListings(prev => prev.map(l => l.id === match.listing_kertas_id ? { ...l, status: 'sudah_diambil' } : l));
-    }
-    setTongList(prev => prev.map(t => t.id === match.tong_id ? {
-      ...t,
-      status: 'kosong',
-      berat_kg: Math.max(0, t.berat_kg - match.jumlah_kg),
-      catatan: 'Kertas telah diangkut & dibayar oleh mitra pabrik'
-    } : t));
+    // 2. Pengambilan kertas ditandai saat QR tong discan (lihat verifyQrCode).
 
     // 3. Update Unit stats and Unit balance
     const targetUnitId = match.unit_id;
@@ -798,8 +922,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const newSaldo = (u.saldo || 0) + match.nilai_rupiah;
         return {
           ...u,
-          total_kg_tersalurkan: u.total_kg_tersalurkan + match.jumlah_kg,
-          eco_points: u.eco_points + match.eco_points,
           saldo: newSaldo
         };
       }
@@ -873,17 +995,266 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // 8. Background Supabase sync (graceful fallback)
     try {
-      await db.updateMatchingFields(matchingId, {
-        status: 'sudah_diambil',
-        tanggal_selesai: 'Baru saja',
-        rating: 5.0
-      });
       await db.processPayment(match);
     } catch (e) {
       console.warn('[payTransaction] Supabase sync deferred (offline):', e);
     }
 
     return { success: true, message: 'Pembayaran berhasil diselesaikan!' };
+  };
+
+  const getVerificationCode = (matching: MatchingTransaksi) => buildVerificationCode(matching);
+
+  const verifyQrCode = async (matchingId: string, scannedCode: string) => {
+    const match = matchings.find(m => m.id === matchingId);
+    if (!match) {
+      showToast('Transaksi tidak ditemukan.', 'error');
+      return { success: false, message: 'Transaksi tidak ditemukan.' };
+    }
+
+    if (match.status_pembayaran !== 'lunas') {
+      showToast('QR belum aktif: pembayaran belum lunas.', 'error');
+      return { success: false, message: 'QR belum aktif: pembayaran belum lunas.' };
+    }
+
+    const reject = (expectedId: string, message: string, note: string) => {
+      setMatchings(prev => {
+        const next = prev.map(m =>
+          m.id === expectedId
+            ? { ...m, verification_status: 'ditolak' as const, last_verification_note: note }
+            : m
+        );
+        localStorage.setItem(STORAGE_KEYS.MATCHINGS, JSON.stringify(next));
+        return next;
+      });
+      showToast(message, 'error');
+      return { success: false, message };
+    };
+
+    const parsed = parseVerificationCode(scannedCode);
+    if (!parsed) {
+      return reject(matchingId, 'Ditolak: QR tidak terbaca.', 'Ditolak: format QR tidak valid.');
+    }
+
+    if (parsed.matchingId.toUpperCase() !== match.id.toUpperCase()) {
+      return reject(match.id, 'Ditolak: QR milik transaksi lain.', 'Ditolak: QR milik transaksi lain.');
+    }
+
+    const expectedNonce = getExpectedNonce(match);
+    if (parsed.nonce !== expectedNonce || parsed.checksum !== qrChecksum(match.id, expectedNonce)) {
+      return reject(match.id, 'Ditolak: kode verifikasi tidak cocok.', 'Ditolak: nonce/ checksum tidak cocok.');
+    }
+
+    if (match.verification_status === 'terverifikasi') {
+      showToast('QR sudah digunakan sebelumnya.', 'error');
+      return { success: false, message: 'QR sudah digunakan sebelumnya.' };
+    }
+
+    const verifiedAt = new Date().toLocaleDateString('id-ID', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }) + ' WIB';
+
+    setMatchings(prev => {
+      const next = prev.map(m =>
+        m.id === match.id
+          ? {
+              ...m,
+              verification_nonce: expectedNonce,
+              verification_status: 'terverifikasi' as const,
+              verified_at: verifiedAt,
+              verified_by: currentUser?.nama || 'Petugas drop point',
+              last_verification_note: 'Terverifikasi di drop point.'
+            }
+          : m
+      );
+      localStorage.setItem(STORAGE_KEYS.MATCHINGS, JSON.stringify(next));
+      return next;
+    });
+
+    // Scan QR = satu-satunya penanda kertas sudah diambil.
+    if (match.status !== 'sudah_diambil') {
+      setMatchings(prev =>
+        prev.map(m =>
+          m.id === match.id
+            ? {
+                ...m,
+                status: 'sudah_diambil' as const,
+                tanggal_selesai: verifiedAt,
+              }
+            : m
+        )
+      );
+      if (match.listing_kertas_id) {
+        setListings(prev =>
+          prev.map(l => (l.id === match.listing_kertas_id ? { ...l, status: 'sudah_diambil' as const } : l))
+        );
+      }
+      setTongList(prev =>
+        prev.map(t =>
+          t.id === match.tong_id
+            ? {
+                ...t,
+                status: 'kosong' as const,
+                berat_kg: Math.max(0, t.berat_kg - match.jumlah_kg),
+                catatan: 'Kertas sudah diangkut & diverifikasi lewat QR tong',
+              }
+            : t
+        )
+      );
+
+      const pickedNotif: AppNotification = {
+        id: `notif-${Date.now()}-qr`,
+        target_role: 'unit',
+        target_id: match.unit_id,
+        judul: 'Kertas Sudah Diangkut Mitra',
+        pesan: `${match.jumlah_kg} Kg di ${match.tong_nama} telah diverifikasi lewat QR dan diangkut mitra.`,
+        tipe: 'penjemputan',
+        link: '/unit/status',
+        dibaca: false,
+        created_at: 'Baru saja',
+      };
+      setNotifications(prev => {
+        const next = [pickedNotif, ...prev];
+        localStorage.setItem(STORAGE_KEYS.NOTIFIKASI, JSON.stringify(next));
+        return next;
+      });
+    }
+
+    try {
+      await db.updateMatchingFields(match.id, {
+        verification_nonce: expectedNonce,
+        verification_status: 'terverifikasi',
+        verified_at: verifiedAt,
+        verified_by: currentUser?.nama || 'Petugas drop point',
+        last_verification_note: 'Terverifikasi di drop point.',
+        ...(match.status !== 'sudah_diambil'
+          ? { status: 'sudah_diambil', tanggal_selesai: verifiedAt }
+          : {})
+      } as any);
+      if (match.listing_kertas_id && match.status !== 'sudah_diambil') {
+        await db.updateListingFields(match.listing_kertas_id, { status: 'sudah_diambil' });
+      }
+      if (match.status !== 'sudah_diambil') {
+        await db.updateTongFields(match.tong_id, {
+          status: 'kosong',
+          berat_kg: Math.max(0, (tongList.find(t => t.id === match.tong_id)?.berat_kg || 0) - match.jumlah_kg),
+          catatan: 'Kertas sudah diangkut & diverifikasi lewat QR tong',
+        });
+      }
+    } catch (e) {
+      console.warn('[verifyQrCode] Supabase sync deferred (offline):', e);
+    }
+
+    showToast(`QR terverifikasi untuk ${match.tong_nama}.`, 'success');
+    return { success: true, message: 'QR terverifikasi.' };
+  };
+
+  /**
+   * Penilaian kertas oleh mitra (perusahaan): hasil QC + bintang + catatan.
+   * Hanya bisa diisi setelah kertas diterima (status `sudah_diambil`).
+   */
+  const rateTransaction = async (
+    matchingId: string,
+    payload: { rating: number; qc: string[]; catatan: string }
+  ) => {
+    const match = matchings.find(m => m.id === matchingId);
+    if (!match) {
+      showToast('Transaksi tidak ditemukan.', 'error');
+      return { success: false, message: 'Transaksi tidak ditemukan.' };
+    }
+
+    if (match.status !== 'sudah_diambil') {
+      showToast('Penilaian baru bisa diberikan setelah kertas diterima mitra.', 'error');
+      return { success: false, message: 'Transaksi belum berstatus selesai.' };
+    }
+
+    const rawRating = Number(payload.rating);
+    if (!rawRating || rawRating < 1) {
+      showToast('Pilih jumlah bintang penilaian terlebih dahulu.', 'error');
+      return { success: false, message: 'Rating belum dipilih.' };
+    }
+    const rating = Math.min(5, Math.max(1, Math.round(rawRating)));
+
+    const qc = (payload.qc || []).filter(Boolean);
+    if (qc.length === 0) {
+      showToast('Pilih minimal satu hasil pemeriksaan QC kertas.', 'error');
+      return { success: false, message: 'Hasil QC belum dipilih.' };
+    }
+
+    const catatan = (payload.catatan || '').trim();
+    const ratedAt =
+      new Date().toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }) + ' WIB';
+    const ratedBy = currentUser?.nama || match.perusahaan_nama;
+
+    setMatchings(prev => {
+      const next = prev.map(m =>
+        m.id === matchingId
+          ? {
+              ...m,
+              rating,
+              qc_penilaian: qc,
+              komentar: catatan || undefined,
+              rating_oleh: ratedBy,
+              rating_at: ratedAt,
+            }
+          : m
+      );
+      localStorage.setItem(STORAGE_KEYS.MATCHINGS, JSON.stringify(next));
+      return next;
+    });
+
+    const notif: AppNotification = {
+      id: `notif-${Date.now()}-rating`,
+      target_role: 'unit',
+      target_id: match.unit_id,
+      judul: 'Kertas Anda Dinilai Mitra',
+      pesan: `${match.perusahaan_nama} memberi penilaian ${rating}/5 untuk ${match.jenis_kertas} (${match.jumlah_kg} Kg).`,
+      tipe: 'sistem',
+      link: '/unit/status',
+      dibaca: false,
+      created_at: 'Baru saja',
+    };
+    setNotifications(prev => {
+      const next = [notif, ...prev];
+      localStorage.setItem(STORAGE_KEYS.NOTIFIKASI, JSON.stringify(next));
+      return next;
+    });
+
+    try {
+      // Kolom rating & komentar selalu tersedia di database.
+      const ok = await db.updateMatchingFields(matchingId, {
+        rating,
+        komentar: catatan || null,
+      } as any);
+      if (ok) {
+        // Rincian QC butuh kolom tambahan (opsional, lihat supabase-migration.sql).
+        const okDetail = await db.updateMatchingFields(matchingId, {
+          qc_penilaian: qc,
+          rating_oleh: ratedBy,
+          rating_at: ratedAt,
+        } as any);
+        if (!okDetail) {
+          console.warn(
+            '[rateTransaction] Kolom rincian QC belum ada di database. Jalankan ALTER TABLE di supabase-migration.sql.'
+          );
+        }
+      }
+    } catch (e) {
+      console.warn('[rateTransaction] Supabase sync deferred (offline):', e);
+    }
+
+    showToast(`Penilaian ${rating}/5 untuk ${match.jenis_kertas} tersimpan.`, 'success');
+    return { success: true, message: 'Penilaian tersimpan.' };
   };
 
   const withdrawUnitBalance = async (unitId: string, jumlah: number, bank: string, norek: string) => {
@@ -947,13 +1318,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const emptyTong = async (tongId: string) => {
+    const selesaiAt = new Date().toLocaleDateString('id-ID', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }) + ' WIB';
     await db.updateTongFields(tongId, {
        status: 'kosong',
        berat_kg: 0,
        catatan: 'Baru saja diangkut & dikosongkan oleh armada mitra pabrik'
     });
     await db.updateListingsByTong(tongId, { status: 'sudah_diambil' });
-    await db.updateMatchingsByTong(tongId, { status: 'sudah_diambil', tanggal_selesai: 'Baru saja' });
+    await db.updateMatchingsByTong(tongId, { status: 'sudah_diambil', tanggal_selesai: selesaiAt });
     await refreshData();
   };
 
@@ -1031,9 +1409,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const submitLaporan = async (data: any) => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      showToast('Belum ada akun aktif.', 'error');
+      return { success: false, message: 'Belum ada akun aktif.' };
+    }
     const newLap: LaporanMasalah = {
-      id: `flag-${Date.now().toString().slice(-4)}`,
+      id: `flag-${Date.now().toString().slice(-6)}`,
+      listing_kertas_id: data.listing_kertas_id,
+      matching_id: data.matching_id,
+      tong_id: data.tong_id,
       tong_nama: data.tongNama,
       unit_nama: data.unitNama,
       pelapor_id: currentUser.id,
@@ -1041,11 +1425,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       alasan: data.alasan,
       detail: data.detail,
       level: data.level,
+      foto: data.foto,
       status: 'menunggu_tindakan',
-      tanggal: 'Baru saja'
+      tanggal: 'Baru saja',
     };
     await db.upsertLaporan(newLap);
     await refreshData();
+
+    // Kabar ke admin supaya langsung ditindaklanjuti.
+    const adminNotif: AppNotification = {
+      id: `notif-${Date.now()}-flag`,
+      target_role: 'admin',
+      judul: 'Laporan Baru Masuk',
+      pesan: `${currentUser.nama} mengirim laporan "${data.alasan}" untuk ${data.tongNama}.`,
+      tipe: 'sistem',
+      link: '/admin/laporan',
+      dibaca: false,
+      created_at: 'Baru saja',
+    };
+    setNotifications(prev => {
+      const next = [adminNotif, ...prev];
+      localStorage.setItem(STORAGE_KEYS.NOTIFIKASI, JSON.stringify(next));
+      return next;
+    });
+
+    showToast('Laporan berhasil dikirim ke admin drop point.', 'success');
+    return { success: true, message: 'Laporan terkirim.' };
   };
 
   const resetDemoData = () => {
@@ -1092,22 +1497,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         registerPenerima,
         logout,
         setRole,
+        updateProfile,
+        updateUnitProfile,
         units,
         tongList,
         listings,
         permintaanList,
         matchings,
         laporanList,
+        profiles,
         activeRoute,
         setActiveRoute,
         selectedMatchingId,
         setSelectedMatchingId,
         selectedListingId,
         setSelectedListingId,
+        preselectTongId,
+        setPreselectTongId,
+        leaderboardUnitId,
+        setLeaderboardUnitId,
         createListing,
         createPermintaan,
         schedulePickup,
-        confirmPickup,
         confirmUnitPlaced,
         emptyTong,
         requestSecondTong,
@@ -1125,6 +1536,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         markNotificationAsRead,
         clearAllNotifications,
         payTransaction,
+        verifyQrCode,
+        rateTransaction,
+        getVerificationCode,
         withdrawUnitBalance,
         toastNotification,
         showToast,

@@ -4,7 +4,7 @@ export const APP_BRAND = {
   name: 'Sampah Butuh Teman',
   tagline: 'Sampah yang menemukan temannya.',
   subtitle: 'Platform Sirkular Sampah Kertas Terintegrasi Kampus UPJ',
-  logoUrl: '/logo-sbt.png',
+  logoUrl: '/logo-sbt-transparent.png',
   avatarUrl: '/logo-sbt.png',
   kampus: 'Universitas Pembangunan Jaya (UPJ)',
   dropPointUtama: {
@@ -12,9 +12,13 @@ export const APP_BRAND = {
     lokasiSingkat: 'Gedung Serbaguna Kampus UPJ, Bintaro Jaya',
     deskripsi: 'Sentra logistik tunggal Kampus UPJ — tong bernomor per unit, ramp truk 6-roda & timbangan digital terverifikasi.',
     alamat: 'Jl. Cendrawasih No.60, Sawah Baru, Ciputat, Tangerang Selatan 15413',
+    koordinat: { lat: -6.292137, lng: 106.725419 },
+    mapsUrl: 'https://www.google.com/maps/search/?api=1&query=-6.292137,106.725419',
     mapImg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDmviIiiVahgnvhO_El-huson9J5-9mLv6s0NQKjrLHCL5_VDkgxtYr-uWRy1XeDI3jI0NEmhvp80WPZYTmS4b7171z821fB_qByVHWOM6pE5LBP4bXbyCFeYnW0hvwAFNRCwn5pODD6p-aBUrM4ZvGEmaVYFRamzn0-FqR7i8-LkRYKr2sraGUSuU_CrVENPUpymUBvnY5IR9CRbhV4B3Do5vyR20weTyWCYQC848V84BjAmHKzQio1A'
   }
 };
+
+export const HIGHLIGHT_MATCHING_KEY = 'sbt_highlight_matching_v3';
 
 /** Harga pembelian kertas (Rp per kg) per kategori */
 export const HARGA_PER_KG: Record<KategoriKertas, number> = {
@@ -579,7 +583,10 @@ export const INITIAL_MATCHINGS: MatchingTransaksi[] = [
     eco_points: 120,
     skor_kecocokan: 98,
     status: 'menunggu_diambil',
-    status_pembayaran: 'menunggu_pembayaran',
+    status_pembayaran: 'lunas',
+    metode_pembayaran: 'Transfer Dompet Kampus',
+    tanggal_bayar: 'Kamis, 24 Oktober 2024, 14:35 WIB',
+    nomor_referensi_bayar: 'PAY-2024-1024-001',
     nopol_armada: 'B 9821 PQL',
     driver_nama: 'Pak Joko Susilo',
     tanggal_jemput: 'Kamis, 24 Oktober 2024',
@@ -613,6 +620,15 @@ export const INITIAL_MATCHINGS: MatchingTransaksi[] = [
     tanggal_selesai: '18 Okt, 15:10 WIB',
     rating: 5.0,
     komentar: 'Kardus sangat rapi & bebas kontaminan.',
+    qc_penilaian: [
+      'Kertas bersih',
+      'Terikat rapi',
+      'Kering & bebas minyak',
+      'Bebas klip & lakban',
+      'Berat sesuai timbangan'
+    ],
+    rating_oleh: 'Pak Joko Susilo (Mitra MDL)',
+    rating_at: '18 Okt 2024, 16:20 WIB',
     foto_timbangan: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCpMDjLNhyE5tFuddhterSSd_DLlHeL8Eb0lQqxIm5PpCmXjHNQypJDlPAMqtCDcB0ATyO3YLxVgnPKjncpqWzPTa61rAw6ilSlq4Tl6Xf89eCKkElOv_KdyNHnmS1TEU7q_V1kUTMH75t-_w2qgIhe24CaXl78VBfrH4zMEw_CtGeZMXr4bSQKx-AGI0jhgyK1c7WFuqZ7WPm5GhnBjGl9V_UeoJVI22ECvGCUN0mezS0u9_lT_O1sBQ',
     foto_struk: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCpB1iJs3KW51EVCKrYLKaiooV8Bs7AWkfYVcrB0NcCWpn-OJPyDGryqtg38DBJL8utmg69q6KkgFkIE_b32hxfQPQlacYQCcLqBCaSwlSL6Wjd0wFtiEcB0Qw_z0gv0KXAm01cyBrAGmafazKbg1DsZue4KuePncEq87DpyQQq2E7H5LZlpOLc1W-kDmURnBBgmDZwOljDb8epfkTuAKQay4BlDZvf682C5qAq4A5GmGqK6Dr1fek6gg'
   },
@@ -637,7 +653,15 @@ export const INITIAL_MATCHINGS: MatchingTransaksi[] = [
     nomor_referensi_bayar: 'PAY-2024-1011-002',
     tanggal_selesai: '11 Okt, 14:00 WIB',
     rating: 4.8,
-    komentar: 'Batch sortir B-3 terkonfirmasi sangat baik.'
+    komentar: 'Batch sortir B-3 terkonfirmasi sangat baik.',
+    qc_penilaian: [
+      'Kertas bersih',
+      'Terikat rapi',
+      'Kering & bebas minyak',
+      'Bebas klip & lakban'
+    ],
+    rating_oleh: 'Pak Joko Susilo (Mitra MDL)',
+    rating_at: '11 Okt 2024, 15:05 WIB'
   }
 ];
 
