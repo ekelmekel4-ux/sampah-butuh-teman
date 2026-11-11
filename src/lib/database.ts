@@ -47,20 +47,54 @@ export async function getProfileById(id: string): Promise<User | null> {
   return mapProfile(data);
 }
 
-export async function upsertProfile(user: User & { password_hash?: string }): Promise<void> {
-  const { error } = await supabase
+/** Ambil seluruh akun (profil) — dipakai admin untuk memuat foto profil mitra. */
+export async function fetchProfiles(): Promise<User[]> {
+  const { data, error } = await supabase
     .from('profiles')
-    .upsert({
-      id: user.id,
-      nama: user.nama,
-      email: user.email.trim().toLowerCase(),
-      password_hash: user.password_hash || 'demo1234',
-      role: user.role,
-      kontak: user.kontak,
-      unit_id: user.unit_id || null,
-      perusahaan_id: user.perusahaan_id || null,
-      avatar_url: user.avatar_url || null,
-    }, { onConflict: 'id' });
+    .select('*')
+    .order('nama', { ascending: true });
+  if (error) { logError('fetchProfiles', error); return []; }
+  return (data || []).map(mapProfile);
+}
+
+export async function upsertProfile(user: User & { password_hash?: string }): Promise<void> {  const payload: Record<string, unknown> = {
+    id: user.id,
+    nama: user.nama,
+    email: user.email.trim().toLowerCase(),
+    password_hash: user.password_hash || 'demo1234',
+    role: user.role,
+    kontak: user.kontak,
+    unit_id: user.unit_id || null,
+    perusahaan_id: user.perusahaan_id || null,
+    avatar_url: user.avatar_url || null,
+  };
+
+  // Kolom alamat bersifat opsional. Hanya dikirim jika memang ada nilainya,
+  // supaya profil unit tetap bisa tersimpan pada schema yang belum memuat kolom ini.
+  if (user.alamat !== undefined) payload.alamat = user.alamat;
+  if (user.kota !== undefined) payload.kota = user.kota;
+  if (user.kode_pos !== undefined) payload.kode_pos = user.kode_pos;
+  if (user.koordinat) {
+    payload.latitude = user.koordinat.lat;
+    payload.longitude = user.koordinat.lng;
+  }
+
+  let { error } = await supabase
+    .from('profiles')
+    .upsert(payload, { onConflict: 'id' });
+
+  // Fallback untuk database lama yang belum memiliki kolom alamat.
+  if (error && /alamat|kota|kode_pos|latitude|longitude/i.test(error.message || '')) {
+    const core = { ...payload };
+    delete core.alamat;
+    delete core.kota;
+    delete core.kode_pos;
+    delete core.latitude;
+    delete core.longitude;
+    const retry = await supabase.from('profiles').upsert(core, { onConflict: 'id' });
+    error = retry.error;
+  }
+
   if (error) logError('upsertProfile', error);
 }
 
@@ -74,6 +108,12 @@ function mapProfile(row: any): User {
     unit_id: row.unit_id || undefined,
     perusahaan_id: row.perusahaan_id || undefined,
     avatar_url: row.avatar_url || undefined,
+    alamat: row.alamat || undefined,
+    kota: row.kota || undefined,
+    kode_pos: row.kode_pos || undefined,
+    koordinat: row.latitude != null && row.longitude != null
+      ? { lat: Number(row.latitude), lng: Number(row.longitude) }
+      : undefined,
   };
 }
 
@@ -372,15 +412,29 @@ export async function upsertMatching(m: MatchingTransaksi): Promise<void> {
       foto_timbangan: m.foto_timbangan || null,
       foto_struk: m.foto_struk || null,
     }, { onConflict: 'id' });
-  if (error) logError('upsertMatching', error);
+  if (error) {
+    logError('upsertMatching', error);
+    return;
+  }
+  // Rincian penilaian mitra butuh kolom tambahan (opsional, lihat supabase-migration.sql).
+  await updateMatchingFields(m.id, {
+    qc_penilaian: m.qc_penilaian || [],
+    rating_oleh: m.rating_oleh || null,
+    rating_at: m.rating_at || null,
+  });
 }
 
-export async function updateMatchingFields(id: string, fields: Partial<MatchingTransaksi>): Promise<void> {
+/** Update kolom transaksi. Mengembalikan true bila berhasil ditulis ke database. */
+export async function updateMatchingFields(id: string, fields: Partial<MatchingTransaksi>): Promise<boolean> {
   const { error } = await supabase
     .from('matching_transaksi')
     .update(fields)
     .eq('id', id);
-  if (error) logError('updateMatchingFields', error);
+  if (error) {
+    logError('updateMatchingFields', error);
+    return false;
+  }
+  return true;
 }
 
 export async function updateMatchingsByTong(tongId: string, fields: Partial<MatchingTransaksi>): Promise<void> {
@@ -417,6 +471,13 @@ function mapMatching(row: any): MatchingTransaksi {
     tanggal_selesai: row.tanggal_selesai || undefined,
     rating: row.rating ? Number(row.rating) : undefined,
     komentar: row.komentar || undefined,
+    qc_penilaian: Array.isArray(row.qc_penilaian)
+      ? row.qc_penilaian
+      : row.qc_penilaian
+        ? [String(row.qc_penilaian)]
+        : undefined,
+    rating_oleh: row.rating_oleh || undefined,
+    rating_at: row.rating_at || undefined,
     foto_timbangan: row.foto_timbangan || undefined,
     foto_struk: row.foto_struk || undefined,
   };

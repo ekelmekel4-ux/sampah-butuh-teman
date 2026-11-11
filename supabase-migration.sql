@@ -15,8 +15,20 @@ CREATE TABLE IF NOT EXISTS profiles (
   unit_id TEXT,
   perusahaan_id TEXT,
   avatar_url TEXT,
+  alamat TEXT,
+  kota TEXT,
+  kode_pos TEXT,
+  latitude DOUBLE PRECISION,
+  longitude DOUBLE PRECISION,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Alamat & titik koordinat mitra (untuk database yang sudah terlanjur dibuat)
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS alamat TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS kota TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS kode_pos TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS latitude DOUBLE PRECISION;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS longitude DOUBLE PRECISION;
 
 -- 2. UNIT KAMPUS
 CREATE TABLE IF NOT EXISTS unit_kampus (
@@ -113,10 +125,18 @@ CREATE TABLE IF NOT EXISTS matching_transaksi (
   tanggal_selesai TEXT,
   rating NUMERIC,
   komentar TEXT,
+  qc_penilaian TEXT[] DEFAULT '{}',
+  rating_oleh TEXT,
+  rating_at TEXT,
   foto_timbangan TEXT,
   foto_struk TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Kolom penilaian mitra (added setelah tabel pertama kali dibuat)
+ALTER TABLE matching_transaksi ADD COLUMN IF NOT EXISTS qc_penilaian TEXT[] DEFAULT '{}';
+ALTER TABLE matching_transaksi ADD COLUMN IF NOT EXISTS rating_oleh TEXT;
+ALTER TABLE matching_transaksi ADD COLUMN IF NOT EXISTS rating_at TEXT;
 
 -- 7. LAPORAN MASALAH
 CREATE TABLE IF NOT EXISTS laporan_masalah (
